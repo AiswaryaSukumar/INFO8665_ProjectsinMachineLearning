@@ -1,0 +1,5 @@
+{"audit_id":"AUD-2026-0001","timestamp":"2026-01-30T10:40:12Z","event":"speech_to_text_completed","input_channel":"phone","transcript":"Trash was not picked up today at 55 King Street West.","confidence":null,"actor":"stt_mock","notes":"Caller speech converted to text"}
+{"audit_id":"AUD-2026-0002","timestamp":"2026-01-30T10:40:20Z","event":"nlp_classification","predicted_category":"Missed Garbage Pickup","confidence":0.87,"actor":"nlp_mock","notes":"Rules-based classifier matched keywords: trash, pickup"}
+{"audit_id":"AUD-2026-0003","timestamp":"2026-01-30T10:40:35Z","event":"human_confirmation","caller_confirmed":true,"actor":"voicebot_script","notes":"Caller confirmed predicted category"}
+{"audit_id":"AUD-2026-0004","timestamp":"2026-01-30T10:40:42Z","event":"escalation_decision","escalated":false,"actor":"decision_rules","notes":"Confidence above threshold, no escalation required"}
+{"audit_id":"AUD-2026-0005","timestamp":"2026-01-30T10:42:00Z","event":"ticket_created","ticket_id":"TCK-311-0001","actor":"ticket_api_mock","notes":"Ticket successfully created and stored"}
