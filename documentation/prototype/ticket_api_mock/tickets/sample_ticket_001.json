@@ -1,0 +1,13 @@
+{
+  "ticket_id": "TCK-311-0001",
+  "category": "Missed Garbage Pickup",
+  "description": "Trash was not collected on the scheduled pickup day.",
+  "location_text": "55 King Street West, Waterloo",
+  "channel": "phone",
+  "confidence": 0.87,
+  "human_confirmed": true,
+  "escalated": false,
+  "created_at": "2026-01-30T10:42:00Z",
+  "source": "INSIGHT-311 AI Voice Intake",
+  "audit_reference": "AUD-2026-0001"
+}
