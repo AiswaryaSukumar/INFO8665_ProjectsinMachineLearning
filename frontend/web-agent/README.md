@@ -14,21 +14,27 @@ This `web-agent` folder contains the React + Vite frontend application used by O
 
 ## **Folder Structure**
 
-frontend/web-agent
+```text
+frontend/web-agent/
 │
 ├── public/
-│ └── mock/ # Sample call recordings
+│   └── mock/                 # Sample call recordings
 │
 ├── src/
-│ ├── api/ # API client (future backend integration)
-│ ├── components/ # UI components
-│ ├── data/ # Static operator/supervisor config
-│ ├── mock/ # Mock ticket data
-│ ├── pages/ # Application pages
-│ ├── utils/ # Routing + ticket utilities
-│ └── assets/ # Images and icons
+│   ├── api/                  # API client (future backend integration)
+│   ├── assets/               # Images and icons
+│   ├── components/           # UI components
+│   ├── data/                 # Static operator/supervisor config
+│   ├── mock/                 # Mock ticket data
+│   ├── pages/                # Application pages
+│   ├── utils/                # Routing + ticket utilities
+│   ├── App.jsx
+│   └── main.jsx
 │
-└── vite.config.js
+├── vite.config.js
+├── package.json
+└── README.md
+```
 
 ## **Core Features Implemented**
 
