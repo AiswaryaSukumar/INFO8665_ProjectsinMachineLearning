@@ -1,16 +1,101 @@
-# React + Vite
+# **INSIGHT-311 Web Agent (Frontend)**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+INSIGHT-311 is an AI-assisted municipal operations dashboard prototype developed for the INFO8665 Project in Machine Learning.
 
-Currently, two official plugins are available:
+This `web-agent` folder contains the React + Vite frontend application used by Operators and Supervisors to manage service requests (311 tickets).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## **Tech Stack**
 
-## React Compiler
+- React (Vite)
+- JavaScript (ES6+)
+- Context + Hooks
+- Mock Data (temporary)
+- Planned REST API integration
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## **Folder Structure**
 
-## Expanding the ESLint configuration
+frontend/web-agent
+│
+├── public/
+│ └── mock/ # Sample call recordings
+│
+├── src/
+│ ├── api/ # API client (future backend integration)
+│ ├── components/ # UI components
+│ ├── data/ # Static operator/supervisor config
+│ ├── mock/ # Mock ticket data
+│ ├── pages/ # Application pages
+│ ├── utils/ # Routing + ticket utilities
+│ └── assets/ # Images and icons
+│
+└── vite.config.js
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## **Core Features Implemented**
+
+### *1. Voice Bot Ticket Creation*
+- AI transcript simulation
+- Auto category detection
+- Auto tone detection
+- Confidence scoring
+- Bot-only tickets require Supervisor approval
+
+### *2. Human Operator Ticket Creation*
+- Manual ticket entry
+- Auto serial ticket numbering
+- Department routing logic
+
+### *3. Role-Based Visibility*
+- Operators cannot see pure bot-only tickets
+- Supervisors see all tickets
+- Approval lane only visible to Supervisor
+
+### *4. Routing & Approval Workflow*
+- Voice Bot → Supervisor
+- Supervisor approval → Assigned to Operator
+- Automatic round-robin operator assignment
+
+### *5. Dashboard & Analytics*
+- Donut chart (Voice Bot vs Human)
+- Status segmentation (NEW / IN_PROGRESS / NEEDS_REVIEW / ESCALATED)
+- Real-time lane filtering
+
+### *6. Advanced Filtering*
+- Search (ticket number, name, location, keywords)
+- Quick filters:
+  - Needs Review
+  - Escalated
+- Queue lanes:
+  - All
+  - Mine
+  - In Progress
+  - Resolved
+  - Approval (Supervisor only)
+
+## **Current Mode: Mock-Only**
+
+The frontend currently runs in **mock mode**.
+
+There is no backend connected yet.
+
+All ticket data is loaded from:
+
+```
+src/mock/mockTickets.js
+```
+
+API integration is prepared but disabled until backend is available.
+
+## **How to Run Locally**
+
+### *Install dependencies*
+
+```bash
+npm install
+```
+### *Start development server*
+```bash
+npm run dev
+```
+### *Default Vite URL:*
+http://localhost:5173
+
