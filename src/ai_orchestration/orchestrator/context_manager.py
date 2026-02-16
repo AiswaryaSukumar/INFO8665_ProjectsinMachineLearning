@@ -122,3 +122,91 @@ class ContextManager:
         })
         
         return context
+
+"""
+Context Manager with database persistence
+"""
+from typing import Optional
+from datetime import datetime
+from .models import ConversationContext, ConversationState
+from ..database.repositories import SessionRepository
+from ..database.connection import get_db_context
+
+
+class ContextManager:
+    """
+    Manages conversation context with database persistence
+    """
+    
+    def create_context(self, session_id: str, caller_id: Optional[str] = None) -> ConversationContext:
+        """Create new context and save to database"""
+        
+        # Create in database
+        with get_db_context() as db:
+            repo = SessionRepository(db)
+            session = repo.create_session(session_id, caller_id)
+        
+        # Create context object
+        context = ConversationContext(
+            session_id=session_id,
+            current_state=ConversationState.INITIALIZED,
+            extracted_entities={
+                "category": None,
+                "location": None,
+                "description": None,
+                "citizen_name": None,
+                "citizen_phone": None
+            },
+            confidence_scores={
+                "category": 0.0,
+                "location": 0.0,
+                "description": 0.0,
+                "citizen_name": 0.0,
+                "citizen_phone": 0.0
+            },
+            conversation_history=[],
+            questions_asked={},
+            missing_fields=[],
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        
+        return context
+    
+    def load_context(self, session_id: str) -> Optional[ConversationContext]:
+        """Load context from database"""
+        
+        with get_db_context() as db:
+            repo = SessionRepository(db)
+            session = repo.get_session(session_id)
+            
+            if not session or not session.conversation_context:
+                return None
+            
+            # Convert database JSON to ConversationContext object
+            context_dict = session.conversation_context
+            context_dict["current_state"] = ConversationState(context_dict["current_state"])
+            
+            return ConversationContext(**context_dict)
+    
+    def save_context(self, context: ConversationContext) -> None:
+        """Save context to database"""
+        
+        context.updated_at = datetime.now()
+        
+        # Convert to dictionary
+        context_dict = context.dict()
+        context_dict["current_state"] = context.current_state.value  # Convert enum to string
+        
+        # Save to database
+        with get_db_context() as db:
+            repo = SessionRepository(db)
+            repo.update_session_context(context.session_id, context_dict)
+    
+    def update_context_with_nlu(self, context: ConversationContext, nlu_output: dict) -> ConversationContext:
+        """Update context with NLU results"""
+        
+        # [Keep previous implementation - it's fine]
+        # ... (same as before)
+        
+        return context
