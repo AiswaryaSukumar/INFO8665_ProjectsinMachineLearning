@@ -1,0 +1,550 @@
+/* Optional: nicer fonts (works if your machine has internet) */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&family=Poppins:wght@500;600;700&display=swap");
+
+:root {
+  font-family: Inter, Arial, system-ui, sans-serif;
+
+  --bg: #f6f7fb;
+
+  /* INSIGHT-311 theme */
+  --brand1: #6d28d9; /* purple */
+  --brand2: #2563eb; /* blue */
+  --brand3: #22d3ee; /* cyan */
+
+  --text: #0f172a;
+  --muted: #64748b;
+
+  --card: #ffffff;
+  --border: #e5e7eb;
+}
+
+/* ---------- GLOBAL ---------- */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+/* ✅ ACCESSIBILITY: visible focus ring (keyboard users) */
+:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.55);
+  outline-offset: 2px;
+}
+
+/* optional: smoother focus for mouse clicks */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 14px 20px;
+  color: white;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2), var(--brand3));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.appName {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.headerCenter {
+  text-align: center;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.roleLabel {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.roleSelect {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 999px;
+  outline: none;
+  font-weight: 600;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+.roleSelect option {
+  color: #111827;
+}
+
+/* ---------- TABS BAR ---------- */
+.tabsBar {
+  max-width: 1500px; /* was 1250px */
+  margin: 10px auto 0 auto;
+  padding: 0 14px;
+  display: flex;
+  gap: 10px;
+}
+
+.tabBtn {
+  border: 1px solid rgba(109, 40, 217, 0.18);
+  background: white;
+  color: #0f172a;
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+.tabBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.10);
+}
+
+.tabBtn.active {
+  color: white;
+  border: none;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2), var(--brand3));
+}
+
+/* ---------- MAIN ---------- */
+.container {
+  padding: 14px;
+  max-width: 1500px; /* was 1250px */
+  margin: 0 auto;
+}
+
+/* ---------- CARDS ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+
+  /* ✅ keep charts clean inside cards */
+  overflow: hidden;
+}
+
+.card h2 {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+}
+
+.card h3 {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.row {
+  display: grid;
+  gap: 12px;
+}
+
+.grid2 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1.4fr;
+}
+
+/* ---------- FORMS ---------- */
+label {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 700;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  box-sizing: border-box;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn {
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  font-family: "Poppins", system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.btn.primary {
+  border: none;
+  color: white;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2));
+}
+
+/* disabled buttons (clear filters etc.) */
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- TABLE ---------- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #eef2f7;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.table th {
+  background: #f3f4f6;
+  text-align: left;
+}
+
+.table tr:hover {
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+/* ✅ Sticky header (for TicketTable.jsx: className="table stickyHeader") */
+.table.stickyHeader thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f3f4f6;
+}
+
+/* ✅ Column alignment/width hooks (used by TicketTable.jsx) */
+.colCenter {
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+.colTicket {
+  width: 140px;
+  white-space: nowrap;
+}
+
+.colDate {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.colDesc {
+  min-width: 320px;
+}
+
+.colText {
+  text-align: left;
+}
+
+/* Makes the clickable row feel better + keeps outline clean */
+.table tr[role="button"]:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.55);
+  outline-offset: -3px; /* stays inside the table bounds */
+}
+
+/* ---------- BADGES ---------- */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid #e5e7eb;
+  font-family: "Poppins", system-ui, sans-serif;
+  font-weight: 700; /* ✅ better readability */
+  color: #0f172a;   /* ✅ contrast-safe default */
+}
+
+/* ---------- TONE BADGES (AI-assisted cue) ---------- */
+.tone-calm {
+  background-color: #e6f4ea;
+  color: #14532d; /* ✅ darker for contrast */
+}
+
+.tone-agitated {
+  background-color: #fff4e5;
+  color: #7c2d12; /* ✅ darker for contrast */
+}
+
+.tone-angry {
+  background-color: #fdecea;
+  color: #7f1d1d; /* ✅ darker for contrast */
+}
+
+.tone-unknown {
+  background-color: #f1f1f1;
+  color: #374151; /* ✅ darker for contrast */
+}
+
+/* ✅ NEW tones */
+.tone-threat {
+  background-color: #fff7ed;
+  color: #7c2d12; /* ✅ darker for contrast */
+}
+
+.tone-abusive {
+  background-color: #fee2e2;
+  color: #7f1d1d; /* ✅ darker for contrast */
+}
+
+/* ---------- STATUS SUMMARY ---------- */
+.statsGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.statCard {
+  border-radius: 14px;
+  padding: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* ---------- MINI BAR CHART ---------- */
+.miniBars {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.miniBarRow {
+  display: grid;
+  grid-template-columns: 120px 1fr 60px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.barTrack {
+  height: 10px;
+  background: #eef2ff;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2));
+}
+
+/* =========================================================
+   ✅ TOAST STYLES (works with Toast.jsx)
+   ========================================================= */
+.toastStack {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 10px;
+  z-index: 9999;
+  width: min(420px, calc(100vw - 28px));
+}
+
+.toast {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid #e5e7eb;
+  border-left: 6px solid #2563eb; /* default (info) */
+}
+
+.toastTitle {
+  font-weight: 900;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.toastMsg {
+  font-weight: 700;
+  font-size: 13px;
+  color: #334155;
+}
+
+.toastClose {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.toast.info {
+  border-left-color: #2563eb;
+}
+
+.toast.success {
+  border-left-color: #16a34a;
+}
+
+.toast.warning {
+  border-left-color: #ea580c;
+}
+
+.toast.error {
+  border-left-color: #dc2626;
+}
+
+/* =========================================================
+   ✅ OPTIONAL: “Premium chart area” helpers (nice but optional)
+   ========================================================= */
+.chartWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 14px;
+}
+
+/* Helps SVG rings not clip on hover (stroke grows) */
+.chartWrap svg {
+  overflow: visible;
+}
+
+/* Soft brand glow you can apply to chart container if desired */
+.brandGlow {
+  filter: drop-shadow(0 14px 28px rgba(37, 99, 235, 0.12))
+          drop-shadow(0 10px 20px rgba(109, 40, 217, 0.10));
+}
+
+/* =========================
+   ✅ Requirement 1 helpers
+   ========================= */
+
+/* Error banner */
+.errorBanner {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #7f1d1d;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.errorBannerText {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* “Refreshing…” pill */
+.pill {
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  color: #1e3a8a;
+}
+
+.pillError {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #7c2d12;
+}
+
+/* Empty state card */
+.emptyCard {
+  padding: 12px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px dashed #e5e7eb;
+  color: #64748b;
+  font-weight: 800;
+}
+
+/* Skeleton line */
+.skeletonLine {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.8) 0%,
+    rgba(226, 232, 240, 0.35) 50%,
+    rgba(226, 232, 240, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
+  }
+}
