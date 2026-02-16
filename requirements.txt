@@ -1,0 +1,27 @@
+# INSIGHT-311 Speech-to-Text System Requirements
+# Add these to your existing requirements.txt
+
+# Core STT dependencies
+openai-whisper>=20231117
+SpeechRecognition>=3.10.0
+PyAudio>=0.2.13
+
+# Audio processing
+pydub>=0.25.1
+
+# Cloud storage (optional)
+boto3>=1.34.20  # AWS S3
+# azure-storage-blob>=12.19.0  # Uncomment if using Azure
+# google-cloud-storage>=2.14.0  # Uncomment if using GCS
+
+# HTTP requests for NLU integration
+requests>=2.31.0
+
+# Utilities
+python-dotenv>=1.0.0
+
+# System requirements (install separately):
+# - ffmpeg: Required for audio merging
+#   Windows: choco install ffmpeg
+#   macOS: brew install ffmpeg
+#   Ubuntu: sudo apt-get install ffmpeg

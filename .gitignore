@@ -1,0 +1,37 @@
+# ===== STT System Additions =====
+# Add these lines to your .gitignore
+
+# Temporary session data
+data/temp/sessions/**
+!data/temp/sessions/.gitkeep
+
+# Processed audio files
+data/processed/audio/**
+!data/processed/audio/.gitkeep
+
+# Log files
+logs/*.log
+!logs/.gitkeep
+
+# Audio files
+*.wav
+*.mp3
+*.m4a
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
