@@ -1,6 +1,8 @@
+// src/components/VoiceIntakePanel.jsx
 import { useState } from "react";
 import { USERS, OPERATORS, SUPERVISOR } from "../data/operators";
 import { decideHandoffTarget } from "../utils/routing";
+import AudioLevelMeter from "./AudioLevelMeter";
 
 export default function VoiceIntakePanel({ transcript, setTranscript, onExtract }) {
   const [status, setStatus] = useState("Idle");
@@ -13,6 +15,19 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
   );
 
   const [autoDecision, setAutoDecision] = useState(null);
+
+  // ✅ Task 425: mic meter state
+  const [micActive, setMicActive] = useState(false);
+
+  const startMic = () => {
+    setMicActive(true);
+    setStatus("Listening");
+  };
+
+  const stopMic = () => {
+    setMicActive(false);
+    setStatus("Idle");
+  };
 
   const simulateVoice = () => {
     setStatus("Listening");
@@ -31,12 +46,10 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
     setHandoffMode("VOICE_BOT");
     setRequestSupervisor(false);
     setSelectedOperator(OPERATORS?.[0]?.name || "Jerry");
+    setMicActive(false);
   };
 
   const handleExtract = () => {
-    // We don’t have the full ticketDraft here (category/tone/priority)
-    // So we pass routing intent up. IntakePage will decide escalation using real draft fields.
-    // However, we CAN do “request supervisor” immediately.
     let handoffPayload = { type: "VOICE_BOT" };
 
     if (handoffMode === "HANDOFF") {
@@ -49,6 +62,7 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
 
     onExtract(handoffPayload);
     setStatus("Session Completed");
+    setMicActive(false); // stop mic once session completes
   };
 
   return (
@@ -56,9 +70,21 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
       <h3 style={{ marginTop: 0 }}>Voice Intake (UC1)</h3>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {/* ✅ Task 424 already: simulate */}
         <button className="btn primary" onClick={simulateVoice}>
           Start Voice Intake (Simulate)
         </button>
+
+        {/* ✅ Task 425: real mic start/stop */}
+        {!micActive ? (
+          <button className="btn" onClick={startMic}>
+            Start Mic (Real)
+          </button>
+        ) : (
+          <button className="btn" onClick={stopMic}>
+            Stop Mic
+          </button>
+        )}
 
         <button className="btn" onClick={resetAll}>
           Reset
@@ -85,6 +111,9 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
           {status}
         </span>
       </div>
+
+      {/* ✅ Task 425 meter (shows while mic is active) */}
+      <AudioLevelMeter active={micActive} />
 
       {/* ✅ NEW: Call handling controls */}
       <div style={{ marginTop: 12 }}>

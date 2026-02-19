@@ -499,6 +499,16 @@ textarea {
   font-weight: 800;
 }
 
+/* ✅ Task 566: Rate-limit banner (used in StatusLookupPage.jsx) */
+.banner.warning {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #7c2d12;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 800;
+}
+
 /* “Refreshing…” pill */
 .pill {
   font-size: 12px;

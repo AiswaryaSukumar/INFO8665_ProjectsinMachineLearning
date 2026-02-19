@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ToneBadge from "./ToneBadge";
 import { useToast } from "./Toast";
+import SessionHistory from "./SessionHistory"; // ✅ NEW (Task 502)
 
 export default function TicketDetailsDrawer({
   open,
@@ -466,6 +467,13 @@ export default function TicketDetailsDrawer({
               <div style={{ marginTop: 6, background: "white", padding: 10, borderRadius: 8 }}>
                 {ticket.transcript || "-"}
               </div>
+
+              {/* ✅ NEW: Task 502 session history */}
+              {Array.isArray(ticket.sessionHistory) && ticket.sessionHistory.length > 0 && (
+                <div style={{ marginTop: 10 }}>
+                  <SessionHistory items={ticket.sessionHistory} />
+                </div>
+              )}
             </div>
           )}
 

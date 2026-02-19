@@ -1,4 +1,4 @@
-// src/data/mockTickets.js
+// src/mock/mockTickets.js
 export const mockTickets = [
   // 1) ✅ Voice Bot + Jerry (handoff) — TONE: AGITATED
   {
@@ -26,6 +26,18 @@ export const mockTickets = [
     transcript:
       "Hi, I want to report a pothole near King Street and Weber Street. It's causing rough driving. Please fix it soon.",
 
+    // ✅ Task 502: Session History (Q/A Flow)
+    sessionHistory: [
+      { speaker: "Voice Bot", text: "Please describe the issue you’d like to report." },
+      { speaker: "Citizen", text: "I want to report a pothole near King Street and Weber Street." },
+      { speaker: "Voice Bot", text: "What is the nearest intersection?" },
+      { speaker: "Citizen", text: "King Street and Weber Street intersection." },
+      { speaker: "Voice Bot", text: "Confirm category: Pothole. Is that correct?" },
+      { speaker: "Citizen", text: "Yes." },
+      { speaker: "Voice Bot", text: "Thanks. I will transfer you to an operator for confirmation." },
+      { speaker: "Operator (Jerry)", text: "I’ve captured the details. We will route this to Roads for repair." },
+    ],
+
     handledByType: "VOICE_BOT_TO_HUMAN",
     handledByRole: "OPERATOR",
     handledByName: "Jerry",
@@ -47,7 +59,7 @@ export const mockTickets = [
     name: "Dash",
     phone: "905-555-0144",
     location: "Victoria St",
-    category: "Noise complaint", // ✅ FIXED (was Parking complaint)
+    category: "Noise complaint",
     description: "Loud noise reported late at night. Caller demanded immediate action.",
     status: "NEW",
     confidence: "MEDIUM",
@@ -64,6 +76,17 @@ export const mockTickets = [
     recordingUrl: "/mock/call_dash.wav",
     transcript:
       "There’s loud noise late at night on Victoria Street. I’m really upset and need this fixed now.",
+
+    // ✅ Task 502: Session History (Q/A Flow)
+    sessionHistory: [
+      { speaker: "Voice Bot", text: "Please describe the issue you’d like to report." },
+      { speaker: "Citizen", text: "There’s loud noise late at night on Victoria Street. I’m really upset." },
+      { speaker: "Voice Bot", text: "Can you confirm the time it usually occurs?" },
+      { speaker: "Citizen", text: "Around 1 AM most nights." },
+      { speaker: "Voice Bot", text: "Confirm category: Noise complaint. Is that correct?" },
+      { speaker: "Citizen", text: "Yes." },
+      { speaker: "Voice Bot", text: "Thanks. I’ll submit this for supervisor approval." },
+    ],
 
     handledByType: "VOICE_BOT",
     handledByRole: "VOICE_BOT",
@@ -104,7 +127,7 @@ export const mockTickets = [
     handledByName: "Jerry",
 
     routingStatus: "PENDING_APPROVAL",
-    assignedDepartment: "General", // ✅ FILLED (human)
+    assignedDepartment: "General",
     approvedAt: null,
   },
 
@@ -139,7 +162,7 @@ export const mockTickets = [
     handledByName: "Tom",
 
     routingStatus: "PENDING_APPROVAL",
-    assignedDepartment: "General", // ✅ FILLED (human)
+    assignedDepartment: "General",
     approvedAt: null,
   },
 
@@ -169,6 +192,17 @@ export const mockTickets = [
     transcript:
       "There is water leaking on Queen Street West and this is ridiculous. I want a supervisor right now!",
 
+    // ✅ Task 502: Session History (Q/A Flow)
+    sessionHistory: [
+      { speaker: "Voice Bot", text: "Please describe the issue you’d like to report." },
+      { speaker: "Citizen", text: "This is ridiculous. I want a supervisor right now!" },
+      { speaker: "Voice Bot", text: "I can assist. What is the location?" },
+      { speaker: "Citizen", text: "Queen Street West." },
+      { speaker: "Voice Bot", text: "I’m escalating this to a supervisor due to the urgency and tone." },
+      { speaker: "Supervisor (Nagavalli)", text: "I’m reviewing the details now. Please confirm: needles present?" },
+      { speaker: "Citizen", text: "Yes. And it needs action immediately." },
+    ],
+
     handledByType: "VOICE_BOT_TO_HUMAN",
     handledByRole: "SUPERVISOR",
     handledByName: "Nagavalli",
@@ -178,11 +212,11 @@ export const mockTickets = [
     escalationReason: "High-risk tone/category triggered supervisor escalation",
 
     routingStatus: "PENDING_APPROVAL",
-    assignedDepartment: "General", // ✅ FILLED (human handled)
+    assignedDepartment: "General",
     approvedAt: null,
   },
 
-    // 6) ✅ Pure Voice Bot (RESET: pending approval again) — TONE: UNKNOWN
+  // 6) ✅ Pure Voice Bot (RESET: pending approval again) — TONE: UNKNOWN
   {
     id: "T-006",
     ticketNumber: "311-2026-001239",
@@ -192,7 +226,7 @@ export const mockTickets = [
     location: "Charles St",
     category: "Other",
     description: "Debris reported; caller provided minimal details.",
-    status: "NEW", // ✅ reset (was IN_PROGRESS)
+    status: "NEW",
     confidence: "LOW",
 
     tone: "UNKNOWN",
@@ -207,13 +241,22 @@ export const mockTickets = [
     recordingUrl: "/mock/call_daniel.wav",
     transcript: "Hi, there is some debris on Charles Street. Not sure exactly where.",
 
+    // ✅ Task 502: Session History (Q/A Flow)
+    sessionHistory: [
+      { speaker: "Voice Bot", text: "Please describe the issue you’d like to report." },
+      { speaker: "Citizen", text: "There’s debris on Charles Street. Not sure exactly where." },
+      { speaker: "Voice Bot", text: "Can you provide a nearest intersection or landmark?" },
+      { speaker: "Citizen", text: "No, sorry. Just somewhere along Charles Street." },
+      { speaker: "Voice Bot", text: "Thanks. I’ll flag this as low-detail for review." },
+    ],
+
     handledByType: "VOICE_BOT",
     handledByRole: "VOICE_BOT",
     handledByName: "INSIGHT VoiceBot",
 
-    routingStatus: "PENDING_APPROVAL", // ✅ reset (was APPROVED)
-    assignedDepartment: null,          // ✅ reset (bot-only must be blank)
-    approvedAt: null,                  // ✅ reset
+    routingStatus: "PENDING_APPROVAL",
+    assignedDepartment: null,
+    approvedAt: null,
   },
 
   // 7) ✅ RESOLVED ticket (tests donut + All Active + disables actions)
@@ -276,12 +319,21 @@ export const mockTickets = [
     recordingUrl: "/mock/call_ava.wav",
     transcript: "There is graffiti… somewhere near Duke Street. I'm not sure exactly where.",
 
+    // ✅ Task 502: Session History (Q/A Flow)
+    sessionHistory: [
+      { speaker: "Voice Bot", text: "Please describe the issue you’d like to report." },
+      { speaker: "Citizen", text: "There is graffiti near Duke Street. I’m not sure exactly where." },
+      { speaker: "Voice Bot", text: "Can you confirm an intersection or landmark?" },
+      { speaker: "Citizen", text: "No, I can’t." },
+      { speaker: "Voice Bot", text: "Understood. I’ll flag this for review due to missing location." },
+    ],
+
     handledByType: "VOICE_BOT",
     handledByRole: "VOICE_BOT",
     handledByName: "INSIGHT VoiceBot",
 
     routingStatus: "REJECTED",
-    assignedDepartment: null, // ✅ BLANK (bot-only rejected)
+    assignedDepartment: null,
     approvedAt: null,
   },
 
@@ -316,7 +368,7 @@ export const mockTickets = [
     handledByName: null,
 
     routingStatus: "PENDING_APPROVAL",
-    assignedDepartment: "General", // ✅ FILLED (not bot-only)
+    assignedDepartment: "General",
     approvedAt: null,
   },
 
@@ -349,12 +401,23 @@ export const mockTickets = [
     transcript:
       "There’s a pothole that keeps getting worse. Cars are swerving to avoid it. It’s dangerous at night and in the rain.",
 
+    // ✅ Task 502: Session History (Q/A Flow)
+    sessionHistory: [
+      { speaker: "Voice Bot", text: "Please describe the issue you’d like to report." },
+      { speaker: "Citizen", text: "There’s a pothole that keeps getting worse. Cars are swerving to avoid it." },
+      { speaker: "Voice Bot", text: "Can you confirm the location or nearest intersection?" },
+      { speaker: "Citizen", text: "University Avenue. Near the main entrance area." },
+      { speaker: "Voice Bot", text: "Confirm category: Pothole. Is that correct?" },
+      { speaker: "Citizen", text: "Yes." },
+      { speaker: "Voice Bot", text: "Thanks. I’ll submit this for supervisor approval." },
+    ],
+
     handledByType: "VOICE_BOT",
     handledByRole: "VOICE_BOT",
     handledByName: "INSIGHT VoiceBot",
 
     routingStatus: "PENDING_APPROVAL",
-    assignedDepartment: null, // ✅ BLANK (bot-only until Supervisor picks + approves)
+    assignedDepartment: null,
     approvedAt: null,
   },
 ];

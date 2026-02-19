@@ -2,19 +2,19 @@ import { useNavigate } from "react-router-dom";
 import StatusLookupPage from "./StatusLookupPage";
 import logo from "../assets/insight311-logo.png";
 
-export default function CitizenStatusPage() {
+export default function PublicLookupPage() {
   const nav = useNavigate();
 
   return (
     <>
-      {/* CITIZEN HEADER (branded, public-facing) */}
+      {/* PUBLIC HEADER */}
       <div className="header">
         <div className="headerLeft">
           <img className="logo" src={logo} alt="INSIGHT-311 logo" />
           <span className="appName">INSIGHT-311</span>
         </div>
 
-        <div className="headerCenter">Citizen Status Lookup</div>
+        <div className="headerCenter">Public Ticket Lookup</div>
 
         <div className="headerRight">
           <button
@@ -41,11 +41,11 @@ export default function CitizenStatusPage() {
           </div>
 
           <div style={{ color: "#64748b", marginTop: 8, fontSize: 13 }}>
-            Public access: you can view status only. Personal details are hidden in this prototype.
+            Public access: status only. Personal details are hidden in this prototype.
           </div>
         </div>
 
-        {/* Reuse UC3 lookup UI (citizen mode: only ticket# + phone, with validation + rate limiting) */}
+        {/* Task 566 UI (validation + success/error + rate-limit UX) */}
         <StatusLookupPage mode="citizen" />
       </div>
     </>
