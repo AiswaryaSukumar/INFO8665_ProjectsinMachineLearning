@@ -1,0 +1,733 @@
+{
+  "version": "1.0",
+  "description": "Training data for NLU module - municipal complaint transcripts",
+  "total_samples":66,
+  "transcripts": [
+    {
+      "id": "train_001",
+      "transcript": "Hello, I want to report graffiti on the wall near Main Street. Someone spray painted tags all over the building. It looks terrible and needs to be cleaned. My name is Sarah Johnson.",
+      "labels": {
+        "category": "graffiti",
+        "location": "Main Street",
+        "description": "Graffiti spray painted on building wall",
+        "caller_name": "Sarah Johnson",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_002",
+      "transcript": "There's vandalism with spray paint on the bus shelter at Oak Avenue. The graffiti covers the entire wall. This is John calling.",
+      "labels": {
+        "category": "graffiti",
+        "location": "Oak Avenue bus shelter",
+        "description": "Graffiti covering bus shelter wall",
+        "caller_name": "John",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_003",
+      "transcript": "I'd like to report graffiti tags on the building at 123 Park Street. Someone painted offensive words. Call me at 555-0123.",
+      "labels": {
+        "category": "graffiti",
+        "location": "123 Park Street",
+        "description": "Offensive graffiti on building",
+        "caller_name": null,
+        "caller_phone": "555-0123"
+      }
+    },
+    {
+      "id": "train_004",
+      "transcript": "There's an illegal sign posted on the telephone pole at Baker Road. It's advertising some business without permission. My name is Maria Garcia.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Baker Road telephone pole",
+        "description": "Unauthorized business advertisement sign",
+        "caller_name": "Maria Garcia",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_005",
+      "transcript": "Someone put up an unauthorized banner on the fence near the park. It's been there for weeks. This is illegal signage.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Fence near park",
+        "description": "Unauthorized banner on fence for weeks",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_006",
+      "transcript": "Hi, there are multiple illegal signs attached to the street signs at Hamilton Avenue. They're advertising events. Call me at 555-2468, this is Robert.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Hamilton Avenue street signs",
+        "description": "Multiple illegal event advertisement signs",
+        "caller_name": "Robert",
+        "caller_phone": "555-2468"
+      }
+    },
+    {
+      "id": "train_007",
+      "transcript": "The playground at Central Park is full of litter. Trash everywhere, bottles, cans, and food wrappers all over the ground. Really needs cleaning.",
+      "labels": {
+        "category": "litter",
+        "location": "Central Park playground",
+        "description": "Bottles, cans, food wrappers littering playground",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_008",
+      "transcript": "Hello, I want to report garbage all over the trail on Riverside Path. Lots of litter left by visitors. My name is Jennifer White, call me at 555-4567.",
+      "labels": {
+        "category": "litter",
+        "location": "Riverside Path trail",
+        "description": "Garbage and litter on trail left by visitors",
+        "caller_name": "Jennifer White",
+        "caller_phone": "555-4567"
+      }
+    },
+    {
+      "id": "train_009",
+      "transcript": "There's trash dumped in the park near the benches. Beer bottles, fast food containers, really messy. Someone needs to clean this up.",
+      "labels": {
+        "category": "litter",
+        "location": "Park near benches",
+        "description": "Beer bottles and fast food containers dumped",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_010",
+      "transcript": "This is urgent! I found needles on the ground at the playground on Elm Street. Very dangerous for children. Please send someone immediately. My name is David Wilson, 555-6789.",
+      "labels": {
+        "category": "needles",
+        "location": "Elm Street playground",
+        "description": "Needles on playground ground, dangerous for children",
+        "caller_name": "David Wilson",
+        "caller_phone": "555-6789"
+      }
+    },
+    {
+      "id": "train_011",
+      "transcript": "There are syringes near the bus stop on Washington Avenue. This is a safety hazard. People are worried.",
+      "labels": {
+        "category": "needles",
+        "location": "Washington Avenue bus stop",
+        "description": "Syringes near bus stop creating safety hazard",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_012",
+      "transcript": "I want to report discarded needles in the alley behind Jefferson Street. This is dangerous. Call me at 555-8901.",
+      "labels": {
+        "category": "needles",
+        "location": "Alley behind Jefferson Street",
+        "description": "Discarded needles in alley",
+        "caller_name": null,
+        "caller_phone": "555-8901"
+      }
+    },
+    {
+      "id": "train_013",
+      "transcript": "There's a car parked illegally blocking my driveway on Lincoln Road for the past 2 days. I can't get my car out. This is Lisa Anderson, 555-2345.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Lincoln Road driveway",
+        "description": "Car illegally parked blocking driveway for 2 days",
+        "caller_name": "Lisa Anderson",
+        "caller_phone": "555-2345"
+      }
+    },
+    {
+      "id": "train_014",
+      "transcript": "Someone's been parking in the no parking zone on Monroe Road every day. It's blocking traffic. Need enforcement.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Monroe Road no parking zone",
+        "description": "Daily illegal parking in no parking zone blocking traffic",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_015",
+      "transcript": "Hi, there's a vehicle parked on the sidewalk at Adams Street blocking pedestrian access. This is a parking violation. My name is Michael Brown.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Adams Street sidewalk",
+        "description": "Vehicle parked on sidewalk blocking pedestrian access",
+        "caller_name": "Michael Brown",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_016",
+      "transcript": "The property at 456 Grant Avenue is in terrible condition. The lawn is overgrown, garbage everywhere, broken windows. It's bringing down the neighborhood. Emily Davis, 555-9012.",
+      "labels": {
+        "category": "property_standards",
+        "location": "456 Grant Avenue",
+        "description": "Overgrown lawn, garbage, broken windows, poor property condition",
+        "caller_name": "Emily Davis",
+        "caller_phone": "555-9012"
+      }
+    },
+    {
+      "id": "train_017",
+      "transcript": "I want to report a property standards violation on Cleveland Street. The house is falling apart, peeling paint, junk in the yard.",
+      "labels": {
+        "category": "property_standards",
+        "location": "Cleveland Street house",
+        "description": "Deteriorating house with peeling paint and junk in yard",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_018",
+      "transcript": "The building at Harrison Boulevard has code violations. Broken fence, overgrown weeds, looks abandoned. This is Richard Moore, call me at 555-3456.",
+      "labels": {
+        "category": "property_standards",
+        "location": "Harrison Boulevard building",
+        "description": "Code violations: broken fence, overgrown weeds, appears abandoned",
+        "caller_name": "Richard Moore",
+        "caller_phone": "555-3456"
+      }
+    },
+    {
+      "id": "train_019",
+      "transcript": "There's a huge pothole on Kennedy Road that damaged my tire. It's about 3 feet wide and very deep. Someone's going to get hurt.",
+      "labels": {
+        "category": "pothole",
+        "location": "Kennedy Road",
+        "description": "Large pothole 3 feet wide, damaged tire",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_020",
+      "transcript": "I want to report a pothole on Taylor Avenue near the intersection. It's been there for weeks getting bigger. My name is Susan Martinez, 555-7890.",
+      "labels": {
+        "category": "pothole",
+        "location": "Taylor Avenue near intersection",
+        "description": "Pothole present for weeks, expanding in size",
+        "caller_name": "Susan Martinez",
+        "caller_phone": "555-7890"
+      }
+    },
+    {
+      "id": "train_021",
+      "transcript": "There are multiple potholes on Jackson Street causing cars to swerve. Really dangerous road conditions. Need repair urgently.",
+      "labels": {
+        "category": "pothole",
+        "location": "Jackson Street",
+        "description": "Multiple potholes causing dangerous swerving",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_022",
+      "transcript": "The sidewalk on Market Street hasn't been cleared of snow for days. It's icy and dangerous. Elderly people can't walk safely. This is Nancy Thompson, 555-1111.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Market Street sidewalk",
+        "description": "Uncleared snow for days, icy, dangerous for elderly",
+        "caller_name": "Nancy Thompson",
+        "caller_phone": "555-1111"
+      }
+    },
+    {
+      "id": "train_023",
+      "transcript": "No one cleared the snow on the sidewalk at Polk Street. It's been 3 days since the snowstorm. People are walking in the road.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Polk Street sidewalk",
+        "description": "Snow uncleared 3 days after storm, pedestrians using road",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_024",
+      "transcript": "Hi, the sidewalk at Fillmore Boulevard is covered in ice. No salt, no clearing. Very slippery and unsafe. Call me at 555-2222, Kevin Scott.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Fillmore Boulevard sidewalk",
+        "description": "Ice-covered sidewalk, no salt or clearing, slippery",
+        "caller_name": "Kevin Scott",
+        "caller_phone": "555-2222"
+      }
+    },
+    {
+      "id": "train_025",
+      "transcript": "There's a raised section of sidewalk on Garfield Avenue that's a trip hazard. I almost fell yesterday. The concrete is uneven and dangerous.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Garfield Avenue sidewalk",
+        "description": "Raised uneven concrete creating trip hazard",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_026",
+      "transcript": "The sidewalk on Arthur Street has a huge crack and the pavement is broken. My mom tripped and hurt her ankle. This is Rachel Green, 555-3333.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Arthur Street sidewalk",
+        "description": "Cracked broken pavement, person tripped and injured",
+        "caller_name": "Rachel Green",
+        "caller_phone": "555-3333"
+      }
+    },
+    {
+      "id": "train_027",
+      "transcript": "I want to report a sidewalk trip hazard on Cleveland Avenue. There's a tree root pushing up the concrete making it uneven.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Cleveland Avenue sidewalk",
+        "description": "Tree root causing uneven concrete, trip hazard",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_028",
+      "transcript": "The trail surface on Hayes Trail is completely washed out. Large holes and eroded sections make it impossible to walk. Needs repair. This is Jessica Miller, 555-4444.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Hayes Trail",
+        "description": "Washed out trail with holes and erosion, impassable",
+        "caller_name": "Jessica Miller",
+        "caller_phone": "555-4444"
+      }
+    },
+    {
+      "id": "train_029",
+      "transcript": "The pathway at Riverside Trail is damaged with rocks and tree roots blocking the way. Needs maintenance work.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Riverside Trail pathway",
+        "description": "Damaged trail blocked by rocks and tree roots",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_030",
+      "transcript": "Hi, the trail surface at Forest Path has deteriorated badly. It's muddy and full of puddles. Can't use it after rain. Call me at 555-5555.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Forest Path trail",
+        "description": "Deteriorated trail surface, muddy with puddles",
+        "caller_name": null,
+        "caller_phone": "555-5555"
+      }
+    },
+    {
+      "id": "train_031",
+      "transcript": "I have a complaint that doesn't fit the usual categories. There's a loud air conditioning unit from a business disturbing the neighborhood at night. This is Thomas Anderson, 555-0123.",
+      "labels": {
+        "category": "other",
+        "location": "Business location",
+        "description": "Loud AC unit disturbing neighborhood at night",
+        "caller_name": "Thomas Anderson",
+        "caller_phone": "555-0123"
+      }
+    },
+    {
+      "id": "train_032",
+      "transcript": "This doesn't fit any category but there's an issue with a fire hydrant that's leaking water constantly. Not sure who to call.",
+      "labels": {
+        "category": "other",
+        "location": null,
+        "description": "Fire hydrant leaking water constantly",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_034",
+      "transcript": "Hi, someone vandalized the wall near the school with spray paint. There's graffiti all over it with offensive words. Located at 789 School Avenue. This is urgent, kids see it every day. Call me back at 555-2001, this is Patricia Williams.",
+      "labels": {
+        "category": "graffiti",
+        "location": "789 School Avenue near school",
+        "description": "Spray paint graffiti with offensive words on wall near school",
+        "caller_name": "Patricia Williams",
+        "caller_phone": "555-2001"
+      }
+    },
+    {
+      "id": "train_035",
+      "transcript": "There's graffiti tags on the underpass at Highway 7. Multiple colors, looks like gang markings. Been there for over a month now.",
+      "labels": {
+        "category": "graffiti",
+        "location": "Highway 7 underpass",
+        "description": "Multiple color graffiti tags, possible gang markings on underpass for over a month",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_036",
+      "transcript": "I want to report vandalism on the public library wall on Madison Street. Someone painted graffiti overnight. The whole side of the building is covered. My name is Robert Chen, 555-3002.",
+      "labels": {
+        "category": "graffiti",
+        "location": "Madison Street public library",
+        "description": "Graffiti painted overnight covering whole side of library building",
+        "caller_name": "Robert Chen",
+        "caller_phone": "555-3002"
+      }
+    },
+    {
+      "id": "train_037",
+      "transcript": "There's an illegal banner hanging on the fence at the park entrance on Roosevelt Road. It's advertising some business and it's been there for two weeks. This is Linda Martinez.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Roosevelt Road park entrance fence",
+        "description": "Illegal business advertisement banner on fence for two weeks",
+        "caller_name": "Linda Martinez",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_038",
+      "transcript": "Someone put up unauthorized posters all over the utility poles on Washington Boulevard. They're advertising some event. Need them removed. Call me at 555-4003.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Washington Boulevard utility poles",
+        "description": "Unauthorized event advertisement posters on multiple utility poles",
+        "caller_name": null,
+        "caller_phone": "555-4003"
+      }
+    },
+    {
+      "id": "train_039",
+      "transcript": "Hi, there are illegal real estate signs posted on public property at the corner of Fifth and Main. They've been there for days. My name is Thomas Anderson, 555-5004.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Corner of Fifth and Main",
+        "description": "Illegal real estate signs on public property for several days",
+        "caller_name": "Thomas Anderson",
+        "caller_phone": "555-5004"
+      }
+    },
+    {
+      "id": "train_040",
+      "transcript": "The children's playground at Riverside Park is absolutely disgusting. Trash everywhere - food wrappers, soda cans, chip bags all over the ground. Kids can't play safely. Someone needs to clean this up immediately.",
+      "labels": {
+        "category": "litter",
+        "location": "Riverside Park children's playground",
+        "description": "Food wrappers, soda cans, chip bags littering entire playground area",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_041",
+      "transcript": "I'm calling about the hiking trail on Mountain View Path. It's covered in litter - water bottles, plastic bags, cigarette butts everywhere. Really disappointing. This is Jennifer Lee, 555-6005.",
+      "labels": {
+        "category": "litter",
+        "location": "Mountain View Path hiking trail",
+        "description": "Water bottles, plastic bags, cigarette butts littering hiking trail",
+        "caller_name": "Jennifer Lee",
+        "caller_phone": "555-6005"
+      }
+    },
+    {
+      "id": "train_042",
+      "transcript": "There's a huge pile of trash dumped illegally in the empty lot on Webster Street. Looks like someone's household garbage. It smells terrible. Call me at 555-7006, this is Maria Gonzalez.",
+      "labels": {
+        "category": "litter",
+        "location": "Webster Street empty lot",
+        "description": "Illegally dumped household garbage pile, strong odor",
+        "caller_name": "Maria Gonzalez",
+        "caller_phone": "555-7006"
+      }
+    },
+    {
+      "id": "train_043",
+      "transcript": "This is extremely urgent! I found used syringes and needles behind the community center on Grove Street. Children play in this area. This is a serious health hazard. Please send someone right away. My name is David Kim, call me at 555-8007.",
+      "labels": {
+        "category": "needles",
+        "location": "Grove Street community center",
+        "description": "Used syringes and needles found in area where children play, serious health hazard",
+        "caller_name": "David Kim",
+        "caller_phone": "555-8007"
+      }
+    },
+    {
+      "id": "train_044",
+      "transcript": "There are discarded needles near the bus shelter on Capitol Avenue. I saw at least four of them on the ground. Very dangerous. This is Sarah Thompson.",
+      "labels": {
+        "category": "needles",
+        "location": "Capitol Avenue bus shelter",
+        "description": "At least four discarded needles on ground near bus shelter",
+        "caller_name": "Sarah Thompson",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_045",
+      "transcript": "I want to report drug paraphernalia - used syringes in the alley between Park and Oak Streets. This is really concerning for the neighborhood. Call me back at 555-9008.",
+      "labels": {
+        "category": "needles",
+        "location": "Alley between Park and Oak Streets",
+        "description": "Used syringes, drug paraphernalia in alley",
+        "caller_name": null,
+        "caller_phone": "555-9008"
+      }
+    },
+    {
+      "id": "train_046",
+      "transcript": "Someone has been parking their RV in front of my house on Maple Drive for over a week now. It's blocking my view and taking up three parking spots. This is illegal parking. My name is James Wilson, 555-1009.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Maple Drive",
+        "description": "RV parked in front of house for over a week, blocking view, taking three spots",
+        "caller_name": "James Wilson",
+        "caller_phone": "555-1009"
+      }
+    },
+    {
+      "id": "train_047",
+      "transcript": "There's a car parked in the disabled parking spot at the library on Jefferson Street without a permit. It's been there all morning. This is not fair to people who actually need it.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Jefferson Street library disabled parking",
+        "description": "Car parked in disabled spot without permit all morning",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_048",
+      "transcript": "Hi, there's a truck blocking the fire lane at the shopping center on Commerce Boulevard. It's been there for hours. This is a safety hazard. Call me at 555-2010, this is Elizabeth Brown.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Commerce Boulevard shopping center",
+        "description": "Truck blocking fire lane for hours, safety hazard",
+        "caller_name": "Elizabeth Brown",
+        "caller_phone": "555-2010"
+      }
+    },
+    {
+      "id": "train_049",
+      "transcript": "I'm calling about the house at 234 Highland Avenue. The property is a complete mess - tall grass up to my knees, broken fence, peeling paint everywhere. It's been like this for months and it's bringing down our property values. This is Richard Moore, 555-3011.",
+      "labels": {
+        "category": "property_standards",
+        "location": "234 Highland Avenue",
+        "description": "Tall grass, broken fence, peeling paint, unmaintained for months",
+        "caller_name": "Richard Moore",
+        "caller_phone": "555-3011"
+      }
+    },
+    {
+      "id": "train_050",
+      "transcript": "The building on Sunset Boulevard near the corner has broken windows and the yard is full of junk and old furniture. Looks abandoned. Becoming a neighborhood eyesore.",
+      "labels": {
+        "category": "property_standards",
+        "location": "Sunset Boulevard near corner",
+        "description": "Broken windows, junk and old furniture in yard, appears abandoned",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_051",
+      "transcript": "There's a property violation at 567 Elm Street. The lawn hasn't been mowed in weeks, there's trash piling up in the front yard, and the gutters are falling off. Call me at 555-4012, my name is Nancy White.",
+      "labels": {
+        "category": "property_standards",
+        "location": "567 Elm Street",
+        "description": "Unmowed lawn for weeks, trash piling up, falling gutters",
+        "caller_name": "Nancy White",
+        "caller_phone": "555-4012"
+      }
+    },
+    {
+      "id": "train_052",
+      "transcript": "There's a massive pothole on Davidson Road near the school that's getting worse every day. Cars are swerving to avoid it. It's probably two feet wide now and really deep. Very dangerous, especially with all the school traffic.",
+      "labels": {
+        "category": "pothole",
+        "location": "Davidson Road near school",
+        "description": "Large pothole two feet wide, deep, cars swerving, dangerous with school traffic",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_053",
+      "transcript": "I damaged my tire on a huge pothole on Charleston Avenue yesterday. It's right in the middle of the lane. My car repair cost $300. This is Kevin Scott, 555-5013.",
+      "labels": {
+        "category": "pothole",
+        "location": "Charleston Avenue middle of lane",
+        "description": "Huge pothole in middle of lane caused tire damage and $300 repair",
+        "caller_name": "Kevin Scott",
+        "caller_phone": "555-5013"
+      }
+    },
+    {
+      "id": "train_054",
+      "transcript": "Hi, there are multiple potholes on Montgomery Street between Third and Fourth. The whole block is terrible. Water pools in them when it rains. Call me back at 555-6014.",
+      "labels": {
+        "category": "pothole",
+        "location": "Montgomery Street between Third and Fourth",
+        "description": "Multiple potholes across whole block, water pooling",
+        "caller_name": null,
+        "caller_phone": "555-6014"
+      }
+    },
+    {
+      "id": "train_055",
+      "transcript": "The sidewalk in front of my house on Preston Road hasn't been cleared since the snowstorm three days ago. It's solid ice now. I'm elderly and can't walk safely. This is dangerous. My name is Dorothy Johnson, 555-7015.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Preston Road sidewalk",
+        "description": "Sidewalk uncleared three days after snowstorm, solid ice, dangerous for elderly",
+        "caller_name": "Dorothy Johnson",
+        "caller_phone": "555-7015"
+      }
+    },
+    {
+      "id": "train_056",
+      "transcript": "No one cleared the snow on the sidewalk at Franklin Avenue near the bus stop. People are walking in the street. It's been a week since it snowed. This is unsafe.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Franklin Avenue near bus stop",
+        "description": "Sidewalk uncleared one week after snow, pedestrians using street, unsafe",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_057",
+      "transcript": "The sidewalk on Cherry Street is covered in ice and snow. My neighbor slipped and fell yesterday. We need salt and clearing urgently. Call me at 555-8016, this is Brian Taylor.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Cherry Street sidewalk",
+        "description": "Ice and snow covered sidewalk, person fell, needs salt and clearing",
+        "caller_name": "Brian Taylor",
+        "caller_phone": "555-8016"
+      }
+    },
+    {
+      "id": "train_058",
+      "transcript": "There's a dangerous sidewalk on Wilson Avenue where the tree roots have pushed up the concrete. It's like a big step, maybe six inches high. I've seen multiple people trip. This is a lawsuit waiting to happen.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Wilson Avenue sidewalk",
+        "description": "Tree roots pushed concrete up six inches creating step, multiple people tripped, dangerous",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_059",
+      "transcript": "The sidewalk at 890 Beacon Street is completely broken. There are huge cracks and pieces missing. It's a major trip hazard. My daughter twisted her ankle there last week. This is Christine Miller, 555-9017.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "890 Beacon Street sidewalk",
+        "description": "Broken sidewalk with huge cracks and missing pieces, caused ankle injury",
+        "caller_name": "Christine Miller",
+        "caller_phone": "555-9017"
+      }
+    },
+    {
+      "id": "train_060",
+      "transcript": "Hi, there's an uneven sidewalk on Cooper Road where it's raised up from the tree growing underneath. People trip on it all the time. Needs repair. Call me at 555-1018.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Cooper Road sidewalk",
+        "description": "Uneven sidewalk raised by tree growth, frequent trips",
+        "caller_name": null,
+        "caller_phone": "555-1018"
+      }
+    },
+    {
+      "id": "train_061",
+      "transcript": "The walking trail at Forest Glen Park is in terrible condition. The whole path is washed out from the recent rains. There are huge ruts and eroded sections. Can't use it at all. This is Rachel Green, 555-2019.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Forest Glen Park walking trail",
+        "description": "Trail washed out from rain, huge ruts and erosion, unusable",
+        "caller_name": "Rachel Green",
+        "caller_phone": "555-2019"
+      }
+    },
+    {
+      "id": "train_062",
+      "transcript": "The nature trail on Woodland Path has fallen trees blocking the way. Also the surface is very muddy and deteriorating. Needs maintenance work urgently.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Woodland Path nature trail",
+        "description": "Fallen trees blocking trail, muddy deteriorating surface",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_063",
+      "transcript": "Hi, the bike trail at Creekside has big holes and the wooden bridge is rotting. It's becoming dangerous. Please send someone to repair it. Call me at 555-3020, this is Mark Stevens.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Creekside bike trail",
+        "description": "Big holes in trail surface, rotting wooden bridge, dangerous",
+        "caller_name": "Mark Stevens",
+        "caller_phone": "555-3020"
+      }
+    },
+    {
+      "id": "train_064",
+      "transcript": "This doesn't fit your normal categories but there's a broken traffic mirror at the intersection of Hillside and Valley Road. It's been smashed for weeks and you can't see oncoming traffic. This is creating a dangerous situation.",
+      "labels": {
+        "category": "other",
+        "location": "Intersection of Hillside and Valley Road",
+        "description": "Broken traffic mirror for weeks, can't see oncoming traffic, dangerous",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "train_065",
+      "transcript": "I'm not sure what category this falls under, but there's a public water fountain in Central Park that's been running continuously for days. It's wasting a ton of water. My name is Laura Martinez, 555-4021.",
+      "labels": {
+        "category": "other",
+        "location": "Central Park public water fountain",
+        "description": "Water fountain running continuously for days, wasting water",
+        "caller_name": "Laura Martinez",
+        "caller_phone": "555-4021"
+      }
+    },
+    {
+      "id": "train_066",
+      "transcript": "Hi, there's a damaged city bench at the bus stop on Commonwealth Avenue. The metal is sharp and sticking out. Someone could get hurt sitting on it. Call me at 555-5022.",
+      "labels": {
+        "category": "other",
+        "location": "Commonwealth Avenue bus stop",
+        "description": "Damaged city bench with sharp metal sticking out, injury risk",
+        "caller_name": null,
+        "caller_phone": "555-5022"
+      }
+    },
+    {
+      "id": "train_033",
+      "transcript": "Hi, I'm calling about something different. There are bees nesting in a city-owned structure and people are getting stung. My name is Patricia Johnson, 555-4321.",
+      "labels": {
+        "category": "other",
+        "location": "City-owned structure",
+        "description": "Bee nest in structure causing people to get stung",
+        "caller_name": "Patricia Johnson",
+        "caller_phone": "555-4321"
+      }
+    }
+  ]
+}
