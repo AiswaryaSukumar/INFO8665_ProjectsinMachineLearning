@@ -3,6 +3,7 @@ Main Orchestrator - The brain of the conversation system
 This decides what to do next at each step
 """
 from typing import Optional, Dict
+from datetime import datetime
 from .models import (
     ConversationContext, 
     ConversationState, 
@@ -11,6 +12,8 @@ from .models import (
 )
 from .context_manager import ContextManager
 from .rule_engine import RuleEngine
+from src.database.repositories import TranscriptRepository
+from src.database.connection import get_db_context
 
 
 class Orchestrator:
@@ -41,6 +44,11 @@ class Orchestrator:
         
         # Get greeting
         greeting = self.rule_engine.get_greeting()
+        
+        # Save greeting to transcript
+        with get_db_context() as db:
+            repo = TranscriptRepository(db)
+            repo.save_system_transcript(session_id, greeting)
         
         # Move to GREETING state
         context.current_state = ConversationState.GREETING
@@ -81,16 +89,31 @@ class Orchestrator:
         if nlu_output:
             context = self.context_manager.update_context_with_nlu(context, nlu_output)
         
-        # Add transcript to history
+        # Add transcript to history and save to database
         if transcript:
             context.conversation_history.append({
                 "speaker": "user",
                 "text": transcript,
                 "timestamp": datetime.now().isoformat()
             })
+            
+            # Save user transcript to database
+            with get_db_context() as db:
+                repo = TranscriptRepository(db)
+                repo.save_user_transcript(
+                    session_id, 
+                    transcript,
+                    confidence_score=nlu_output.get("confidence") if nlu_output else None
+                )
         
         # CORE DECISION LOGIC - determine what to do next
         action = self._decide_next_action(context)
+        
+        # Save system response to transcript
+        if action.text:
+            with get_db_context() as db:
+                repo = TranscriptRepository(db)
+                repo.save_system_transcript(session_id, action.text)
         
         # Update state based on action
         context.current_state = action.new_state

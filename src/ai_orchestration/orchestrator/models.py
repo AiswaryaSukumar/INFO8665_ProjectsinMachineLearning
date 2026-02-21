@@ -85,8 +85,18 @@ class ConversationContext(BaseModel):
     updated_at: datetime = datetime.now()
     
     class Config:
-        """Allow datetime objects"""
+        """Allow datetime objects and custom JSON encoding"""
         arbitrary_types_allowed = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat() if v else None
+        }
+    
+    def dict_for_json(self):
+        """Convert to dictionary with datetime objects as ISO strings"""
+        data = self.dict()
+        data['created_at'] = self.created_at.isoformat() if self.created_at else None
+        data['updated_at'] = self.updated_at.isoformat() if self.updated_at else None
+        return data
 
 
 class NLUOutput(BaseModel):

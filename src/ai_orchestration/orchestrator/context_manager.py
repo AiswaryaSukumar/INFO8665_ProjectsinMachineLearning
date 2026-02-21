@@ -129,8 +129,8 @@ Context Manager with database persistence
 from typing import Optional
 from datetime import datetime
 from .models import ConversationContext, ConversationState
-from ..database.repositories import SessionRepository
-from ..database.connection import get_db_context
+from src.database.repositories import SessionRepository
+from src.database.connection import get_db_context
 
 
 class ContextManager:
@@ -187,6 +187,12 @@ class ContextManager:
             context_dict = session.conversation_context
             context_dict["current_state"] = ConversationState(context_dict["current_state"])
             
+            # Convert ISO string datetimes back to datetime objects
+            if isinstance(context_dict.get("created_at"), str):
+                context_dict["created_at"] = datetime.fromisoformat(context_dict["created_at"])
+            if isinstance(context_dict.get("updated_at"), str):
+                context_dict["updated_at"] = datetime.fromisoformat(context_dict["updated_at"])
+            
             return ConversationContext(**context_dict)
     
     def save_context(self, context: ConversationContext) -> None:
@@ -194,8 +200,8 @@ class ContextManager:
         
         context.updated_at = datetime.now()
         
-        # Convert to dictionary
-        context_dict = context.dict()
+        # Convert to dictionary with proper JSON serialization
+        context_dict = context.dict_for_json()
         context_dict["current_state"] = context.current_state.value  # Convert enum to string
         
         # Save to database
