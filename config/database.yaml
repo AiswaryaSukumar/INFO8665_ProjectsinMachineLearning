@@ -1,0 +1,14 @@
+development:
+  database_url: "postgresql://insight311_user:your_password_here@localhost:5432/insight311"
+  echo_sql: true
+  pool_size: 5
+
+production:
+  database_url: "${DATABASE_URL}"  # Will use environment variable
+  echo_sql: false
+  pool_size: 20
+
+test:
+  database_url: "postgresql://insight311_user:your_password_here@localhost:5432/insight311_test"
+  echo_sql: false
+  pool_size: 2
