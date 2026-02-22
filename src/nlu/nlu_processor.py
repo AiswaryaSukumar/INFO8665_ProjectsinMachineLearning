@@ -1,378 +1,496 @@
 """
-NLU Processor - Main Module (VERSION 1: ML-BASED)
-Orchestrates all NLU components to process complaint transcripts
-NOW USES TRAINED MACHINE LEARNING MODEL!
+NLU Processor - Orchestrator Integration Version
+Outputs EXACT format required by orchestrator
+FINAL VERSION with absolute path fix
 """
 
-import time
-from datetime import datetime
-from typing import Dict, Optional
+import re
+import uuid
 import os
+from typing import Dict, Any, Optional
+from datetime import datetime
 
+# Import your existing modules
+from .ml_models.category_classifier_ml import DistilBERTCategoryClassifier as CategoryClassifierML
 from .entity_extractor import EntityExtractor
-from .description_extractor import DescriptionExtractor
 from .sentiment_analyzer import SentimentAnalyzer
-from .confidence_calculator import ConfidenceCalculator
-from .utils import (
-    clean_transcript,
-    remove_filler_words,
-    handle_self_corrections
-)
-
-# Import ML model
-from .ml_models.category_classifier_ml import DistilBERTCategoryClassifier
+from .description_extractor import DescriptionExtractor
 
 
 class NLUProcessor:
     """
-    Main NLU Processor that coordinates all components
-    VERSION 1: Now uses trained Machine Learning model for category classification
+    Main NLU Processor - Orchestrator Integration
+    
+    Output Format:
+    {
+        "session_id": string,
+        "category": string or null,
+        "sub_category": string or null,
+        "location": string or null,
+        "description": string or null,
+        "severity": string or null,
+        "caller_name": string or null,
+        "phone_number": string or null,
+        "confidence_scores": {
+            "category": number or null,
+            "location": number or null,
+            "description": number or null,
+            "severity": number or null,
+            "caller_name": number or null,
+            "phone_number": number or null,
+            "overall": number
+        },
+        "missing_fields": array,
+        "confirmed": boolean,
+        "correction_field": string or null,
+        "requires_review": boolean,
+        "ready_to_submit": boolean
+    }
     """
     
-    def __init__(
-        self,
-        categories_file: str = "data/models/categories.json",
-        spacy_model: str = "en_core_web_md",
-        use_ml_classifier: bool = True
-    ):
-        """
-        Initialize NLU Processor with all components
+    def __init__(self, use_ml_classifier=True):
+        """Initialize NLU components"""
         
-        Args:
-            categories_file: Path to categories JSON file
-            spacy_model: Name of spaCy model to use
-            use_ml_classifier: Whether to use ML model (True) or keyword matching (False)
-        """
-        print("Initializing NLU Processor...")
-        
-        self.use_ml_classifier = use_ml_classifier
-        
-        # Initialize all components
-        self.entity_extractor = EntityExtractor(model_name=spacy_model)
-        self.description_extractor = DescriptionExtractor()
-        self.sentiment_analyzer = SentimentAnalyzer()
-        self.confidence_calculator = ConfidenceCalculator()
-        
-        # Initialize category classifier (ML or keyword-based)
+        # Initialize ML classifier
+        self.use_ml = use_ml_classifier
         if use_ml_classifier:
-            print("Using MACHINE LEARNING classifier (DistilBERT)")
-            self.ml_classifier = DistilBERTCategoryClassifier()
-            self.ml_classifier.load_categories(categories_file)
-            
-            # Try to load trained model
-            model_path = "ml-models/saved-models/category_classifier"
-            if os.path.exists(model_path):
-                try:
-                    self.ml_classifier.load_model(model_path)
-                    print("✓ Trained ML model loaded successfully!")
-                except Exception as e:
-                    print(f"⚠️  Warning: Could not load trained model: {e}")
-                    print("⚠️  Please train the model first: python scripts/train_nlu_model.py")
-                    self.use_ml_classifier = False
-            else:
-                print(f"⚠️  Warning: Trained model not found at: {model_path}")
-                print("⚠️  Please train the model first: python scripts/train_nlu_model.py")
-                self.use_ml_classifier = False
-        
-        if not self.use_ml_classifier:
-            # Fallback to keyword-based classifier
-            print("Using keyword-based classifier (fallback)")
-            from .category_classifier import CategoryClassifier
-            self.category_classifier = CategoryClassifier(categories_file=categories_file)
-        
-        print("NLU Processor initialized successfully!")
-    
-    def preprocess_transcript(self, transcript: str) -> str:
-        """
-        Preprocess transcript text
-        
-        Args:
-            transcript: Raw transcript text
-            
-        Returns:
-            Cleaned and preprocessed transcript
-        """
-        if not transcript:
-            return ""
-        
-        # Step 1: Basic cleaning
-        cleaned = clean_transcript(transcript)
-        
-        # Step 2: Handle self-corrections
-        cleaned = handle_self_corrections(cleaned)
-        
-        return cleaned
-    
-    def classify_category(self, text: str) -> Dict:
-        """
-        Classify complaint category using ML model or keyword matching
-        
-        Args:
-            text: Preprocessed transcript
-            
-        Returns:
-            Dictionary with category, confidence, and probabilities
-        """
-        if self.use_ml_classifier:
-            # Use ML model
-            result = self.ml_classifier.predict(text)
-            return {
-                "id": result["category"],
-                "confidence": result["confidence"],
-                "probabilities": result["probabilities"]
-            }
+            try:
+                # Create classifier WITHOUT auto-load first
+                self.classifier = CategoryClassifierML(auto_load=False)
+                
+                # Get correct model path (works from any directory)
+                # Go up from src/nlu/ to project root
+                project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                model_path = os.path.join(project_root, "ml-models", "saved-models", "category_classifier")
+                
+                print(f"Loading model from: {model_path}")
+                
+                # Load the model
+                self.classifier.load_model(model_path)
+                
+                print("✓ ML classifier loaded")
+            except Exception as e:
+                print(f"⚠️  ML classifier failed to load: {e}")
+                import traceback
+                traceback.print_exc()
+                print("   Falling back to rule-based classification")
+                self.use_ml = False
         else:
-            # Fallback to keyword matching
-            category_id = self.category_classifier.classify(text)
-            return {
-                "id": category_id,
-                "confidence": 0.75,  # Default confidence for keyword matching
-                "probabilities": {}
-            }
+            self.use_ml = False
+        
+        # Initialize other components
+        self.entity_extractor = EntityExtractor()
+        self.sentiment_analyzer = SentimentAnalyzer()
+        self.description_extractor = DescriptionExtractor()
+        
+        # Session storage (in-memory for now)
+        self.sessions = {}
+        
+        # Confidence thresholds
+        self.MIN_CONFIDENCE = 0.35
+        self.REVIEW_THRESHOLD = 0.60
+        
+        print("✓ NLU Processor initialized (Orchestrator Integration Mode)")
     
-    def process(
-        self,
-        transcript: str,
-        conversation_id: str = None,
-        is_followup: bool = False,
-        previous_data: Dict = None
-    ) -> Dict:
+    
+    def process(self, transcript: str, session_id: Optional[str] = None) -> Dict[str, Any]:
         """
-        Process a complaint transcript and extract all information
+        Process transcript and return structured output for orchestrator
         
         Args:
-            transcript: Complaint transcript text
-            conversation_id: Unique conversation identifier
-            is_followup: Whether this is a follow-up message (updating existing data)
-            previous_data: Previously extracted data (if follow-up)
-            
+            transcript: The complaint transcript text
+            session_id: Optional session ID (generated if not provided)
+        
         Returns:
-            Dictionary with all extracted information, confidence scores, and metadata
+            Dictionary with exact format required by orchestrator
         """
-        start_time = time.time()
         
-        # Validate input
-        if not transcript or not transcript.strip():
-            return self._create_empty_response(conversation_id)
+        # Generate or use provided session ID
+        if not session_id:
+            session_id = self._generate_session_id()
         
-        # Preprocess transcript
-        cleaned_transcript = self.preprocess_transcript(transcript)
+        # Step 1: Category Classification
+        if self.use_ml:
+            category_result = self.classifier.predict(transcript)
+            category_value = category_result.get('category')
+            category_confidence = category_result.get('confidence', 0.0)
+        else:
+            category_value = None
+            category_confidence = 0.0
         
-        # If this is a follow-up, merge with previous data
-        if is_followup and previous_data:
-            return self._process_followup(
-                cleaned_transcript,
-                previous_data,
-                conversation_id,
-                start_time
-            )
-        
-        # STEP 1: Extract Category (NOW USING ML!)
-        category_result = self.classify_category(cleaned_transcript)
-        category_field = self.confidence_calculator.process_field(
-            "category",
-            category_result["id"],
-            category_result["confidence"],
-            cleaned_transcript
-        )
-        
-        # STEP 2: Extract Entities (name, phone, location)
+        # Step 2: Entity Extraction
         entities = self.entity_extractor.extract_all(transcript)
         
-        # Process each entity with confidence calculator
-        location_field = self.confidence_calculator.process_field(
-            "location",
-            entities["location"]["value"],
-            entities["location"]["confidence"],
-            transcript
-        )
+        # Step 3: Sentiment Analysis
+        sentiment = self.sentiment_analyzer.analyze(transcript)
         
-        caller_name_field = self.confidence_calculator.process_field(
-            "caller_name",
-            entities["caller_name"]["value"],
-            entities["caller_name"]["confidence"],
-            transcript
-        )
+        # Step 4: Description Extraction
+        description_text = self.description_extractor.extract(transcript)
         
-        caller_phone_field = self.confidence_calculator.process_field(
-            "caller_phone",
-            entities["caller_phone"]["value"],
-            entities["caller_phone"]["confidence"],
-            transcript
-        )
+        # Step 5: Determine severity from sentiment
+        severity_value = self._calculate_severity(sentiment)
         
-        # STEP 3: Extract Description
-        description_result = self.description_extractor.extract_with_summary(
-            cleaned_transcript,
-            category_result["id"]
-        )
+        # Step 6: Extract values
+        location_value = entities.get('location')
+        caller_name_value = entities.get('caller_name')
+        phone_number_value = entities.get('caller_phone')
         
-        description_field = self.confidence_calculator.process_field(
-            "description",
-            description_result["full"],
-            description_result["confidence"],
-            cleaned_transcript
-        )
+        # Step 7: Get confidence scores
+        location_conf = entities.get('location_confidence', 0.0)
+        caller_name_conf = entities.get('caller_name_confidence', 0.0)
+        phone_conf = entities.get('caller_phone_confidence', 0.0)
+        description_conf = 0.8 if description_text else 0.0
+        severity_conf = sentiment.get('urgency_score', 0.0)
         
-        # STEP 4: Analyze Sentiment and Urgency
-        sentiment_result = self.sentiment_analyzer.analyze(
-            cleaned_transcript,
-            category_result["id"]
-        )
+        # Step 8: Calculate overall confidence
+        overall_conf = self._calculate_overall_confidence({
+            'category': category_confidence,
+            'location': location_conf,
+            'description': description_conf,
+            'severity': severity_conf,
+            'caller_name': caller_name_conf,
+            'phone_number': phone_conf
+        })
         
-        # STEP 5: Build extraction result
-        extracted_data = {
-            "category": category_field,
-            "location": location_field,
-            "description": description_field,
-            "caller_name": caller_name_field,
-            "caller_phone": caller_phone_field
-        }
+        # Step 9: Identify missing fields
+        missing_fields = self._identify_missing_fields({
+            'category': category_value,
+            'location': location_value,
+            'description': description_text,
+            'caller_name': caller_name_value,
+            'phone_number': phone_number_value
+        })
         
-        # STEP 6: Identify missing fields and clarifications needed
-        missing_fields = self.confidence_calculator.identify_missing_fields(extracted_data)
-        requires_clarification = self.confidence_calculator.identify_clarification_needed(extracted_data)
+        # Step 10: Determine if requires review
+        requires_review = self._check_requires_review({
+            'category': category_confidence,
+            'location': location_conf,
+            'description': description_conf
+        })
         
-        # STEP 7: Calculate overall confidence
-        overall_confidence = self.confidence_calculator.calculate_overall_confidence(extracted_data)
-        
-        # STEP 8: Calculate processing time
-        processing_time = int((time.time() - start_time) * 1000)
-        
-        # STEP 9: Build final output
-        output = {
-            "conversation_id": conversation_id or self._generate_conversation_id(),
-            "extraction_timestamp": datetime.utcnow().isoformat() + "Z",
-            "category": category_field,
-            "location": location_field,
-            "description": description_field,
-            "caller_name": caller_name_field,
-            "caller_phone": caller_phone_field,
-            "sentiment": sentiment_result,
-            "overall_confidence": overall_confidence,
-            "requires_clarification": requires_clarification,
-            "missing_fields": missing_fields,
-            "processing_time_ms": processing_time,
-            "ml_model_used": self.use_ml_classifier,  # Indicates if ML was used
-            "metadata": {
-                "original_transcript": transcript,
-                "cleaned_transcript": cleaned_transcript,
-                "description_summary": description_result["summary"],
-                "description_details": description_result["details"],
-                "category_probabilities": category_result.get("probabilities", {})
-            }
-        }
-        
-        return output
-    
-    def _process_followup(
-        self,
-        transcript: str,
-        previous_data: Dict,
-        conversation_id: str,
-        start_time: float
-    ) -> Dict:
-        """
-        Process follow-up message (update existing extraction)
-        
-        Args:
-            transcript: New transcript (citizen's answer)
-            previous_data: Previously extracted data
-            conversation_id: Conversation ID
-            start_time: Processing start time
+        # Step 11: Build EXACT output format
+        result = {
+            "session_id": session_id,
             
-        Returns:
-            Updated extraction data
-        """
-        missing = previous_data.get("missing_fields", [])
-        needs_clarification = previous_data.get("requires_clarification", [])
-        
-        updated_data = previous_data.copy()
-        
-        if "location" in missing or "location" in needs_clarification:
-            entities = self.entity_extractor.extract_all(transcript)
-            location_field = self.confidence_calculator.process_field(
-                "location",
-                entities["location"]["value"],
-                entities["location"]["confidence"],
-                transcript
-            )
-            updated_data["location"] = location_field
-            updated_data["location"]["confirmed"] = "updated"
-        
-        if "caller_name" in missing or "caller_name" in needs_clarification:
-            entities = self.entity_extractor.extract_all(transcript)
-            name_field = self.confidence_calculator.process_field(
-                "caller_name",
-                entities["caller_name"]["value"],
-                entities["caller_name"]["confidence"],
-                transcript
-            )
-            updated_data["caller_name"] = name_field
-            updated_data["caller_name"]["confirmed"] = "updated"
-        
-        if "caller_phone" in missing or "caller_phone" in needs_clarification:
-            entities = self.entity_extractor.extract_all(transcript)
-            phone_field = self.confidence_calculator.process_field(
-                "caller_phone",
-                entities["caller_phone"]["value"],
-                entities["caller_phone"]["confidence"],
-                transcript
-            )
-            updated_data["caller_phone"] = phone_field
-            updated_data["caller_phone"]["confirmed"] = "updated"
-        
-        extracted_fields = {
-            "category": updated_data.get("category"),
-            "location": updated_data.get("location"),
-            "description": updated_data.get("description")
-        }
-        
-        updated_data["missing_fields"] = self.confidence_calculator.identify_missing_fields(extracted_fields)
-        updated_data["requires_clarification"] = self.confidence_calculator.identify_clarification_needed(extracted_fields)
-        
-        processing_time = int((time.time() - start_time) * 1000)
-        updated_data["processing_time_ms"] = processing_time
-        updated_data["extraction_timestamp"] = datetime.utcnow().isoformat() + "Z"
-        
-        return updated_data
-    
-    def _create_empty_response(self, conversation_id: str = None) -> Dict:
-        """
-        Create empty response for invalid input
-        
-        Args:
-            conversation_id: Conversation ID
+            # Field values (simple values, NOT objects!)
+            "category": category_value,
+            "sub_category": None,
+            "location": location_value,
+            "description": description_text,
+            "severity": severity_value,
+            "caller_name": caller_name_value,
+            "phone_number": phone_number_value,
             
-        Returns:
-            Empty response dictionary
-        """
-        return {
-            "conversation_id": conversation_id or self._generate_conversation_id(),
-            "extraction_timestamp": datetime.utcnow().isoformat() + "Z",
-            "category": {"value": None, "confidence": 0.0, "confirmed": "missing"},
-            "location": {"value": None, "confidence": 0.0, "confirmed": "missing"},
-            "description": {"value": None, "confidence": 0.0, "confirmed": "missing"},
-            "caller_name": {"value": None, "confidence": 0.0, "confirmed": "missing"},
-            "caller_phone": {"value": None, "confidence": 0.0, "confirmed": "missing"},
-            "sentiment": {
-                "overall_score": 0.0,
-                "urgency_level": "low",
-                "urgency_score": 0.0
+            # Confidence scores (separate object)
+            "confidence_scores": {
+                "category": round(category_confidence, 2) if category_confidence else None,
+                "location": round(location_conf, 2) if location_conf else None,
+                "description": round(description_conf, 2) if description_conf else None,
+                "severity": round(severity_conf, 2) if severity_conf else None,
+                "caller_name": round(caller_name_conf, 2) if caller_name_conf else None,
+                "phone_number": round(phone_conf, 2) if phone_conf else None,
+                "overall": round(overall_conf, 2)
             },
-            "overall_confidence": 0.0,
-            "requires_clarification": [],
-            "missing_fields": ["category", "location", "description"],
-            "processing_time_ms": 0,
-            "ml_model_used": False
+            
+            # Status fields
+            "missing_fields": missing_fields,
+            "confirmed": False,
+            "correction_field": None,
+            "requires_review": requires_review,
+            "ready_to_submit": False
         }
+        
+        # Store session
+        self.sessions[session_id] = result
+        
+        return result
     
-    def _generate_conversation_id(self) -> str:
+    
+    def update_field(self, session_id: str, field_name: str, new_value: str) -> Optional[Dict[str, Any]]:
         """
-        Generate a unique conversation ID
+        Update a specific field when orchestrator gets clarification from user
+        
+        Args:
+            session_id: The session identifier
+            field_name: Field to update (e.g., 'caller_name', 'location')
+            new_value: New value from user
         
         Returns:
-            Unique conversation ID
+            Updated session data or None if session not found
         """
-        timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S%f")
-        return f"conv_{timestamp}"
+        
+        if session_id not in self.sessions:
+            print(f"⚠️  Session {session_id} not found")
+            return None
+        
+        # Update the field value
+        if field_name in self.sessions[session_id]:
+            self.sessions[session_id][field_name] = new_value
+            
+            # Update confidence to 100% for manually entered fields
+            if field_name in self.sessions[session_id]['confidence_scores']:
+                self.sessions[session_id]['confidence_scores'][field_name] = 1.0
+            
+            # Recalculate overall confidence
+            self.sessions[session_id]['confidence_scores']['overall'] = \
+                self._calculate_overall_confidence(self.sessions[session_id]['confidence_scores'])
+            
+            # Recalculate missing fields
+            self.sessions[session_id]['missing_fields'] = self._identify_missing_fields({
+                'category': self.sessions[session_id]['category'],
+                'location': self.sessions[session_id]['location'],
+                'description': self.sessions[session_id]['description'],
+                'caller_name': self.sessions[session_id]['caller_name'],
+                'phone_number': self.sessions[session_id]['phone_number']
+            })
+            
+            # Clear correction_field since it's been corrected
+            self.sessions[session_id]['correction_field'] = None
+            
+            # Recalculate requires_review
+            self.sessions[session_id]['requires_review'] = self._check_requires_review(
+                self.sessions[session_id]['confidence_scores']
+            )
+            
+            print(f"✓ Updated {field_name} for session {session_id}")
+        
+        return self.sessions[session_id]
+    
+    
+    def confirm_submission(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Mark session as confirmed when user says YES
+        
+        Args:
+            session_id: The session identifier
+        
+        Returns:
+            Updated session data or None if session not found
+        """
+        
+        if session_id not in self.sessions:
+            print(f"⚠️  Session {session_id} not found")
+            return None
+        
+        # Set confirmed to True
+        self.sessions[session_id]['confirmed'] = True
+        
+        # Check if ready to submit
+        # Ready only if: confirmed=True AND no missing fields
+        if len(self.sessions[session_id]['missing_fields']) == 0:
+            self.sessions[session_id]['ready_to_submit'] = True
+            print(f"✓ Session {session_id} confirmed and READY TO SUBMIT")
+        else:
+            print(f"⚠️  Session {session_id} confirmed but has missing fields: {self.sessions[session_id]['missing_fields']}")
+        
+        return self.sessions[session_id]
+    
+    
+    def set_correction_field(self, session_id: str, field_name: str) -> Optional[Dict[str, Any]]:
+        """
+        Mark a specific field as needing correction
+        Used by orchestrator when asking user to clarify a field
+        
+        Args:
+            session_id: The session identifier
+            field_name: Field that needs correction
+        
+        Returns:
+            Updated session data
+        """
+        
+        if session_id not in self.sessions:
+            return None
+        
+        self.sessions[session_id]['correction_field'] = field_name
+        return self.sessions[session_id]
+    
+    
+    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Retrieve session data
+        
+        Args:
+            session_id: The session identifier
+        
+        Returns:
+            Session data or None if not found
+        """
+        return self.sessions.get(session_id)
+    
+    
+    # ========== HELPER METHODS ==========
+    
+    def _generate_session_id(self) -> str:
+        """Generate unique session ID"""
+        return str(uuid.uuid4())
+    
+    
+    def _calculate_severity(self, sentiment: Dict) -> Optional[str]:
+        """
+        Calculate severity level from sentiment analysis
+        
+        Returns: 'low', 'medium', 'high', or None
+        """
+        urgency_score = sentiment.get('urgency_score', 0.0)
+        
+        if urgency_score >= 0.7:
+            return 'high'
+        elif urgency_score >= 0.4:
+            return 'medium'
+        elif urgency_score > 0:
+            return 'low'
+        else:
+            return None
+    
+    
+    def _calculate_overall_confidence(self, confidence_scores: Dict) -> float:
+        """
+        Calculate overall confidence from individual scores
+        
+        Args:
+            confidence_scores: Dictionary of confidence scores
+        
+        Returns:
+            Overall confidence (0.0 to 1.0)
+        """
+        # Get scores for required fields (not caller info)
+        required_scores = []
+        
+        for field in ['category', 'location', 'description']:
+            score = confidence_scores.get(field)
+            if score is not None:
+                required_scores.append(score)
+        
+        if not required_scores:
+            return 0.0
+        
+        # Average of required fields
+        return sum(required_scores) / len(required_scores)
+    
+    
+    def _identify_missing_fields(self, fields: Dict[str, Any]) -> list:
+        """
+        Identify which required fields are missing
+        
+        Args:
+            fields: Dictionary of extracted fields
+        
+        Returns:
+            List of missing field names
+        """
+        missing = []
+        
+        # Check each required field
+        required_fields = ['category', 'location', 'description', 'caller_name', 'phone_number']
+        
+        for field in required_fields:
+            value = fields.get(field)
+            
+            # Consider missing if:
+            # - Value is None
+            # - Value is empty string
+            # - Value is just whitespace
+            if not value or (isinstance(value, str) and not value.strip()):
+                missing.append(field)
+        
+        return missing
+    
+    
+    def _check_requires_review(self, confidence_scores: Dict) -> bool:
+        """
+        Determine if complaint requires human review based on confidence
+        
+        Args:
+            confidence_scores: Dictionary of confidence scores
+        
+        Returns:
+            True if requires review, False otherwise
+        """
+        # Check critical fields
+        critical_fields = ['category', 'location', 'description']
+        
+        for field in critical_fields:
+            score = confidence_scores.get(field)
+            
+            if score is None:
+                return True  # Missing critical field
+            
+            if score < self.REVIEW_THRESHOLD:
+                return True  # Low confidence on critical field
+        
+        return False
+    
+    
+    def clear_session(self, session_id: str) -> bool:
+        """
+        Clear session data (for cleanup)
+        
+        Args:
+            session_id: The session identifier
+        
+        Returns:
+            True if cleared, False if session didn't exist
+        """
+        if session_id in self.sessions:
+            del self.sessions[session_id]
+            return True
+        return False
+
+
+# ========== EXAMPLE USAGE ==========
+
+if __name__ == "__main__":
+    import json
+    
+    # Initialize processor
+    processor = NLUProcessor(use_ml_classifier=True)
+    
+    # Example 1: Process initial complaint
+    print("\n" + "="*70)
+    print("EXAMPLE 1: Initial Processing")
+    print("="*70)
+    
+    transcript1 = """
+    There's a huge pothole on Main Street near the school. 
+    It's been there for weeks and cars keep hitting it.
+    """
+    
+    result1 = processor.process(transcript1)
+    
+    print("\nOutput (JSON format):")
+    print(json.dumps(result1, indent=2))
+    
+    # Example 2: Update missing field
+    print("\n" + "="*70)
+    print("EXAMPLE 2: Update Missing Field (Caller Name)")
+    print("="*70)
+    
+    session_id = result1['session_id']
+    updated = processor.update_field(session_id, 'caller_name', 'John Smith')
+    
+    print(f"\nCaller Name: {updated['caller_name']}")
+    print(f"Confidence: {updated['confidence_scores']['caller_name']}")
+    print(f"Missing Fields: {updated['missing_fields']}")
+    
+    # Example 3: Update phone number
+    print("\n" + "="*70)
+    print("EXAMPLE 3: Update Phone Number")
+    print("="*70)
+    
+    updated2 = processor.update_field(session_id, 'phone_number', '416-555-1234')
+    print(f"\nPhone: {updated2['phone_number']}")
+    print(f"Missing Fields: {updated2['missing_fields']}")
+    
+    # Example 4: Confirm submission
+    print("\n" + "="*70)
+    print("EXAMPLE 4: Confirm Submission")
+    print("="*70)
+    
+    final = processor.confirm_submission(session_id)
+    
+    print(f"\nConfirmed: {final['confirmed']}")
+    print(f"Ready to Submit: {final['ready_to_submit']}")
+    print(f"Requires Review: {final['requires_review']}")
+    print(f"\nFinal Output:")
+    print(json.dumps(final, indent=2))

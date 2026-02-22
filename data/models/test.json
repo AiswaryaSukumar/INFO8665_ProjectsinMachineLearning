@@ -5,11 +5,11 @@
   "transcripts": [
     {
       "id": "test_001",
-      "transcript": "Someone spray painted the bridge on River Road. Graffiti everywhere. Please clean it. This is Mark Thompson.",
+      "transcript": "Um, yeah hi, so I'm calling about... okay so there's like this bridge, you know the one on River Road? Yeah, someone went and spray painted all over it. I mean like everywhere - the sides, the pillars, even underneath I think. It's really bad, um, lots of different colors and stuff. Pretty sure I saw some offensive words too but I'm not gonna repeat them. Anyway, it needs to be cleaned up because, you know, kids walk by there going to school and everything. Oh, my name is Mark Thompson by the way. Yeah.",
       "labels": {
         "category": "graffiti",
         "location": "River Road bridge",
-        "description": "Spray paint graffiti covering bridge",
+        "description": "Extensive spray paint graffiti covering bridge sides, pillars, and underneath with offensive content",
         "caller_name": "Mark Thompson",
         "caller_phone": null
       }

@@ -70,7 +70,8 @@ class DistilBERTCategoryClassifier:
         self,
         model_name: str = "distilbert-base-uncased",
         num_labels: int = 10,
-        max_length: int = 128
+        max_length: int = 128,
+        auto_load: bool = True  # NEW: Auto-load model on initialization
     ):
         """
         Initialize the ML classifier
@@ -79,6 +80,7 @@ class DistilBERTCategoryClassifier:
             model_name: Pre-trained model to use for transfer learning
             num_labels: Number of categories to classify
             max_length: Maximum sequence length for tokenization
+            auto_load: Whether to automatically load trained model (default: True)
         """
         self.model_name = model_name
         self.num_labels = num_labels
@@ -97,6 +99,15 @@ class DistilBERTCategoryClassifier:
         # Device configuration
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print(f"Using device: {self.device}")
+        
+        # ========== NEW: AUTO-LOAD TRAINED MODEL ==========
+        if auto_load:
+            try:
+                # Try to load from default location
+                self.load_model("ml-models/saved-models/category_classifier")
+            except Exception as e:
+                print(f"⚠️  Could not auto-load model: {e}")
+                print("   You can manually call load_model() or train a new model")
     
     def load_categories(self, categories_file: str = "data/categories.json"):
         """
@@ -229,12 +240,12 @@ class DistilBERTCategoryClassifier:
             weight_decay=0.01,
             logging_dir=f'{output_dir}/logs',
             logging_steps=10,
-            eval_strategy="epoch" if eval_dataset else "no",  # Changed from evaluation_strategy
+            eval_strategy="epoch" if eval_dataset else "no",
             save_strategy="epoch",
             load_best_model_at_end=True if eval_dataset else False,
             metric_for_best_model="accuracy" if eval_dataset else None,
             save_total_limit=2,
-            report_to="none"  # Disable wandb/tensorboard
+            report_to="none"
         )
         
         # Initialize trainer
@@ -315,7 +326,7 @@ class DistilBERTCategoryClassifier:
         # Load category mappings
         self._load_mappings(model_dir)
         
-        print("Model loaded successfully!")
+        print("✓ Model loaded successfully!")
     
     def predict(self, text: str) -> Dict:
         """
