@@ -1,8 +1,80 @@
-﻿ml-models/saved-models/
+﻿# ========== ML Models & Large Files ==========
+ml-models/saved-models/
 *.bin
 *.safetensors
 *.pt
 *.pth
+*.onnx
+*.h5
+*.pkl
+*.pickle
+optimizer.pt
+scheduler.pt
+trainer_state.json
+training_args.bin
+rng_state.pth
+
+# ========== Python ==========
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 .venv/
+venv/
+ENV/
+env/
+
+# ========== IDEs ==========
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
+
+# ========== Notebooks ==========
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ========== Data Files (if large) ==========
+# Uncomment if your data files are huge
+# data/raw/
+# data/processed/
+
+# ========== Logs & Temp Files ==========
+*.log
+logs/
+temp/
+tmp/
+
+# ========== OS Files ==========
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========== Environment ==========
+.env
+.env.local
+*.env
+
+# ========== Build artifacts ==========
+dist/
+build/
+*.egg-info/
+
+# ========== PyCharm ==========
+.idea/
+*.iml
+
+# ========== Jupyter ==========
+.ipynb_checkpoints
+
+# ========== pytest ==========
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ========== Node (if you have frontend) ==========
+node_modules/
+package-lock.json
