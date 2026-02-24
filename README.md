@@ -1,113 +1,108 @@
-# INSIGHT-311 Voice Assistant (Demo)
+# 🎙️ INSIGHT-311: AI-Driven Voice Assistant
 
-This project is a voice-driven 311 call assistant that:
-
-- Listens to the caller (speech-to-text).
-- Analyzes the transcript with NLU (category, location, caller name, phone number, etc.).
-- Orchestrates a multi-turn dialog to fill required fields and confirm the details.
-- Creates and updates a ticket in the database and reads back the ticket ID.
+**INSIGHT-311** is an automated voice-driven assistant designed to streamline 311 municipal service requests. By leveraging Speech-to-Text (STT) and Natural Language Understanding (NLU), it automates the intake, classification, and prioritization of citizen reports through a multi-turn conversational interface.
 
 ---
 
-## Main Components
+## 🏗️ System Architecture
 
-- `src/api/ml_service.py`  
-  Flask-based API service that exposes endpoints for:
-  - NLU analysis
-  - Orchestrator actions
-  - Speech-to-text / text-to-speech integration
+The project consists of three primary layers that work in synchronization:
 
-- `src/ai_orchestration/orchestrator.py`  
-  Dialog manager:
-  - Slot filling for required fields (`category`, `location`, `description`, `caller_name`, `phone_number`)
-  - Confidence-score based logic (e.g., improving `category` when a better prediction appears)
-  - Confirmation step and final ticket submission
+### 1. **API Service** (`src/api/ml_service.py`)
+* A Flask-based backend that manages the lifecycle of a call.
+* Exposes endpoints for NLU processing, orchestration logic, and STT/TTS integration.
 
-- `scripts/test_call.py`  
-  Command-line script that simulates a full 311 phone call:
-  - Prompts you to speak on each turn
-  - Sends audio/text to the API
-  - Prints NLU results and the orchestrated responses
-  - Shows the final collected ticket information
+### 2. **Dialog Orchestrator** (`src/ai_orchestration/orchestrator.py`)
+* Acts as the "Brain" of the conversation using slot-filling techniques.
+* Manages required fields: `category`, `location`, `description`, `caller_name`, and `phone_number`.
+* Implements confidence-based logic to handle clarifications and final ticket submission.
+
+### 3. **Call Simulation Engine** (`scripts/test_call.py`)
+* A CLI utility that simulates a real-world phone interaction.
+* Captures user voice input, displays real-time NLU confidence scores, and executes orchestrated responses.
 
 ---
 
-## Prerequisites
+## 🚀 Getting Started
 
-- Python 3.10+ (matching the existing `.venv`).
-- A virtual environment for the project, with dependencies installed:
+### **Prerequisites**
+- **Python 3.10+**
+- **PostgreSQL Database** with `tickets` and `sessions` tables.
+- **Virtual Environment** setup:
 
-  ```bash
-  python -m venv .venv
-  .venv\Scripts\activate
-  pip install -r requirements.txt
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/activate
 
+pip install -r requirements.txt
+```
 
-### PostgreSQL running, with the required tables and columns, for example:
+### **NLU Model Training (Mandatory)**
+Model artifacts are local and ignored by Git. You must train the DistilBERT classifier before first use:
 
-tickets
-including: ticket_id, session_id, ticket_status, category,
-location, description, severity, caller_name, phone_number,
-raw_issue_text, confirmed, mode, etc.
+1. Ensure training data exists in `data/models/training_data.json`.
+2. Execute training script:
+   ```bash
+   cd scripts
+   python train_nlu_model.py
+   ```
+3. Artifacts will be saved to `ml_models/saved_models/category_classifier/`.
 
-sessions
+---
 
-tts_results
+## 🛠️ Usage Guide
 
-(Adjust the schema as needed to match what update_ticket() writes.)
+To run the full simulation, you need two terminal windows:
 
-## How to Run the Demo
-You will use two terminals from the project root folder.
+### **Terminal 1: The API Server**
+```bash
+python src/api/ml_service.py
+```
+*Wait until you see: "✓ ML classifier loaded successfully"*
 
-1) Start the API Server
-1. Open Terminal 1.
+### **Terminal 2: The Call Simulator**
+```bash
+cd scripts
+python test_call.py
+```
 
-2. Go to the project root:
-    cd C:\Users\jjh95\Desktop\2026-Winter\stt_oct_NLU\INFO8665_ProjectsinMachineLearning
+---
 
-3. Activate the virtual environment:
-    .venv\Scripts\activate
+## 📊 Database Schema
 
-4. Start the API service:
-    python src/api/ml_service.py
+The `tickets` table in PostgreSQL should include the following schema to ensure compatibility with `update_ticket()`:
 
-Keep this terminal open and running.
-This starts the Flask server that the test script will call.
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `ticket_id` | VARCHAR | Unique ID (e.g., TKT-2026...) |
+| `category` | VARCHAR | Extracted 311 service category |
+| `location` | TEXT | Physical location of the issue |
+| `description` | TEXT | Detailed incident description |
+| `caller_name` | VARCHAR | Citizen's full name |
+| `phone_number`| VARCHAR | Contact information |
+| `confirmed` | BOOLEAN | Submission status |
 
-2) Run the Call Simulation
-1. Open Terminal 2 (new window or tab).
+---
 
-2. Again, go to the project root:
-    cd C:\Users\jjh95\Desktop\2026-Winter\stt_oct_NLU\INFO8665_ProjectsinMachineLearning
+## 🔍 NLU Categories
+The system is trained to recognize the following official categories:
+* `graffiti`, `illegal_sign`, `litter`, `needles`, `parking_complaint`, `property_standards`, `pothole`, `sidewalk_snow`, `sidewalk_hazard`, `trail_maintenance`.
 
-3. Move into the scripts directory:
-    cd scripts
+---
 
-4. Run the test call script:
-    python test_call.py
+## 📝 Confidence Calculation
+The orchestrator computes the reliability of an intake session using the following formula:
 
-5. Follow the prompts:
+$$Overall = \frac{1}{n} \sum_{i=1}^{n} Confidence_i$$
 
-When you see Press Enter to start speaking..., press Enter and then speak your answer.
+Where $n$ represents the number of required fields.
 
-The script will show:
+---
 
-What you said (transcript).
-
-NLU results (category, location, caller_name, phone_number, confidence scores).
-
-The assistant’s response (next question or confirmation).
-
-At the end, the script prints:
-
-The final ticket number.
-
-The collected fields (category, location, description, severity, caller_name,
-phone_number, raw_issue_text, confirmed, mode, etc.).
-
-### Notes for Team Members
-If you change API or orchestrator logic (ml_service.py, orchestrator.py), restart Terminal 1.
-
-If you change only test_call.py, just re-run the script in Terminal 2.
-
-If you see database warnings like “column does not exist”, add the column to the tickets table or adjust which fields are written in update_ticket().
+## 💡 Team Notes
+- **API/Orchestrator changes:** Restart Terminal 1 to reload logic.
+- **Script-only changes:** Simply re-run Terminal 2.
+- **Database Errors:** If you see "column does not exist," verify your PostgreSQL schema matches the table above.
