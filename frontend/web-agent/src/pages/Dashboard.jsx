@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import IntakePage from "./IntakePage";
-import DuplicatesPage from "./DuplicatesPage";
-import StatusLookupPage from "./StatusLookupPage";
 import logo from "../assets/insight311-logo.png";
 
 export default function Dashboard() {
-  const [tab, setTab] = useState("Intake");
+  // Top-level navigation for the Operations Dashboard
+  // (All 3 buttons jump to sections within the single Intake workspace.)
+  const [tab, setTab] = useState("Manual Ticket Intake");
 
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "Jerry");
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "OPERATOR");
@@ -26,6 +26,24 @@ export default function Dashboard() {
     window.location.href = "/";
   };
 
+  const navItems = useMemo(
+    () => [
+      { label: "My Work Queue", targetId: "my-work-queue" },
+      { label: "Queue Overview", targetId: "queue-overview" },
+      { label: "Manual Ticket Intake", targetId: "manual-ticket-intake" },
+    ],
+    []
+  );
+
+  const jumpTo = (item) => {
+    setTab(item.label);
+    // Allow React to paint before scrolling
+    window.requestAnimationFrame(() => {
+      const el = document.getElementById(item.targetId);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   return (
     <>
       <div className="header">
@@ -38,7 +56,7 @@ export default function Dashboard() {
 
         <div className="headerRight">
           <span style={{ color: "white", opacity: 0.92, fontSize: 13 }}>
-            Logged in as: <b>{userName}</b> ({userRole})
+            Logged in as: <b>{userName}</b>
           </span>
 
           <button
@@ -56,21 +74,19 @@ export default function Dashboard() {
       </div>
 
       <div className="tabsBar">
-        {["Intake", "Duplicates", "Status Lookup"].map((t) => (
+        {navItems.map((item) => (
           <button
-            key={t}
-            className={`tabBtn ${tab === t ? "active" : ""}`}
-            onClick={() => setTab(t)}
+            key={item.label}
+            className={`tabBtn ${tab === item.label ? "active" : ""}`}
+            onClick={() => jumpTo(item)}
           >
-            {t}
+            {item.label}
           </button>
         ))}
       </div>
 
       <div className="container">
-        {tab === "Intake" && <IntakePage />}
-        {tab === "Duplicates" && <DuplicatesPage />}
-        {tab === "Status Lookup" && <StatusLookupPage mode="operator" />}
+        <IntakePage />
       </div>
     </>
   );

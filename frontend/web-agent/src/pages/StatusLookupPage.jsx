@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { mockTickets } from "../mock/mockTickets";
+import { useNavigate } from "react-router-dom";
+import { getTickets } from "../utils/ticketStore";
 import TicketTable from "../components/TicketTable";
-import TicketDetailsDrawer from "../components/TicketDetailsDrawer";
 import { useToast } from "../components/Toast";
 
 function normalizePhone(input = "") {
@@ -23,6 +23,10 @@ function formatCooldown(ms) {
 export default function StatusLookupPage({ mode = "operator" }) {
   const isCitizen = mode === "citizen";
   const { toast } = useToast();
+  const nav = useNavigate();
+
+  // ✅ Same source of truth as dashboard
+  const tickets = useMemo(() => getTickets(), []);
 
   // Citizen: only ticketNumber/phone
   const allowedTypes = useMemo(
@@ -35,9 +39,6 @@ export default function StatusLookupPage({ mode = "operator" }) {
 
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Rate limit: 5 submits / 60 sec, then 30 sec cooldown
   const attemptsRef = useRef([]); // timestamps in ms
@@ -66,19 +67,19 @@ export default function StatusLookupPage({ mode = "operator" }) {
 
     if (filterType === "ticketNumber") {
       const k = raw.toLowerCase();
-      return mockTickets.filter((t) =>
+      return tickets.filter((t) =>
         String(t.ticketNumber || "").toLowerCase().includes(k)
       );
     }
 
     if (filterType === "phone") {
       const k = normalizePhone(raw);
-      return mockTickets.filter((t) => normalizePhone(t.phone || "").includes(k));
+      return tickets.filter((t) => normalizePhone(t.phone || "").includes(k));
     }
 
     if (filterType === "name") {
       const k = raw.toLowerCase();
-      return mockTickets.filter((t) => String(t.name || "").toLowerCase().includes(k));
+      return tickets.filter((t) => String(t.name || "").toLowerCase().includes(k));
     }
 
     return [];
@@ -248,10 +249,7 @@ export default function StatusLookupPage({ mode = "operator" }) {
               <TicketTable
                 tickets={results}
                 mode={mode}
-                onRowClick={(t) => {
-                  setSelectedTicket(t);
-                  setDrawerOpen(true);
-                }}
+                onRowClick={(t) => nav(`/ticket/${t.ticketNumber}`, { state: { ticket: t, from: "/lookup" } })}
               />
             </>
           ) : (
@@ -259,13 +257,6 @@ export default function StatusLookupPage({ mode = "operator" }) {
           )}
         </div>
       </div>
-
-      <TicketDetailsDrawer
-        open={drawerOpen}
-        ticket={selectedTicket}
-        mode={mode}
-        onClose={() => setDrawerOpen(false)}
-      />
     </>
   );
 }

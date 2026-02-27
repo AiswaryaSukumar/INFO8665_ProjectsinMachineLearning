@@ -16,6 +16,13 @@
 
   --card: #ffffff;
   --border: #e5e7eb;
+
+  /* moved from duplicate :root later */
+  --chip-accent: #2563eb;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 /* ---------- GLOBAL ---------- */
@@ -26,13 +33,617 @@ body {
   font-family: "Poppins", system-ui, sans-serif;
 }
 
+/* ---------- ACCESSIBILITY TOGGLES (Landing Page) ---------- */
+body.a11y-large-text {
+  font-size: 18px;
+}
+
+body.a11y-large-text .lpHeroTitle {
+  color: white;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(36px, 3.2vw, 54px);
+  line-height: 1.08;
+  margin: 12px 0 10px 0;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25);
+}
+
+body.a11y-large-text .lpHeroSub,
+body.a11y-large-text .lpMuted,
+body.a11y-large-text input,
+body.a11y-large-text select,
+body.a11y-large-text textarea,
+body.a11y-large-text .btn {
+  font-size: 16px;
+}
+
+body.a11y-high-contrast {
+  --bg: #0b1220;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --card: #0f172a;
+  --border: rgba(248, 250, 252, 0.22);
+}
+
+/* =========================================================
+   ✅ HIGH CONTRAST — FORMS + PLACEHOLDERS (fix Voice Intake)
+   ========================================================= */
+body.a11y-high-contrast label,
+body.a11y-high-contrast .lpMuted,
+body.a11y-high-contrast .muted,
+body.a11y-high-contrast .helpText,
+body.a11y-high-contrast .hintText {
+  color: var(--text) !important;
+  opacity: 0.92;
+}
+
+/* Make form fields readable (no white-on-white / dark-on-dark issues) */
+body.a11y-high-contrast input,
+body.a11y-high-contrast select,
+body.a11y-high-contrast textarea {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.55) !important;
+  box-shadow: none !important;
+}
+
+/* Placeholder text must be clearly visible */
+body.a11y-high-contrast input::placeholder,
+body.a11y-high-contrast textarea::placeholder {
+  color: rgba(255, 255, 255, 0.75) !important;
+  opacity: 1 !important;
+}
+
+/* Dropdown options (browser-dependent) */
+body.a11y-high-contrast select option {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* =========================
+   ✅ Voice Intake: Bot asks box (default + high contrast)
+   ========================= */
+.botAskBox {
+  background: #f3f4f6;
+  color: #0f172a;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  font-weight: 700;
+}
+
+body.a11y-high-contrast .botAskBox {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.55) !important;
+}
+
+/* High contrast should not "wash out" the landing hero */
+body.a11y-high-contrast .lpHeroFade {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.05) 25%,
+    rgba(0, 0, 0, 0.82) 100%
+  );
+}
+
+body.a11y-high-contrast .lpMain {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.92) 0%,
+    rgba(11, 18, 32, 1) 60%
+  );
+}
+
+body.a11y-high-contrast .lpHeroBelow,
+body.a11y-high-contrast .lpSection,
+body.a11y-high-contrast .lpTrack {
+  color: var(--text);
+}
+
+body.a11y-high-contrast .lpAnnouncement {
+  background: #111827;
+  border-bottom: 1px solid rgba(248, 250, 252, 0.18);
+}
+
+/* Ensure notice + badge remain readable in high contrast */
+body.a11y-high-contrast .lpAnnouncementInner {
+  color: var(--text);
+}
+
+body.a11y-high-contrast .lpBadge {
+  background: rgba(248, 250, 252, 0.10);
+  border: 1px solid rgba(248, 250, 252, 0.22);
+  color: var(--text);
+}
+
+/* Hero headline (below image) uses fixed dark colors in default mode — override for HC */
+body.a11y-high-contrast .lpKickerDark {
+  color: rgba(248, 250, 252, 0.96);
+  background: rgba(248, 250, 252, 0.10);
+  border: 1px solid rgba(248, 250, 252, 0.22);
+}
+
+body.a11y-high-contrast .lpLeadTitle {
+  color: var(--text);
+}
+
+body.a11y-high-contrast .lpLeadSub {
+  color: var(--muted);
+}
+
+/* Security check readability in HC */
+body.a11y-high-contrast .lpCaptcha {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(248, 250, 252, 0.22);
+}
+
+/* =========================================================
+   OPERATOR LOGIN (Enterprise feel)
+   ========================================================= */
+
+.lpAuthGrid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 18px;
+  align-items: start;
+  padding-bottom: 30px;
+}
+
+@media (max-width: 980px) {
+  .lpAuthGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lpAuthIntro .card {
+  border: 1px solid var(--border);
+}
+
+.lpAuthCard {
+  max-width: 560px;
+  width: 100%;
+  justify-self: end;
+}
+
+@media (max-width: 980px) {
+  .lpAuthCard {
+    justify-self: stretch;
+    max-width: none;
+  }
+}
+
+.lpAuthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.lpAuthTitle {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.lpAuthBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(124, 58, 237, 0.08);
+  color: var(--text);
+}
+
+/* Make small UI chips/buttons readable in High Contrast */
+body.a11y-high-contrast .badge {
+  background: rgba(248, 250, 252, 0.12);
+  border: 1px solid rgba(248, 250, 252, 0.24);
+  color: var(--text);
+}
+
+/*
+  ✅ High contrast buttons must NEVER be "white text on white bg".
+  Default .btn has background:#fff — so we override it here.
+*/
+body.a11y-high-contrast .btn {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: none;
+}
+
+/* Ghost buttons should still be visible */
+body.a11y-high-contrast .btn.ghost {
+  background: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+/* Password toggle in login (treated like a small ghost button) */
+body.a11y-high-contrast .lpPwToggle {
+  background: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.lpAuthActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Login: actions row (Login left, Forgot right) */
+.lpAuthActionsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Use primary styling but softer (toned down) */
+.btn.primary.soft {
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  color: rgba(15, 23, 42, 0.92);
+}
+
+body.a11y-high-contrast .btn.primary.soft {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #fff !important;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.lpRemember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.lpRemember input {
+  width: 16px;
+  height: 16px;
+}
+
+.lpPwWrap {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lpPwToggle {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(124, 58, 237, 0.10);
+  border-color: rgba(124, 58, 237, 0.22);
+  color: rgba(15, 23, 42, 0.9);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.lpPwToggle:hover {
+  background: rgba(124, 58, 237, 0.14);
+}
+
+.lpAuthList {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+.lpAuthList li {
+  margin: 6px 0;
+}
+
+/* Login page: bottom ticket overview */
+.lpLoginOverview {
+  margin-top: 18px;
+  padding-bottom: 28px;
+}
+
+.lpOverviewCard {
+  border: 1px solid var(--border);
+  overflow: visible;
+}
+
+.lpOverviewHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.lpOverviewTitle {
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.lpOverviewTotal {
+  text-align: right;
+}
+
+.lpOverviewNum {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+/* Thin mode banner under top bar (enterprise hint, low cognitive load) */
+.lpModeBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0.35)
+  );
+  color: rgba(15, 23, 42, 0.75);
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.lpModeDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.85);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+}
+
+/* Login: KPI tiles above donut */
+.lpKpiRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin: 6px 0 14px;
+}
+
+.lpKpi {
+  min-width: 160px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.lpKpiLabel {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--muted);
+}
+
+.lpKpiValue {
+  margin-top: 4px;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.lpKpiSub {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+/* Role preview card inside login */
+.lpRolePreview {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.lpRolePreviewHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.lpRolePreviewTitle {
+  font-weight: 900;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.lpRolePill {
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  background: rgba(124, 58, 237, 0.10);
+  color: rgba(15, 23, 42, 0.85);
+  white-space: nowrap;
+}
+
+.lpRolePreviewBody {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.lpRoleRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.lpRoleKey {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.lpRoleVal {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.lpRoleText {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.7);
+  line-height: 1.4;
+}
+
+@media (max-width: 980px) {
+  .lpKpiRow {
+    justify-content: flex-start;
+  }
+  .lpKpi {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+.lpOverviewGrid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.lpOverviewChart {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  overflow: visible;
+  width: 100%;
+}
+
+.lpOverviewNotes {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  width: min(920px, 100%);
+}
+
+/* ---------- Donut section: bottom area stacks so page grows by length ---------- */
+.lpNotesStack {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.lpNotesBlock {
+  min-width: 240px;
+}
+
+.lpOverviewSideCardsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 760px;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .lpOverviewSideCardsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lpMiniRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+.lpMiniRow:first-of-type {
+  border-top: 0;
+}
+
+.lpMiniKey {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.lpMiniVal {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* High contrast support (new mini rows) */
+body.a11y-high-contrast .lpMiniKey,
+body.a11y-high-contrast .lpMiniVal {
+  color: #fff !important;
+}
+
+/* ✅ Prevent DonutChart legend from being clipped */
+.lpOverviewCard {
+  overflow: visible;
+}
+
+.lpInfo {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.10);
+  font-weight: 700;
+}
+
+.lpError {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(180, 35, 24, 0.35);
+  background: rgba(180, 35, 24, 0.08);
+  font-weight: 800;
+}
+
+body.a11y-high-contrast .lpCaptchaTitle {
+  color: var(--text);
+}
+
+body.a11y-high-contrast .lpCaptcha .lpMuted {
+  color: var(--muted);
+}
+
+body.a11y-high-contrast .lpCaptcha input {
+  background: #0b1220;
+  color: var(--text);
+  border: 1px solid rgba(248, 250, 252, 0.22);
+}
+
+body.a11y-high-contrast .lpServiceCta {
+  color: #93c5fd;
+}
+
 /* ✅ ACCESSIBILITY: visible focus ring (keyboard users) */
 :focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.55);
   outline-offset: 2px;
 }
-
-/* optional: smoother focus for mouse clicks */
 :focus:not(:focus-visible) {
   outline: none;
 }
@@ -81,6 +692,34 @@ body {
   gap: 10px;
 }
 
+/* Top-right actions inside dashboard header (Track / Accessibility / EN) */
+.dashTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 6px;
+}
+
+@media (max-width: 980px) {
+  .header {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+  }
+  .headerCenter {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+  .headerRight {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .dashTopActions {
+    flex-wrap: wrap;
+  }
+}
+
 .roleLabel {
   font-size: 14px;
   opacity: 0.85;
@@ -103,7 +742,7 @@ body {
 
 /* ---------- TABS BAR ---------- */
 .tabsBar {
-  max-width: 1500px; /* was 1250px */
+  max-width: 1800px;
   margin: 10px auto 0 auto;
   padding: 0 14px;
   display: flex;
@@ -111,6 +750,9 @@ body {
 }
 
 .tabBtn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
   border: 1px solid rgba(109, 40, 217, 0.18);
   background: white;
   color: #0f172a;
@@ -132,13 +774,73 @@ body {
   color: white;
   border: none;
   background: linear-gradient(90deg, var(--brand1), var(--brand2), var(--brand3));
+  box-shadow: 0 12px 26px rgba(79, 70, 229, 0.25);
+  transform: none;
+}
+
+.tabBtn.active:hover {
+  transform: none;
 }
 
 /* ---------- MAIN ---------- */
 .container {
   padding: 14px;
-  max-width: 1500px; /* was 1250px */
+  max-width: 1800px;
   margin: 0 auto;
+}
+
+/* ---------- APP FOOTER (Dashboard) ---------- */
+.appFooter {
+  margin-top: 18px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px);
+}
+
+.appFooterInner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.appFooterTitle {
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
+.appFooterText {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.appFooterLinks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.appFooterSep {
+  color: #94a3b8;
+}
+
+.linkBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.linkBtn:hover {
+  text-decoration: underline;
 }
 
 /* ---------- CARDS ---------- */
@@ -148,9 +850,6 @@ body {
   border-radius: 14px;
   padding: 14px;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-
-  /* ✅ keep charts clean inside cards */
-  overflow: hidden;
 }
 
 .card h2 {
@@ -219,13 +918,61 @@ textarea {
   background: linear-gradient(90deg, var(--brand1), var(--brand2));
 }
 
-/* disabled buttons (clear filters etc.) */
+.btn.primary:hover {
+  filter: brightness(1.05);
+}
+
+/* ✅ Refresh button: lighter than primary but still vivid */
+.btn.refreshBtn {
+  border: none;
+  color: white;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+}
+
+.btn.refreshBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+  filter: brightness(1.03);
+}
+
+/* ✅ Mid button: between default and primary (used for Refresh) */
+.btn.mid {
+  background: rgba(255, 255, 255, 0.85);
+  color: #2f2bd6;
+  border: 1px solid rgba(88, 72, 220, 0.55);
+  box-shadow: 0 6px 18px rgba(20, 18, 70, 0.10);
+  font-weight: 700;
+}
+
+.btn.mid:hover {
+  background: rgba(226, 220, 255, 0.9);
+  border-color: rgba(88, 72, 220, 0.75);
+}
+
+/* High contrast safety for mid button */
+body.a11y-high-contrast .btn.mid {
+  background: #ffffff;
+  color: #111111;
+  border-color: #ffffff;
+}
+
+body.a11y-high-contrast .btn.mid:hover {
+  background: #f2f2f2;
+}
+
+/* disabled buttons */
 .btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
 
 /* ---------- TABLE ---------- */
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -233,13 +980,14 @@ textarea {
   background: white;
   border-radius: 12px;
   overflow: hidden;
+  min-width: 0;
 }
 
 .table th,
 .table td {
-  padding: 10px;
+  padding: 8px;
   border-bottom: 1px solid #eef2f7;
-  font-size: 13px;
+  font-size: 12px;
   vertical-align: middle;
 }
 
@@ -248,12 +996,1118 @@ textarea {
   text-align: left;
 }
 
+/* ------------------------------------------------------------------ */
+/* LANDING / PUBLIC PORTAL (enterprise feel) */
+
+.lpPage {
+  min-height: 100vh;
+}
+
+.lpTopbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: linear-gradient(
+    90deg,
+    rgba(109, 40, 217, 0.92),
+    rgba(37, 99, 235, 0.92)
+  );
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.lpTopbarInner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lpLeftCluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lpBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border-radius: 14px;
+  padding: 6px 8px;
+}
+
+.lpBrand:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.55);
+  outline-offset: 2px;
+}
+
+.lpLogo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.lpBrandTitle {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.lpBrandTag {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
+
+.lpNav {
+  flex: 1;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lpNavLink {
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.94);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+  letter-spacing: 0.1px;
+}
+
+.lpNavLink:hover {
+  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.lpNavLink.active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.92);
+}
+
+.lpNavLink:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.lpTopActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.lpPopoverWrap {
+  position: relative;
+}
+
+.lpPopover {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 320px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  padding: 12px;
+  z-index: 60;
+}
+
+/* ✅ Popover action buttons should be readable on white popover */
+.lpPopover .btn.headerAction {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.lpPopover .btn.headerAction.primary {
+  background: linear-gradient(90deg, var(--brand1), var(--brand2));
+  color: #ffffff;
+  border: none;
+}
+
+/* High contrast: popover should also follow the theme */
+body.a11y-high-contrast .lpPopover {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: none;
+}
+
+body.a11y-high-contrast .lpPopover .lpMuted {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lpPopoverTitle {
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+  margin-bottom: 4px;
+}
+
+.lpPopoverBody {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.lpPopoverFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.lpLangList {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.lpLangItem {
+  text-align: left;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #ffffff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.lpLangItem.active {
+  border-color: rgba(109, 40, 217, 0.35);
+  background: rgba(109, 40, 217, 0.08);
+}
+
+.lpTopbar .lpPill {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.96);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.lpTopbar .lpPill:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.lpAnnouncement {
+  background: linear-gradient(
+    90deg,
+    rgba(109, 40, 217, 0.12),
+    rgba(37, 99, 235, 0.10),
+    rgba(34, 211, 238, 0.10)
+  );
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.lpAnnouncementInner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 10px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #0b1220;
+  font-weight: 700;
+}
+
+.lpBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  font-size: 12px;
+}
+
+/* =========================================================
+   HERO SECTION (FINAL ENTERPRISE VERSION)
+   ========================================================= */
+
+.lpHero {
+  background-size: cover;
+  background-position: center;
+  padding: 48px 0;
+}
+
+/* Clean hero image */
+.lpHero.lpHeroImageOnly {
+  padding: 0;
+  height: 460px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center 50%;
+  box-shadow: inset 0 -22px 55px rgba(0, 0, 0, 0.20);
+}
+
+/* REMOVE blur completely */
+.lpHero.lpHeroImageOnly::after {
+  content: none;
+}
+
+/* Optional subtle gradient overlay */
+.lpHeroFade {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.35) 35%,
+    rgba(0, 0, 0, 0.1) 60%,
+    transparent 80%
+  );
+}
+
+/* Floating status card on hero image */
+.lpHeroStatusFloat {
+  position: absolute;
+  top: 84px;
+  right: 120px;
+  width: min(420px, 92vw);
+  z-index: 2;
+}
+
+/* Scrim overlay to improve readability */
+.lpHeroOverlay {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 88px 14px 54px;
+  border-radius: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(109, 40, 217, 0.72) 0%,
+    rgba(37, 99, 235, 0.48) 45%,
+    rgba(37, 99, 235, 0.00) 78%
+  );
+}
+
+.lpKicker {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+/* =========================================
+   PUBLIC REQUEST HERO — Bigger + Lower
+   ========================================= */
+
+.lpHeroInner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  height: 100%;
+  padding-left: 90px;
+  padding-bottom: 120px;
+}
+
+/* ✅ single definition only (removed duplicate earlier) */
+.lpHeroLeftShift {
+  margin-left: 64px;
+  margin-top: 26px;
+}
+
+.lpHeroKicker {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.45),
+    rgba(79, 70, 229, 0.35)
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.25);
+}
+
+body.a11y-high-contrast .lpHeroKicker {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+/* keep text shadow separate */
+.lpHeroTitle {
+  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ✅ merged lpHeroSub into ONE block (removed duplicate) */
+.lpHeroSub {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.45),
+    rgba(79, 70, 229, 0.35)
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* White text on hero image */
+.lpHeroImageOnly .lpHeroTitle {
+  color: #ffffff;
+}
+.lpHeroImageOnly .lpHeroSub {
+  color: rgba(255, 255, 255, 0.95);
+}
+.lpHeroImageOnly .lpHeroKicker {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.lpHeroActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.lpQuickSearch {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.lpQuickSearch input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #111827;
+}
+
+.lpQuickSearch input::placeholder {
+  color: #6b7280;
+}
+
+.lpHeroCard {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 8px 30px rgba(79, 70, 229, 0.25);
+}
+
+.lpHeroCard .lpMiniStat {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.lpHeroCard .lpMiniStatLabel {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.lpHeroCard .lpMiniStatValue {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.lpMiniStat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.lpMiniStat:last-child {
+  border-bottom: none;
+}
+
+.lpMiniStatLabel {
+  color: rgba(17, 24, 39, 0.70);
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.lpMiniStatValue {
+  color: #0b1220;
+  font-weight: 900;
+}
+
+.lpDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+  margin-right: 8px;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+}
+
+.lpSection {
+  margin: 18px 0;
+}
+
+/* Blend hero into next sections */
+.lpMain {
+  background: linear-gradient(
+    180deg,
+    rgba(109, 40, 217, 0.14) 0%,
+    rgba(37, 99, 235, 0.08) 18%,
+    rgba(255, 255, 255, 1) 55%
+  );
+  padding: 10px 0 0;
+}
+
+/* =========================================================
+   BELOW HERO SECTION
+   ========================================================= */
+
+.lpHeroBelow {
+  margin-top: 0;
+  padding-bottom: 8px;
+}
+
+.lpHeroBelowInner {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.lpHeroBelowInner.oneCol {
+  grid-template-columns: 1fr;
+}
+
+.lpKickerDark {
+  display: inline-block;
+  color: rgba(15, 23, 42, 0.86);
+  background: rgba(109, 40, 217, 0.08);
+  border: 1px solid rgba(109, 40, 217, 0.20);
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 11px;
+}
+
+.lpLeadTitle {
+  color: #0b1220;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.22;
+  margin: 10px 0 6px 0;
+  max-width: 880px;
+}
+
+.lpLeadSub {
+  color: rgba(15, 23, 42, 0.72);
+  max-width: 900px;
+  margin: 0;
+}
+
+/* Make "Continue to Tracking" strong */
+.lpTrackButtons .btn.primary {
+  min-width: 210px;
+  height: 40px;
+  font-weight: 900;
+}
+
+@media (max-width: 980px) {
+  .lpHeroStatusFloat {
+    top: 18px;
+    right: 14px;
+    left: 14px;
+    width: auto;
+  }
+}
+
+/* Light variant for search bar */
+.lpQuickSearch.lpQuickSearchLight {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  backdrop-filter: none;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .lpHero.lpHeroImageOnly {
+    height: 300px;
+  }
+
+  .lpHeroBelowInner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lpSectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.lpH2 {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.lpMuted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lpServiceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lpServiceCard {
+  text-align: left;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: white;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.lpServiceCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.10);
+}
+
+.lpServiceImgWrap {
+  width: 100%;
+  height: 140px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(109, 40, 217, 0.16) 0%,
+    rgba(37, 99, 235, 0.12) 55%,
+    rgba(34, 211, 238, 0.10) 100%
+  );
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.lpServiceImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.14));
+}
+
+.lpServiceBody {
+  padding: 12px;
+}
+
+.lpServiceTitle {
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.lpServiceDesc {
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.lpServiceCta {
+  margin-top: 10px;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
+.lpHowGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lpHowCard {
+  position: relative;
+  padding-top: 16px;
+}
+
+.lpHowNum {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: rgba(109, 40, 217, 0.10);
+  border: 1px solid rgba(109, 40, 217, 0.18);
+}
+
+.lpHowTitle {
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.lpTrack {
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: linear-gradient(
+    90deg,
+    rgba(109, 40, 217, 0.08),
+    rgba(37, 99, 235, 0.06),
+    rgba(34, 211, 238, 0.06)
+  );
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.lpTrackHint {
+  margin-top: 10px;
+  color: rgba(15, 23, 42, 0.70);
+  font-size: 13px;
+}
+
+.lpInlineLink {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-weight: 900;
+  color: #2563eb;
+}
+
+.lpInlineLink:hover {
+  text-decoration: underline;
+}
+
+.lpCaptcha {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.lpCaptchaTitle {
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.lpCaptchaRight {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lpTrackButtons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.lpDisabled {
+  opacity: 0.75;
+}
+
+/* ✅ Footer pinned on public pages */
+.lpShell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.lpShellMain {
+  flex: 1;
+}
+
+.lpShell .lpFooter {
+  margin-top: auto;
+}
+
+.lpFooter {
+  margin-top: 18px;
+  background: #0b1220;
+  color: rgba(255, 255, 255, 0.90);
+}
+
+.lpFooterInner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 22px 14px;
+}
+
+/* Public footer helpers */
+.lpFooterMuted {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.lpFooterCopy {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+}
+
+.lpFooterLink,
+.lpFooterLink:visited {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 800;
+}
+
+.lpFooterLink:hover {
+  text-decoration: underline;
+}
+
+.lpFooterDot {
+  opacity: 0.7;
+}
+
+.lpFooterCols {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 14px;
+}
+
+.lpFooterTitle {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.lpFooterBottom {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.lpFooterBottomLinks {
+  display: flex;
+  gap: 12px;
+  opacity: 0.9;
+}
+
+.lpLink {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 800;
+}
+
+.lpFooterLinks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lpFooterSep {
+  opacity: 0.7;
+}
+
+/* Back row above public request form */
+.lpPageBackRow {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin: 14px 0 6px;
+}
+
+.lpBackBtn,
+.lpBackLink {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: rgba(15, 23, 42, 0.86);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.lpBackBtn:hover,
+.lpBackLink:hover {
+  background: rgba(109, 40, 217, 0.06);
+  border-color: rgba(109, 40, 217, 0.22);
+}
+
+/* Public request grid cards */
+.lpGrid > * {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+body.a11y-high-contrast .lpGrid > * {
+  background: #000000;
+  border: 2px solid #ffffff;
+  box-shadow: none;
+}
+
+/* Public Request: stronger typography */
+.lpGrid .card h2,
+.lpGrid .card h3 {
+  font-weight: 900;
+}
+
+.lpGrid .lpMuted {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.lpGrid label {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1px;
+}
+
+.lpGrid input,
+.lpGrid select,
+.lpGrid textarea {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.lpGrid .btn {
+  font-weight: 900;
+}
+
+.lpGrid {
+  display: grid;
+  grid-template-columns: 1.55fr 1.25fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.lpGrid > :first-child {
+  padding-right: 6px;
+}
+
+.lpGrid .card {
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.lpGrid .card h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.lpGrid .card h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.lpGrid label {
+  font-weight: 900;
+  color: rgba(148, 163, 184, 0.92);
+}
+
+.lpGrid input,
+.lpGrid select,
+.lpGrid textarea {
+  font-weight: 800;
+}
+
+.lpGrid .lpMuted,
+.lpGrid .helpText,
+.lpGrid .hintText {
+  font-weight: 800;
+}
+
+.lpGrid > :last-child .lpH2,
+.lpGrid > :last-child .lpStepTitle {
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 14px;
+}
+
+.lpStepNum {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: rgba(37, 99, 235, 0.14);
+  border: 1px solid rgba(37, 99, 235, 0.26);
+}
+
+.lpStep {
+  gap: 12px;
+}
+
+.lpForm {
+  display: grid;
+  gap: 10px;
+}
+
+.lpFormRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.lpFormActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lpInlineError {
+  margin-top: 8px;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lpSteps {
+  display: grid;
+  gap: 10px;
+}
+
+.lpStep {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.lpStepNum {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: rgba(37, 99, 235, 0.10);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+}
+
+.lpStepTitle {
+  font-weight: 900;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.lpNotice {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .lpServiceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lpHowGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lpTrack {
+    grid-template-columns: 1fr;
+  }
+  .lpGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .lpNav {
+    display: none;
+  }
+  .lpHeroTitle {
+    font-size: 30px;
+  }
+  .lpHeroLeftShift {
+    margin-left: 0;
+    margin-top: 0;
+  }
+  .lpServiceGrid {
+    grid-template-columns: 1fr;
+  }
+  .lpHowGrid {
+    grid-template-columns: 1fr;
+  }
+  .lpFormRow {
+    grid-template-columns: 1fr;
+  }
+  .lpFooterCols {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hover rows */
 .table tr:hover {
   background: #f9fafb;
   cursor: pointer;
 }
 
-/* ✅ Sticky header (for TicketTable.jsx: className="table stickyHeader") */
+/* ✅ Sticky header */
 .table.stickyHeader thead th {
   position: sticky;
   top: 0;
@@ -261,78 +2115,58 @@ textarea {
   background: #f3f4f6;
 }
 
-/* ✅ Column alignment/width hooks (used by TicketTable.jsx) */
+/* ✅ Column alignment/width hooks */
 .colCenter {
   text-align: center !important;
   white-space: nowrap;
 }
-
 .colTicket {
   width: 140px;
   white-space: nowrap;
 }
-
 .colDate {
   width: 150px;
   white-space: nowrap;
 }
-
 .colDesc {
-  min-width: 320px;
+  min-width: 260px;
+  white-space: normal;
+  word-break: break-word;
 }
-
 .colText {
   text-align: left;
 }
 
-/* Makes the clickable row feel better + keeps outline clean */
+/* Row focus */
 .table tr[role="button"]:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.55);
-  outline-offset: -3px; /* stays inside the table bounds */
+  outline-offset: -3px;
 }
 
-/* ---------- BADGES ---------- */
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  border: 1px solid #e5e7eb;
-  font-family: "Poppins", system-ui, sans-serif;
-  font-weight: 700; /* ✅ better readability */
-  color: #0f172a;   /* ✅ contrast-safe default */
-}
-
-/* ---------- TONE BADGES (AI-assisted cue) ---------- */
+/* ---------- TONE BADGES ---------- */
 .tone-calm {
   background-color: #e6f4ea;
-  color: #14532d; /* ✅ darker for contrast */
+  color: #14532d;
 }
-
 .tone-agitated {
   background-color: #fff4e5;
-  color: #7c2d12; /* ✅ darker for contrast */
+  color: #7c2d12;
 }
-
 .tone-angry {
   background-color: #fdecea;
-  color: #7f1d1d; /* ✅ darker for contrast */
+  color: #7f1d1d;
 }
-
 .tone-unknown {
   background-color: #f1f1f1;
-  color: #374151; /* ✅ darker for contrast */
+  color: #374151;
 }
-
-/* ✅ NEW tones */
 .tone-threat {
   background-color: #fff7ed;
-  color: #7c2d12; /* ✅ darker for contrast */
+  color: #7c2d12;
 }
-
 .tone-abusive {
   background-color: #fee2e2;
-  color: #7f1d1d; /* ✅ darker for contrast */
+  color: #7f1d1d;
 }
 
 /* ---------- STATUS SUMMARY ---------- */
@@ -378,7 +2212,7 @@ textarea {
   color: var(--muted);
 }
 
-.barTrack {
+.miniBars .barTrack {
   height: 10px;
   background: #eef2ff;
   border-radius: 999px;
@@ -386,23 +2220,25 @@ textarea {
   border: 1px solid #e5e7eb;
 }
 
-.barFill {
+.miniBars .barFill {
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--brand1), var(--brand2));
 }
 
 /* =========================================================
-   ✅ TOAST STYLES (works with Toast.jsx)
+   ✅ TOAST STYLES
    ========================================================= */
 .toastStack {
   position: fixed;
-  right: 14px;
-  bottom: 14px;
-  display: grid;
-  gap: 10px;
-  z-index: 9999;
-  width: min(420px, calc(100vw - 28px));
+  top: 84px;
+  right: 24px;
+  bottom: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1200;
+  width: min(420px, calc(100vw - 48px));
 }
 
 .toast {
@@ -415,7 +2251,7 @@ textarea {
   gap: 10px;
   align-items: start;
   border: 1px solid #e5e7eb;
-  border-left: 6px solid #2563eb; /* default (info) */
+  border-left: 6px solid #2563eb;
 }
 
 .toastTitle {
@@ -442,45 +2278,35 @@ textarea {
 .toast.info {
   border-left-color: #2563eb;
 }
-
 .toast.success {
   border-left-color: #16a34a;
 }
-
 .toast.warning {
   border-left-color: #ea580c;
 }
-
 .toast.error {
   border-left-color: #dc2626;
 }
 
-/* =========================================================
-   ✅ OPTIONAL: “Premium chart area” helpers (nice but optional)
-   ========================================================= */
+/* OPTIONAL: chart helpers */
 .chartWrap {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 14px;
 }
-
-/* Helps SVG rings not clip on hover (stroke grows) */
 .chartWrap svg {
   overflow: visible;
 }
-
-/* Soft brand glow you can apply to chart container if desired */
 .brandGlow {
   filter: drop-shadow(0 14px 28px rgba(37, 99, 235, 0.12))
-          drop-shadow(0 10px 20px rgba(109, 40, 217, 0.10));
+    drop-shadow(0 10px 20px rgba(109, 40, 217, 0.10));
 }
 
 /* =========================
-   ✅ Requirement 1 helpers
+   Requirement helpers
    ========================= */
 
-/* Error banner */
 .errorBanner {
   background: #fff1f2;
   border: 1px solid #fecdd3;
@@ -499,7 +2325,6 @@ textarea {
   font-weight: 800;
 }
 
-/* ✅ Task 566: Rate-limit banner (used in StatusLookupPage.jsx) */
 .banner.warning {
   background: #fff7ed;
   border: 1px solid #fed7aa;
@@ -509,7 +2334,6 @@ textarea {
   font-weight: 800;
 }
 
-/* “Refreshing…” pill */
 .pill {
   font-size: 12px;
   font-weight: 900;
@@ -526,7 +2350,91 @@ textarea {
   color: #7c2d12;
 }
 
-/* Empty state card */
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.metaPillMuted {
+  background: #f8fafc;
+  color: #334155;
+}
+
+/* Enterprise dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdownBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+}
+
+.dropdownBtnText {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownChevron {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 280px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+  padding: 6px;
+  z-index: 50;
+}
+
+.dropdownItem {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background: #f8fafc;
+  border-color: #e5e7eb;
+}
+
+.dropdownItem.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.dropdownCheck {
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
 .emptyCard {
   padding: 12px;
   border-radius: 12px;
@@ -536,7 +2444,7 @@ textarea {
   font-weight: 800;
 }
 
-/* Skeleton line */
+/* Skeleton */
 .skeletonLine {
   height: 12px;
   border-radius: 999px;
@@ -557,4 +2465,1663 @@ textarea {
   100% {
     background-position: -200% 0%;
   }
+}
+
+/* Ticket buckets */
+.bucketHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.bucketSwitcher {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Approve-like select */
+.actionSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2));
+  color: #ffffff;
+  font-weight: 900;
+  border-radius: 10px;
+  padding: 10px 42px 10px 14px;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  min-width: 240px;
+  background-image: linear-gradient(
+      45deg,
+      transparent 50%,
+      rgba(255, 255, 255, 0.9) 50%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 50%,
+      transparent 50%
+    );
+  background-position: calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.actionSelect:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+}
+
+/* Reports */
+.reportFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fbfbff;
+}
+
+.reportField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reportLabel {
+  font-size: 12px;
+  font-weight: 900;
+  color: #374151;
+}
+
+.reportInput {
+  padding: 9px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-weight: 700;
+  background: white;
+}
+
+.reportToggle {
+  min-width: 180px;
+}
+
+.togglePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: white;
+  font-weight: 800;
+  color: #111827;
+}
+
+.togglePill input {
+  transform: translateY(1px);
+}
+
+.reportActions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.reportSummaryRow {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reportSummary {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  padding: 10px;
+}
+
+.reportSummaryKpi {
+  font-weight: 900;
+  font-size: 18px;
+  color: #111827;
+}
+
+.reportSummaryLabel {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 800;
+}
+
+.reportGrid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reportCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  padding: 10px;
+}
+
+.reportTitle {
+  font-weight: 900;
+  font-size: 13px;
+  color: #111827;
+}
+
+.reportHint {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.barList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 160px 1fr 36px;
+  gap: 10px;
+  align-items: center;
+}
+
+.barLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reportGrid .barTrack {
+  height: 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.reportGrid .barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: #111827;
+  opacity: 0.14;
+}
+
+.barValue {
+  text-align: right;
+  font-size: 12px;
+  font-weight: 900;
+  color: #111827;
+}
+
+@media (max-width: 980px) {
+  .reportGrid {
+    grid-template-columns: 1fr;
+  }
+  .reportSummaryRow {
+    grid-template-columns: 1fr;
+  }
+  .barRow {
+    grid-template-columns: 140px 1fr 36px;
+  }
+  .actionSelect {
+    min-width: 200px;
+  }
+}
+
+/* Topbar right actions */
+.lpTopActionsRight {
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Call 311 pill */
+.lpCall311 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.96);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lpCall311:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.lpCall311Icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.lpCall311Text {
+  white-space: nowrap;
+}
+
+/* Make Continue to Tracking strong */
+.lpTrackButtons .btn.primary {
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.20);
+}
+
+.lpTrackButtons .btn.primary.lpDisabled,
+.lpTrackButtons .btn.primary:disabled {
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+/* ✅ High contrast: captcha area readable (SAFER — removed the universal * selector) */
+body.a11y-high-contrast .lpCaptcha {
+  color: var(--text) !important;
+}
+
+body.a11y-high-contrast .lpCaptcha {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+body.a11y-high-contrast .lpCaptcha input {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.20) !important;
+  color: var(--text) !important;
+}
+
+body.a11y-high-contrast .lpCaptcha input::placeholder {
+  color: rgba(255, 255, 255, 0.70) !important;
+}
+
+/* High contrast: keep notice strip visible */
+body.a11y-high-contrast .lpAnnouncementInner,
+body.a11y-high-contrast .lpBadge {
+  color: var(--text) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* ---------------------------------------------------------
+   Floating actions
+   --------------------------------------------------------- */
+
+@keyframes softPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(124, 58, 237, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+}
+
+/* ==========================
+   ✅ Floating Voice AI CTA
+   ========================== */
+.voiceFab {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+
+  width: 140px;
+  padding: 18px 12px;
+  border-radius: 24px;
+
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 14px 36px rgba(79, 70, 229, 0.45);
+  transition: all 0.25s ease;
+  z-index: 1000;
+  text-decoration: none;
+
+  animation: softPulse 3.8s infinite;
+}
+
+.voiceBotLarge {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+}
+
+.voiceLabel {
+  font-size: 14px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.voiceTooltip {
+  position: absolute;
+  right: 156px;
+  bottom: 22px;
+  white-space: nowrap;
+  padding: 9px 11px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateX(8px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.voiceTooltip::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: 12px;
+  width: 10px;
+  height: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  transform: rotate(45deg);
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.voiceFab:hover {
+  animation-duration: 1.4s;
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voiceFab {
+    animation: none;
+  }
+}
+
+.voiceFab:hover .voiceTooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .voiceFab {
+    width: 120px;
+    padding: 16px 10px;
+  }
+  .voiceBotLarge {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* Floating Call 311 button */
+.lpCallFab {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9999;
+
+  overflow: visible;
+  isolation: isolate;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(110, 70, 255, 0.95),
+    rgba(60, 120, 255, 0.95)
+  );
+  color: #fff;
+  text-decoration: none;
+
+  box-shadow: 0 14px 34px rgba(18, 16, 70, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  transition: transform 0.10s ease, box-shadow 0.15s ease;
+}
+
+.lpCallFabBotImg {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.lpCallFab::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  border: 2px solid rgba(124, 58, 237, 0.55);
+  opacity: 0;
+  transform: scale(1);
+  z-index: -1;
+}
+
+@keyframes lpPulseWave {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.lpCallFab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 40px rgba(18, 16, 70, 0.42);
+}
+
+.lpCallFab:hover::after {
+  opacity: 1;
+  animation: lpPulseWave 1s infinite;
+}
+
+.lpCallFabIcon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.lpCallFabText {
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+}
+
+body.a11y-high-contrast .lpCallFab {
+  background: #ffffff;
+  color: #111111;
+  border-color: #ffffff;
+}
+
+/* =========================================================
+   DASHBOARD LAYOUT (scoped) — footer pinned + header + tabs
+   ========================================================= */
+
+.dashboardShell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.dashboardContent {
+  flex: 1;
+  padding: 20px 40px;
+}
+
+.lpHeader {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: #ffffff;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2), var(--brand3));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.lpHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 900;
+}
+
+.lpHeaderCenter {
+  text-align: center;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 0.95;
+  color: #ffffff;
+}
+
+.lpHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.loggedUser {
+  font-size: 12px;
+  font-weight: 800;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.btn.logout {
+  border: none;
+  color: #fff;
+  background: rgba(15, 23, 42, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.btn.logout:hover {
+  background: rgba(15, 23, 42, 0.30);
+}
+
+.dashboardShell .tabsBar {
+  margin: 0 auto;
+  padding: 12px 14px;
+}
+
+/* Dashboard footer light */
+.dashboardShell .lpFooter {
+  margin-top: auto;
+  background: #f1f5f9;
+  color: #0f172a;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.dashboardShell .lpFooter .lpFooterInner,
+.dashboardShell .lpFooterInner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 16px 14px;
+}
+
+.dashboardShell .lpFooter {
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Ticket Details Page */
+.ticketBody {
+  flex: 1;
+}
+
+.ticketPageShell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.ticketStickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  background: rgba(246, 247, 251, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 12px 14px;
+}
+
+.ticketBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(15, 23, 42, 0.65);
+  margin-bottom: 10px;
+}
+
+.ticketCrumbLink {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-weight: 900;
+  color: #2563eb;
+}
+
+.ticketCrumbLink:hover {
+  text-decoration: underline;
+}
+
+.ticketCrumbSep {
+  opacity: 0.65;
+}
+
+.ticketCrumbCurrent {
+  color: rgba(15, 23, 42, 0.82);
+}
+
+.ticketHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ticketHeaderKicker {
+  font-size: 12px;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.ticketHeaderId {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.ticketHeaderActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ticketCard {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ticketFooter {
+  max-width: 1100px;
+  margin: 14px auto 18px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ticketFooterTitle {
+  font-weight: 900;
+}
+
+.ticketFooterSub {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.ticketFooterMeta {
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.72);
+  font-weight: 800;
+}
+
+body.a11y-high-contrast .ticketStickyHeader {
+  background: #000000;
+  border-bottom: 2px solid #ffffff;
+}
+
+body.a11y-high-contrast .ticketBreadcrumb,
+body.a11y-high-contrast .ticketCrumbCurrent,
+body.a11y-high-contrast .ticketFooterMeta,
+body.a11y-high-contrast .ticketFooterSub,
+body.a11y-high-contrast .ticketHeaderKicker {
+  color: #ffffff !important;
+}
+
+body.a11y-high-contrast .ticketCrumbLink {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+body.a11y-high-contrast .ticketFooter {
+  background: #000000;
+  border: 2px solid #ffffff;
+}
+
+/* Responsive dashboard header */
+@media (max-width: 980px) {
+  .lpHeader {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+  .lpHeaderCenter {
+    text-align: left;
+    order: 2;
+  }
+  .lpHeaderRight {
+    justify-content: flex-start;
+    order: 3;
+  }
+  .dashboardContent {
+    padding: 16px 14px;
+  }
+}
+
+/* Dashboard header buttons */
+.btn.headerAction {
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.btn.headerAction:hover {
+  filter: brightness(1.06);
+}
+
+.dashHeaderStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.dashSessionLine {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+body.a11y-high-contrast .btn.headerAction {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: none;
+}
+
+body.a11y-high-contrast .dashSessionLine {
+  color: #ffffff;
+}
+
+/* Ticket table controls */
+.laneBtn,
+.filterChip {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: "Poppins", system-ui, sans-serif;
+  font-weight: 800;
+}
+
+.controlsLabel {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 800;
+  margin-right: 4px;
+}
+
+body.a11y-high-contrast .controlsLabel {
+  color: #ffffff;
+}
+
+.chipLabel,
+.laneLabel {
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.chipCheck {
+  font-size: 12px;
+  font-weight: 900;
+  color: #2563eb;
+  line-height: 1;
+}
+
+.laneBtn.isActive,
+.filterChip.isActive {
+  border: 2px solid var(--chip-accent);
+  background: #eff6ff;
+}
+
+.countPill {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+body.a11y-high-contrast .laneBtn,
+body.a11y-high-contrast .filterChip {
+  background: #000;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+body.a11y-high-contrast .laneBtn.isActive,
+body.a11y-high-contrast .filterChip.isActive {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+body.a11y-high-contrast .countPill {
+  background: #fff;
+  color: #000;
+}
+
+/* Ticket badges + HC table */
+.ticketLink {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 800;
+}
+
+.placeholderDash {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.statusBadge.status-NEW {
+  background: #ecfeff;
+}
+.statusBadge.status-IN_PROGRESS {
+  background: #eff6ff;
+}
+.statusBadge.status-RESOLVED {
+  background: #ecfdf5;
+}
+.statusBadge.status-NEEDS_REVIEW {
+  background: #fff7ed;
+}
+
+.confidenceBadge.conf-HIGH {
+  background: #ecfdf5;
+}
+.confidenceBadge.conf-MEDIUM {
+  background: #eff6ff;
+}
+.confidenceBadge.conf-LOW {
+  background: #fff7ed;
+}
+
+.toneBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.toneEmoji {
+  font-size: 14px;
+  line-height: 1;
+}
+.toneConf {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+body.a11y-high-contrast .table,
+body.a11y-high-contrast .table th,
+body.a11y-high-contrast .table td {
+  background: #000000;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+body.a11y-high-contrast .ticketLink {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+body.a11y-high-contrast .placeholderDash {
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+body.a11y-high-contrast .badge {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+/* HC primary buttons */
+body.a11y-high-contrast .btn.primary {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* Ticket table controls: search icon */
+.ttSearchWrap {
+  position: relative;
+  width: 100%;
+}
+
+.ttSearchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.ttSearchWrap input {
+  width: 100%;
+  padding-left: 34px;
+}
+
+.ttClearRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Ticket details extras */
+.evidenceTogglePill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.10);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: #1d4ed8;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.ticketSummaryCard {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.ticketSummaryHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ticketSummaryTitle {
+  font-weight: 900;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.ticketSummaryHint {
+  font-weight: 800;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.ticketSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.ticketSummaryDivider {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.08);
+  margin: 12px 0;
+}
+
+/* Dashboard footer layout */
+.lpFooterRow {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.lpFooterLeft {
+  justify-self: start;
+}
+
+.lpFooterCenter {
+  justify-self: center;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.lpFooterCenter a {
+  color: #64748b;
+  text-decoration: none;
+}
+.lpFooterCenter a:hover {
+  text-decoration: underline;
+}
+
+.lpFooterRight {
+  justify-self: end;
+  color: #64748b;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .lpFooterRow {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .lpFooterLeft,
+  .lpFooterRight {
+    justify-self: center;
+  }
+}
+
+/* Public header action buttons */
+.lpActionBtn {
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.lpActionBtn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.lpPopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.lpPopover input[type="checkbox"] {
+  transform: scale(1.15);
+}
+
+/* Unified TicketForm styles */
+.ticketForm {
+  width: 100%;
+}
+
+.tfGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+  margin-top: 12px;
+}
+
+.tfField label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.tfField input,
+.tfField select,
+.tfField textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.tfField textarea {
+  resize: vertical;
+}
+
+.tfField input:focus,
+.tfField select:focus,
+.tfField textarea:focus {
+  border-color: rgba(109, 40, 217, 0.55);
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.12);
+}
+
+.tfSpan2 {
+  grid-column: 1 / -1;
+}
+
+.tfDivider {
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--text);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+
+.tfCaptcha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  padding: 12px 12px;
+}
+
+.tfCaptchaTitle {
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.tfCaptchaQ {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.tfCaptchaRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.tfActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (max-width: 860px) {
+  .tfGrid {
+    grid-template-columns: 1fr;
+  }
+  .tfCaptchaRight {
+    min-width: unset;
+  }
+}
+
+/* Public pages width */
+.lpMainInner {
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 22px 18px;
+}
+.lpMainInner.lpWider {
+  max-width: 1380px;
+}
+
+/* Public headings */
+.lpCardTitle {
+  font-size: 22px;
+  font-weight: 900;
+}
+.lpCardSub {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Public Lookup (Track Request) */
+.plLookupIntro {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  padding: 16px 16px;
+  margin-bottom: 16px;
+}
+
+.plLookupH1 {
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.plLookupSub {
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.plLookupNote {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.plLookupGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 14px;
+  align-items: end;
+}
+
+.plField label {
+  display: block;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.plField input,
+.plField select {
+  width: 100%;
+}
+
+.plActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.plError {
+  margin-top: 6px;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.plHint {
+  margin-top: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.plHelp {
+  margin-top: 14px;
+}
+
+.plHelpTitle {
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.plResults {
+  margin-top: 14px;
+}
+
+.plResultsTitle {
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.plResultsList {
+  display: grid;
+  gap: 10px;
+}
+
+.plResultCard {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.70);
+}
+
+.plResultTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.plTicket {
+  font-weight: 900;
+}
+
+.plStatus {
+  font-weight: 900;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(109, 40, 217, 0.10);
+}
+
+.plMeta {
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 12px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plDesc {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.plSmall {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 860px) {
+  .plLookupGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Lookup polish */
+.lpPopoverFooterSplit {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lpLangBtn {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.75);
+  font-weight: 900;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.lpLangBtn:hover {
+  transform: translateY(-1px);
+}
+
+.lpLangBtn.active {
+  border-color: rgba(109, 40, 217, 0.55);
+  background: rgba(109, 40, 217, 0.10);
+}
+
+body.a11y-high-contrast .lpLangBtn {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+body.a11y-high-contrast .lpLangBtn.active {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+.plCard {
+  margin-top: 16px;
+}
+
+.plCardHeader {
+  margin-bottom: 10px;
+}
+
+.plCardTitleRow {
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.plCardSubRow {
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* Two-card layout stacked */
+.plTwoCardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 32px 0 40px 0;
+}
+
+.plTwoCardGrid .lpCard {
+  width: 100%;
+}
+
+.lpCard {
+  border-radius: 18px;
+  padding: 22px 24px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04),
+    0 8px 24px rgba(15, 23, 42, 0.06);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.lpCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08),
+    0 14px 36px rgba(15, 23, 42, 0.10);
+}
+
+/* ==========================
+   ✅ FINAL OVERRIDES (keep at bottom)
+   ========================== */
+
+/* Hero title */
+.lpHeroTitle {
+  font-size: 42px !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 0 10px 0 !important;
+}
+
+@media (max-width: 720px) {
+  .lpHeroTitle {
+    font-size: 30px !important;
+    line-height: 1.16 !important;
+  }
+}
+
+/* Hero kicker */
+.lpHeroKicker {
+  font-size: 14px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  opacity: 0.92 !important;
+}
+
+/* VoiceBot button bigger */
+.voiceFab {
+  width: 156px !important;
+  padding: 20px 14px !important;
+  border-radius: 26px !important;
+  gap: 10px !important;
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.45) !important;
+}
+
+@media (max-width: 720px) {
+  .voiceFab {
+    width: 144px !important;
+    padding: 18px 12px !important;
+    border-radius: 24px !important;
+  }
+}
+
+.voiceBotLarge {
+  transform: scale(1.08);
+}
+
+.voiceLabel {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+/* ===========================
+   QUEUE OVERVIEW - RECENT ACTIVITY
+   (✅ de-duplicated: kept ONE version only)
+   =========================== */
+
+.recentActivityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.recentActivityCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.recentActivityCard:hover {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.recentActivityTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Buttons in recent activity */
+.raButton {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.raButton.primary {
+  background: linear-gradient(135deg, var(--brand1), var(--brand2));
+  color: #fff;
+}
+
+.raButton.primary:hover {
+  opacity: 0.9;
+}
+
+.raButton.secondary {
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--brand2);
+}
+
+/* Bold card titles */
+.queueCardTitle,
+.recentActivityCard h4 {
+  font-weight: 800;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ✅ Recent Activity: make "Open queue" clearly colored */
+.raButton.secondary {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.16), rgba(37, 99, 235, 0.14));
+  border: 1px solid rgba(109, 40, 217, 0.28);
+  color: rgba(37, 99, 235, 0.95);
+  font-weight: 900;
+}
+
+.raButton.secondary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+body.a11y-high-contrast .raButton.secondary {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* ✅ FORCE: Recent Activity "Open queue" button must be colored */
+.recentActivityCard .raButton.secondary,
+.recentActivityCard button.raButton.secondary {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.22), rgba(37, 99, 235, 0.18)) !important;
+  border: 1px solid rgba(109, 40, 217, 0.34) !important;
+  color: rgba(37, 99, 235, 1) !important;
+  font-weight: 900 !important;
+}
+
+/* =========================================================
+   ✅ FORCE OVERRIDE: "Open queue" button (Recent Activity)
+   Paste this at the VERY BOTTOM of styles.css
+   ========================================================= */
+
+/* If the button is raButton secondary */
+.recentActivityCard .raButton.secondary,
+.recentActivityCard button.raButton.secondary,
+.recentActivityCard .recentActivityTop .raButton.secondary {
+  background: linear-gradient(
+    135deg,
+    rgba(109, 40, 217, 0.22),
+    rgba(37, 99, 235, 0.18)
+  ) !important;
+  border: 1px solid rgba(109, 40, 217, 0.34) !important;
+  color: rgba(37, 99, 235, 1) !important;
+  font-weight: 900 !important;
+}
+
+/* If the button is actually using .btn (common) */
+.recentActivityCard .btn.secondary,
+.recentActivityCard button.btn.secondary,
+.recentActivityCard .btn.openQueue,
+.recentActivityCard button.btn.openQueue {
+  background: linear-gradient(
+    135deg,
+    rgba(109, 40, 217, 0.22),
+    rgba(37, 99, 235, 0.18)
+  ) !important;
+  border: 1px solid rgba(109, 40, 217, 0.34) !important;
+  color: rgba(37, 99, 235, 1) !important;
+  font-weight: 900 !important;
+}
+
+/* High contrast mode must stay readable */
+body.a11y-high-contrast .recentActivityCard .raButton.secondary,
+body.a11y-high-contrast .recentActivityCard .btn.secondary,
+body.a11y-high-contrast .recentActivityCard .btn.openQueue {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
 }

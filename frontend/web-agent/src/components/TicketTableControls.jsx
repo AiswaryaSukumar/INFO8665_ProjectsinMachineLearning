@@ -2,14 +2,10 @@
 import React from "react";
 
 /**
- * Search + quick filter chips for TicketTable
+ * Search + lane filters + quick filter chips for TicketTable
  *
- * Props:
- * - searchQuery: string
- * - onSearchChange: (value: string) => void
- * - chips: { needsReview: boolean, escalated: boolean }
- * - onToggleChip: (chipKey: "needsReview"|"escalated") => void
- * - onClearAll?: () => void
+ * NOTE: Keep this component "CSS-driven" (no inline styles) so
+ * high-contrast mode can reliably override everything.
  */
 export default function TicketTableControls({
   searchQuery = "",
@@ -17,117 +13,115 @@ export default function TicketTableControls({
   chips = { needsReview: false, escalated: false },
   onToggleChip,
   onClearAll,
+
+  queueFilter = "ALL",
+  onChangeQueueFilter,
+  laneStats = {},
+  showLaneFilters = true,
 }) {
   const Chip = ({ id, label, active }) => (
     <button
       type="button"
-      className="btn"
+      className={`filterChip ${active ? "isActive" : ""}`}
       onClick={() => onToggleChip?.(id)}
       aria-pressed={!!active}
-      style={{
-        padding: "8px 10px",
-        borderRadius: 999,
-        border: active ? "2px solid #2563eb" : "1px solid #e5e7eb",
-        background: active ? "#eff6ff" : "#ffffff",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 8,
-        cursor: "pointer",
-      }}
       title={label}
     >
-      <span style={{ fontWeight: 800, fontSize: 12 }}>{label}</span>
-      {active && (
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 900,
-            color: "#2563eb",
-            lineHeight: 1,
-          }}
-          aria-hidden="true"
-        >
+      <span className="chipLabel">{label}</span>
+      {active ? (
+        <span className="chipCheck" aria-hidden="true">
           ✓
         </span>
-      )}
+      ) : null}
+      <span className="srOnly">{active ? "(active)" : ""}</span>
     </button>
   );
 
+  const LaneBtn = ({ id, label, count, hidden }) => {
+    if (hidden) return null;
+    const active = queueFilter === id;
+
+    return (
+      <button
+        type="button"
+        className={`laneBtn ${active ? "isActive" : ""}`}
+        onClick={() => onChangeQueueFilter?.(id)}
+        aria-pressed={active}
+        title={label}
+      >
+        <span className="laneLabel">{label}</span>
+        {typeof count === "number" ? (
+          <span className="countPill">{count}</span>
+        ) : (
+          <span className="countPill">0</span>
+        )}
+      </button>
+    );
+  };
+
   const anyActive =
-    !!searchQuery?.trim() ||
-    Object.values(chips || {}).some(Boolean);
+    !!searchQuery?.trim() || Object.values(chips || {}).some(Boolean);
+
+  const clearAll = () => {
+    onSearchChange?.("");
+    onClearAll?.();
+  };
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gap: 10,
-        marginTop: 12,
-        marginBottom: 10,
-      }}
-    >
-      {/* Search */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
-          gap: 10,
-          alignItems: "center",
-        }}
-      >
-        <div style={{ position: "relative" }}>
+    <div className="ttControlsGrid">
+      {showLaneFilters ? (
+        <div className="ttControlsRow" role="group" aria-label="Status filters">
+          <span className="controlsLabel">Status filters:</span>
+
+          <LaneBtn id="NEW" label="New" count={laneStats.new} />
+          <LaneBtn
+            id="APPROVAL"
+            label="Approve"
+            count={laneStats.approval}
+            hidden={!laneStats.showApproval}
+          />
+          <LaneBtn id="DELETE" label="Delete" count={laneStats.delete} />
+
+          <LaneBtn id="MINE" label="Mine" count={laneStats.mine} />
+          <LaneBtn
+            id="IN_PROGRESS"
+            label="In Progress"
+            count={laneStats.inProgress}
+          />
+          <LaneBtn id="ESCALATED" label="Escalated" count={laneStats.escalated} />
+          <LaneBtn id="RESOLVED" label="Resolved" count={laneStats.resolved} />
+          <LaneBtn id="ALL" label="All Active" count={laneStats.allActive} />
+        </div>
+      ) : null}
+
+      <div className="ttControlsSearchRow" role="search">
+        <div className="ttSearchWrap">
           <input
             value={searchQuery}
             onChange={(e) => onSearchChange?.(e.target.value)}
             placeholder="Search: ticket #, name, location, keywords…"
             aria-label="Search tickets"
-            style={{
-              width: "100%",
-              paddingLeft: 36,
-              borderRadius: 12,
-            }}
+            className="ttSearchInput"
           />
-          <span
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#64748b",
-              fontSize: 14,
-              pointerEvents: "none",
-            }}
-          >
+          <span aria-hidden="true" className="ttSearchIcon">
             🔎
           </span>
         </div>
 
         <button
           type="button"
-          className="btn"
-          onClick={() => {
-            onSearchChange?.("");
-            onClearAll?.();
-          }}
+          className="filterChip ttClearBtn"
+          onClick={clearAll}
           disabled={!anyActive}
           aria-disabled={!anyActive}
           title="Clear search and filters"
-          style={{
-            opacity: anyActive ? 1 : 0.5,
-            cursor: anyActive ? "pointer" : "not-allowed",
-          }}
         >
-          Clear
+          <span className="chipLabel">Clear</span>
         </button>
       </div>
 
-      {/* Quick Filters */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-        <div style={{ fontSize: 12, color: "#64748b", fontWeight: 800, marginRight: 4 }}>
-          Quick filters:
-        </div>
-
+      <div className="ttControlsRow" role="group" aria-label="Quick filters">
+        <span className="controlsLabel">Quick filters:</span>
         <Chip id="needsReview" label="Needs Review" active={chips.needsReview} />
         <Chip id="escalated" label="Escalated" active={chips.escalated} />
       </div>

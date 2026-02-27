@@ -152,8 +152,8 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
             </select>
 
             <p style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-              Default routing is to an Operator (Tom/Jerry). If escalation rules trigger,
-              it will route to Supervisor ({SUPERVISOR?.name || "Nagavalli"}).
+              Default routing is to an Operator (Tom/Jerry). If escalation rules
+              trigger, it will route to Supervisor ({SUPERVISOR?.name || "Nagavalli"}).
             </p>
           </div>
         </div>
@@ -191,9 +191,11 @@ export default function VoiceIntakePanel({ transcript, setTranscript, onExtract 
         </div>
       )}
 
+      {/* ✅ UPDATED: Bot asks (uses class so High Contrast can style it) */}
       <div style={{ marginTop: 10 }}>
         <label>Bot asks (only if missing fields)</label>
-        <div style={{ background: "#f3f4f6", padding: 10, borderRadius: 8 }}>
+
+        <div className="botAskBox">
           {!transcript && "Please describe the issue you’d like to report."}
 
           {transcript && status !== "Session Completed" && (

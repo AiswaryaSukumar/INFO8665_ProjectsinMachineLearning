@@ -1,53 +1,48 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import StatusLookupPage from "./StatusLookupPage";
-import logo from "../assets/insight311-logo.png";
+
+import PublicHeader from "../components/PublicHeader";
+import PublicFooter from "../components/PublicFooter";
+import Floating311Button from "../components/Floating311Button";
 
 export default function CitizenStatusPage() {
-  const nav = useNavigate();
+  const [lang, setLang] = useState(() => localStorage.getItem("insight311_lang") || "EN");
 
   return (
     <>
-      {/* CITIZEN HEADER (branded, public-facing) */}
-      <div className="header">
-        <div className="headerLeft">
-          <img className="logo" src={logo} alt="INSIGHT-311 logo" />
-          <span className="appName">INSIGHT-311</span>
-        </div>
+      <PublicHeader
+        title={lang === "FR" ? "Statut citoyen" : "Citizen status"}
+        showBack
+        lang={lang}
+        onLangChange={setLang}
+      />
 
-        <div className="headerCenter">Citizen Status Lookup</div>
+      <main className="lpShell">
+        <div className="lpMain">
+          <div className="lpContainer">
+            <div className="card" style={{ marginBottom: 12 }}>
+              <h2 style={{ marginTop: 0 }}>
+                {lang === "FR" ? "Suivre ma demande 311" : "Track My 311 Request"}
+              </h2>
+              <div style={{ color: "#64748b" }}>
+                {lang === "FR"
+                  ? "Recherchez par numéro de ticket ou numéro de téléphone pour voir les mises à jour."
+                  : "Search by ticket number or phone number to view updates."}
+              </div>
+              <div style={{ color: "#64748b", marginTop: 8, fontSize: 13 }}>
+                {lang === "FR"
+                  ? "Accès public : statut uniquement. Les détails personnels sont masqués dans ce prototype."
+                  : "Public access: status only. Personal details are hidden in this prototype."}
+              </div>
+            </div>
 
-        <div className="headerRight">
-          <button
-            className="btn"
-            onClick={() => nav("/")}
-            style={{
-              background: "rgba(255,255,255,0.15)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.25)",
-            }}
-          >
-            Home
-          </button>
-        </div>
-      </div>
-
-      {/* PAGE CONTENT */}
-      <div className="container">
-        <div className="card" style={{ marginBottom: 12 }}>
-          <h2>Track My 311 Request</h2>
-
-          <div style={{ color: "#64748b" }}>
-            Search by <b>ticket number</b> or <b>phone number</b> to view updates.
-          </div>
-
-          <div style={{ color: "#64748b", marginTop: 8, fontSize: 13 }}>
-            Public access: you can view status only. Personal details are hidden in this prototype.
+            <StatusLookupPage mode="citizen" lang={lang} />
           </div>
         </div>
+      </main>
 
-        {/* Reuse UC3 lookup UI (citizen mode: only ticket# + phone, with validation + rate limiting) */}
-        <StatusLookupPage mode="citizen" />
-      </div>
+      <Floating311Button label={lang === "FR" ? "Parler au 311" : "Talk to 311"} />
+      <PublicFooter lang={lang} />
     </>
   );
 }

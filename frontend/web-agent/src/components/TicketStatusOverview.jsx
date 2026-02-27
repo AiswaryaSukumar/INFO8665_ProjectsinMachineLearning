@@ -10,6 +10,7 @@ export default function TicketStatusOverview({
   loading = false,
   error = false,
   onRefresh,
+  lastRefreshedAt,
 }) {
   const sessionRole = (localStorage.getItem("userRole") || "OPERATOR").toUpperCase();
   const sessionName = low(localStorage.getItem("userName"));
@@ -17,6 +18,7 @@ export default function TicketStatusOverview({
 
   const isResolved = (t) => String(t?.status || "").toUpperCase() === "RESOLVED";
   const isInProgress = (t) => String(t?.status || "").toUpperCase() === "IN_PROGRESS";
+  const isEscalated = (t) => String(t?.status || "").toUpperCase() === "ESCALATED";
 
   // ✅ keep normalized approved check
   const isApproved = (t) => String(t?.routingStatus || "").toUpperCase() === "APPROVED";
@@ -26,7 +28,11 @@ export default function TicketStatusOverview({
     String(t?.handledByRole || "VOICE_BOT").toUpperCase() === "VOICE_BOT" &&
     String(t?.handledByType || "VOICE_BOT").toUpperCase() === "VOICE_BOT";
 
-  const isBotOnlyPendingApproval = (t) => isPureVoiceBot(t) && !isApproved(t) && !isResolved(t);
+  const isBotOnlyPendingApproval = (t) => {
+    const stage = String(t?.workflowStage || "").toUpperCase();
+    const legacyPending = isPureVoiceBot(t) && !isApproved(t) && !isResolved(t);
+    return stage === "PENDING_SUPERVISOR_APPROVAL" || legacyPending;
+  };
 
   const visibleTickets = useMemo(() => {
     if (isSupervisor) return tickets;
@@ -49,6 +55,7 @@ export default function TicketStatusOverview({
     }).length;
 
     const inProgress = visibleTickets.filter(isInProgress).length;
+    const escalated = visibleTickets.filter(isEscalated).length;
     const resolved = visibleTickets.filter(isResolved).length;
 
     const humanHandled = visibleTickets.filter((t) => !isPureVoiceBot(t)).length;
@@ -60,6 +67,7 @@ export default function TicketStatusOverview({
       approvalNeededAll,
       mine,
       inProgress,
+      escalated,
       resolved,
       humanHandled,
       botOnlyVisible,
@@ -132,6 +140,12 @@ export default function TicketStatusOverview({
           {loading && <span className="pill">Refreshing…</span>}
           {error && !loading && <span className="pill pillError">Offline / error</span>}
 
+          {lastRefreshedAt && !loading ? (
+            <span className="pill" title="Last refresh time">
+              Last refreshed: {new Date(lastRefreshedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </span>
+          ) : null}
+
           {/* ✅ Supervisor quick toggle for approvals */}
           {isSupervisor && stats.approvalNeededAll > 0 && (
             <button
@@ -177,6 +191,7 @@ export default function TicketStatusOverview({
         )}
         <LaneBtn id="MINE" label="Mine (Created/Handled)" count={stats.mine} />
         <LaneBtn id="IN_PROGRESS" label="In Progress" count={stats.inProgress} />
+        <LaneBtn id="ESCALATED" label="Escalated" count={stats.escalated} />
         <LaneBtn id="RESOLVED" label="Resolved" count={stats.resolved} />
         <LaneBtn id="ALL" label="All Active" count={stats.allActive} />
       </div>
