@@ -31,6 +31,8 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: "Poppins", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ---------- ACCESSIBILITY TOGGLES (Landing Page) ---------- */
@@ -606,11 +608,24 @@ body.a11y-high-contrast .lpMiniVal {
 }
 
 .lpInfo {
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(34, 211, 238, 0.35);
-  background: rgba(34, 211, 238, 0.10);
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(109, 40, 217, 0.16);
+  background: linear-gradient(
+    135deg,
+    rgba(109, 40, 217, 0.08),
+    rgba(37, 99, 235, 0.05)
+  );
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
   font-weight: 700;
+  color: #0f172a;
+}
+
+body.a11y-high-contrast .lpInfo {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: none !important;
 }
 
 .lpError {
@@ -901,25 +916,111 @@ textarea {
   resize: vertical;
 }
 
-/* ---------- BUTTONS ---------- */
-.btn {
-  padding: 9px 12px;
+/* ---------- BUTTON SYSTEM (PROJECT-WIDE) ---------- */
+.btn,
+.lpButton,
+.lpButtonSecondary,
+.lpBackBtn,
+.lpBackLink,
+.lpActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
   border-radius: 12px;
-  border: 1px solid #d1d5db;
-  background: #fff;
   cursor: pointer;
   font-family: "Poppins", system-ui, sans-serif;
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 
-.btn.primary {
-  border: none;
-  color: white;
+.btn:hover,
+.lpButton:hover,
+.lpButtonSecondary:hover,
+.lpBackBtn:hover,
+.lpBackLink:hover,
+.lpActionBtn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:disabled,
+.lpButton:disabled,
+.lpButtonSecondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Primary */
+.btn.primary,
+.lpButton {
+  border: 1px solid transparent;
+  color: #ffffff;
   background: linear-gradient(90deg, var(--brand1), var(--brand2));
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.22);
 }
 
-.btn.primary:hover {
-  filter: brightness(1.05);
+.btn.primary:hover,
+.lpButton:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.28);
+}
+
+/* Secondary */
+.btn.secondary,
+.lpButtonSecondary {
+  border: 1px solid rgba(109, 40, 217, 0.22);
+  background: rgba(109, 40, 217, 0.08);
+  color: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.btn.secondary:hover,
+.lpButtonSecondary:hover {
+  background: rgba(109, 40, 217, 0.12);
+  border-color: rgba(109, 40, 217, 0.32);
+}
+
+/* Neutral / ghost */
+.btn.ghost,
+.lpBackBtn,
+.lpBackLink {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: rgba(15, 23, 42, 0.86);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.btn.ghost:hover,
+.lpBackBtn:hover,
+.lpBackLink:hover {
+  background: rgba(109, 40, 217, 0.06);
+  border-color: rgba(109, 40, 217, 0.22);
+}
+
+/* Header/public top action style */
+.lpActionBtn {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.lpActionBtn:hover {
+  background: rgba(255, 255, 255, 0.20);
+  border-color: rgba(255, 255, 255, 0.38);
 }
 
 /* ✅ Refresh button: lighter than primary but still vivid */
@@ -3671,7 +3772,10 @@ body.a11y-high-contrast .btn.primary {
   gap: 10px;
   min-width: 220px;
 }
-
+.lookupCaptcha button {
+  white-space: nowrap;
+  padding: 8px 14px;
+}
 .tfActions {
   display: flex;
   gap: 10px;
@@ -4124,4 +4228,588 @@ body.a11y-high-contrast .recentActivityCard .btn.openQueue {
   background: #ffffff !important;
   color: #000000 !important;
   border: 2px solid #ffffff !important;
+}
+/* ===== AI-assisted citizen status visibility ===== */
+.plLookupStrip {
+  margin: 0 auto 18px;
+  max-width: 1000px;
+  background: linear-gradient(
+    135deg,
+    rgba(109, 40, 217, 0.10),
+    rgba(37, 99, 235, 0.08)
+  );
+  border: 1px solid rgba(109, 40, 217, 0.14);
+  border-radius: 18px;
+  padding: 14px 18px;
+  color: #334155;
+  font-weight: 700;
+}
+
+.plStatusVisibilityCard {
+  margin-top: 22px;
+}
+
+.plVisibilityGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 18px;
+  margin-top: 8px;
+  align-items: start;
+}
+
+.plStatusSummary {
+  display: grid;
+  gap: 14px;
+}
+
+.plCitizenBanner {
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: #f8fafc;
+}
+
+.plCitizenBanner.new {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.12),
+    rgba(59, 130, 246, 0.08)
+  );
+}
+
+.plCitizenBanner.progress {
+  background: linear-gradient(
+    135deg,
+    rgba(109, 40, 217, 0.12),
+    rgba(37, 99, 235, 0.10)
+  );
+}
+
+.plCitizenBanner.review {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.12),
+    rgba(249, 115, 22, 0.08)
+  );
+}
+
+.plCitizenBanner.resolved {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.12),
+    rgba(16, 185, 129, 0.08)
+  );
+}
+
+.plBannerEyebrow,
+.plInfoLabel,
+.plTimelineMeta {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  font-weight: 800;
+}
+
+.plBannerTitle,
+.plTimelineTitle {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-top: 6px;
+}
+
+.plBannerText,
+.plTimelineText,
+.plInfoValueSmall {
+  color: #334155;
+  line-height: 1.55;
+  margin-top: 8px;
+}
+
+.plInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.plInfoCard,
+.plTimelineCard {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.20);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.plInfoValue {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.plNoteBox {
+  width: 100%;
+  resize: vertical;
+  border-radius: 14px;
+}
+
+.plTimelineCard {
+  min-height: 0;
+  align-self: start;
+}
+
+.plTimelineList {
+  display: grid;
+  gap: 14px;
+}
+
+.plTimelineItem {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.plTimelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  margin-top: 7px;
+  background: linear-gradient(135deg, #6d28d9, #2563eb);
+}
+
+.plTimelineMore {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.30);
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.plResultCard {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  cursor: pointer;
+}
+
+.plResultCard.active {
+  border-color: rgba(109, 40, 217, 0.45);
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
+}
+
+@media (max-width: 980px) {
+  .plVisibilityGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.a11y-high-contrast .plLookupStrip,
+body.a11y-high-contrast .plCitizenBanner,
+body.a11y-high-contrast .plInfoCard,
+body.a11y-high-contrast .plTimelineCard,
+body.a11y-high-contrast .plResultCard {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+body.a11y-high-contrast .plBannerTitle,
+body.a11y-high-contrast .plTimelineTitle,
+body.a11y-high-contrast .plInfoValue,
+body.a11y-high-contrast .plBannerText,
+body.a11y-high-contrast .plTimelineText,
+body.a11y-high-contrast .plInfoValueSmall,
+body.a11y-high-contrast .plInfoLabel,
+body.a11y-high-contrast .plTimelineMeta,
+body.a11y-high-contrast .plTimelineMore {
+  color: #ffffff !important;
+}
+/* =========================================================
+   FINAL MERGE BLOCK
+   Safe additions only
+   ========================================================= */
+
+/* ===== TOP BAR ===== */
+.lpTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.lpActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ===== LOGIN PAGE ===== */
+.lpLoginWrapper {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.lpLoginCard {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 10px;
+  padding: 28px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.lpLoginTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.lpFormGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.lpFormGroup label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.lpFormGroup input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+/* ===== PUBLIC PAGES ===== */
+.lpPageWrapper {
+  max-width: 1100px;
+  margin: auto;
+  padding: 24px;
+}
+
+.lpSearchRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.lpSearchRow input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.lpButton,
+.lpButtonSecondary {
+  width: auto;
+}
+
+/* ===== STATUS BADGE ===== */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .lpTopBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .lpActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .lpLoginCard {
+    padding: 20px;
+  }
+
+  .lpPageWrapper {
+    padding: 16px;
+  }
+
+  .lpSearchRow {
+    flex-direction: column;
+  }
+
+  .lpSearchRow input {
+    width: 100%;
+  }
+
+  .lpButton {
+    width: 100%;
+  }
+}
+/* =====================================================
+   MOBILE / TABLET RESPONSIVENESS
+   Insight-311 Public + Dashboard Layout
+===================================================== */
+
+@media (max-width: 1024px) {
+
+  /* General container spacing */
+  .lpPageWrapper {
+    padding: 24px 20px;
+  }
+
+  /* Hero sections */
+  .lpHero {
+    padding: 40px 24px;
+  }
+
+  .lpHeroTitle {
+    font-size: 28px;
+    line-height: 1.3;
+  }
+
+  .lpHeroSubtitle {
+    font-size: 16px;
+  }
+
+}
+
+/* ===============================
+   Tablet
+=============================== */
+
+@media (max-width: 768px) {
+
+  /* Search rows stack vertically */
+  .lpSearchRow {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .lpSearchRow input {
+    width: 100%;
+  }
+
+  .lpButton {
+    width: 100%;
+  }
+
+  /* Public lookup cards */
+  .plResultCard {
+    width: 100%;
+  }
+
+  .plTwoCardGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .plVisibilityGrid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Dashboard cards */
+  .dashboardCards {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ===============================
+   Mobile phones
+=============================== */
+
+@media (max-width: 480px) {
+
+  .lpHeroTitle {
+    font-size: 22px;
+  }
+
+  .lpHeroSubtitle {
+    font-size: 14px;
+  }
+
+  .lpPageWrapper {
+    padding: 18px 14px;
+  }
+
+  /* Buttons */
+  .lpButton {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  /* Inputs */
+  .lpSearchRow input {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  /* Timeline readability */
+  .plTimelineRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .plTimelineTime {
+    font-size: 12px;
+  }
+
+}
+/* =========================================================
+   GLOBAL RESPONSIVENESS SAFETY
+   ========================================================= */
+
+/* Prevent sideways scrolling on mobile */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Images and media scale correctly */
+img,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Form fields scale correctly */
+input,
+select,
+textarea {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Buttons should not overflow containers */
+button,
+.btn {
+  max-width: 100%;
+  word-break: nowrap;
+}
+/* Captcha / refresh buttons must not collapse */
+.lpCaptchaRight .btn,
+.tfCaptchaRight .btn,
+.lpCaptchaRight button,
+.tfCaptchaRight button {
+  white-space: nowrap;
+  min-width: 92px;
+  flex-shrink: 0;
+}
+
+/* Tables should scroll instead of breaking layout */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Prevent popovers / dropdowns from going off-screen */
+.popover,
+.dropdown,
+.menu {
+  max-width: 95vw;
+}
+/* =========================================================
+   TABLET RESPONSIVENESS
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .lpAuthGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .lpAuthCard {
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .lpOverviewHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+}
+/* =========================================================
+   MOBILE RESPONSIVENESS
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  body {
+    font-size: 15px;
+  }
+
+  /* Hero section scaling */
+  .lpHeroTitle {
+    font-size: clamp(28px, 5vw, 36px);
+  }
+
+  .lpHeroSub {
+    font-size: 15px;
+  }
+
+  /* Login actions stack */
+  .lpAuthActionsBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  /* Buttons stack on mobile */
+  .buttonGroup,
+  .lpAuthActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+}
+/* Timeline readability on small phones */
+.plTimelineRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.plTimelineTitle {
+  font-size: 15px;
+}
+
+.plTimelineText {
+  font-size: 13px;
+}
+@media (max-width: 480px) {
+
+  .voiceFab {
+    bottom: 110px;
+    right: 16px;
+  }
+
+  .lpCallFab {
+    bottom: 24px;
+    right: 16px;
+  }
+
 }

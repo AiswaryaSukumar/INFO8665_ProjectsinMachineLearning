@@ -1,33 +1,93 @@
 // src/components/ToneBadge.jsx
 import React from "react";
 
+/*
+Central tone display component used across:
+- Ticket tables
+- Ticket details
+- Public lookup
+- Supervisor review
+*/
+
 const TONE_CONFIG = {
-  UNKNOWN: { emoji: "😐", label: "Unknown", className: "badge tone-unknown" },
-  CALM: { emoji: "🙂", label: "Calm", className: "badge tone-calm" },
-  AGITATED: { emoji: "😟", label: "Agitated", className: "badge tone-agitated" },
-  ANGRY: { emoji: "😡", label: "Angry", className: "badge tone-angry" },
-  THREAT: { emoji: "⚠️", label: "Threat", className: "badge tone-threat" },
-  ABUSIVE: { emoji: "🚫", label: "Abusive", className: "badge tone-abusive" },
+  UNKNOWN: {
+    emoji: "❓",
+    label: "Unknown",
+    className: "badge tone-unknown",
+  },
+
+  CALM: {
+    emoji: "🙂",
+    label: "Calm",
+    className: "badge tone-calm",
+  },
+
+  NEUTRAL: {
+    emoji: "😐",
+    label: "Neutral",
+    className: "badge tone-neutral",
+  },
+
+  AGITATED: {
+    emoji: "😟",
+    label: "Agitated",
+    className: "badge tone-agitated",
+  },
+
+  ANGRY: {
+    emoji: "😡",
+    label: "Angry",
+    className: "badge tone-angry",
+  },
+
+  THREAT: {
+    emoji: "⚠️",
+    label: "Threat",
+    className: "badge tone-threat",
+  },
+
+  ABUSIVE: {
+    emoji: "🚫",
+    label: "Abusive",
+    className: "badge tone-abusive",
+  },
 };
 
+function normalizeTone(tone) {
+  if (!tone) return "UNKNOWN";
+  return String(tone).toUpperCase().trim();
+}
+
+function normalizeConfidence(conf) {
+  if (!conf) return null;
+  return String(conf).toUpperCase().trim();
+}
+
 export default function ToneBadge({
-  tone = "UNKNOWN",
-  confidence = "MEDIUM",
+  tone,
+  confidence,
+  toneConfidence,
   showConfidence = true,
 }) {
-  const key = (tone || "UNKNOWN").toUpperCase();
-  const cfg = TONE_CONFIG[key] || TONE_CONFIG.UNKNOWN;
+  const toneKey = normalizeTone(tone);
+  const cfg = TONE_CONFIG[toneKey] || TONE_CONFIG.UNKNOWN;
+
+  const conf = normalizeConfidence(confidence || toneConfidence);
 
   return (
     <span
       className={`toneBadge ${cfg.className}`}
-      title="Inferred from language tone; operator may override"
+      title="Detected from language tone. Operator may override."
     >
       <span className="toneEmoji" aria-hidden="true">
         {cfg.emoji}
       </span>
+
       <span className="toneLabel">{cfg.label}</span>
-      {showConfidence && <span className="toneConf">({confidence})</span>}
+
+      {showConfidence && conf ? (
+        <span className="toneConf">({conf})</span>
+      ) : null}
     </span>
   );
 }

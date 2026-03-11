@@ -1,16 +1,30 @@
 // src/components/Floating311Button.jsx
-// Reusable, eye-catching CTA for citizens to call 311.
+// Reusable floating CTA for citizens to quickly call 311.
 
-// NOTE: project asset is a PNG in this repo
 import voiceBot from "../assets/voicebot.png";
 
-export default function Floating311Button({ label = "Talk to 311" }) {
+export default function Floating311Button({
+  label = "Talk to ISA",
+  tooltip = "Connect with the municipal service line",
+}) {
   return (
-    <a className="voiceFab" href="tel:311" aria-label={label}>
-      <img className="voiceBotLarge" src={voiceBot} alt={label} aria-hidden="true" />
+    <a
+      className="voiceFab"
+      href="tel:311"
+      aria-label={label}
+      title={tooltip}
+    >
+      <img
+        className="voiceBotLarge"
+        src={voiceBot}
+        alt=""
+        aria-hidden="true"
+      />
+
       <span className="voiceLabel">{label}</span>
+
       <span className="voiceTooltip" role="tooltip">
-        AI Voice Intake – Faster than forms
+        {tooltip}
       </span>
     </a>
   );

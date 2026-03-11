@@ -22,7 +22,6 @@ function buildCaptcha() {
 export default function LandingPage() {
   const nav = useNavigate();
 
-  // Enterprise navigation feel: subtle active state based on scroll position.
   const [activeNav, setActiveNav] = useState("home");
 
   const scrollTo = (id) => {
@@ -35,7 +34,9 @@ export default function LandingPage() {
   const [a11yHighContrast, setA11yHighContrast] = useState(false);
 
   const [langOpen, setLangOpen] = useState(false);
-  const [lang, setLang] = useState(() => localStorage.getItem("insight311_lang") || "EN");
+  const [lang, setLang] = useState(
+    () => localStorage.getItem("insight311_lang") || "EN"
+  );
 
   useEffect(() => {
     localStorage.setItem("insight311_lang", lang);
@@ -54,6 +55,7 @@ export default function LandingPage() {
             "Search a service and submit a request online, or call 311 anytime (24/7). INSIGHT-311 helps route requests to the right department and keeps service delivery transparent.",
           searchPlaceholder: "Search services (e.g., pothole, graffiti, snow)",
           search: "Search Services",
+          searchAria: "Search municipal services",
           popularTitle: "Popular Services",
           popularSub: "Quick entry points for common 311 requests.",
           howTitle: "How INSIGHT-311 Works",
@@ -72,6 +74,9 @@ export default function LandingPage() {
           trackTitle: "Track a Request",
           trackSub:
             "For a realistic experience, complete the security check before continuing.",
+          securityTitle: "Security Check",
+          securityQuestion: "What is",
+          answerPlaceholder: "Answer",
           refresh: "Refresh",
           continue: "Continue to Tracking",
           footerTag:
@@ -90,7 +95,9 @@ export default function LandingPage() {
           operational: "Operational",
           hours: "Hours",
           support: "Support",
-          call311: "Talk to 311 AI",
+          call311: "Talk to ISA",
+          voiceTooltip: "ISA – AI Voice Intake",
+          voiceAria: "Call ISA voice assistant",
           startRequest: "Start request →",
         },
         FR: {
@@ -104,6 +111,7 @@ export default function LandingPage() {
           searchPlaceholder:
             "Rechercher un service (ex. nid-de-poule, graffiti, neige)",
           search: "Rechercher un service",
+          searchAria: "Rechercher des services municipaux",
           popularTitle: "Services populaires",
           popularSub: "Accès rapide aux demandes 311 courantes.",
           howTitle: "Comment INSIGHT-311 fonctionne",
@@ -122,6 +130,9 @@ export default function LandingPage() {
           trackTitle: "Suivre une demande",
           trackSub:
             "Pour une expérience réaliste, complétez la vérification de sécurité avant de continuer.",
+          securityTitle: "Vérification de sécurité",
+          securityQuestion: "Combien font",
+          answerPlaceholder: "Réponse",
           refresh: "Rafraîchir",
           continue: "Continuer vers le suivi",
           footerTag:
@@ -140,7 +151,9 @@ export default function LandingPage() {
           operational: "Opérationnel",
           hours: "Heures",
           support: "Assistance",
-          call311: "Parler au 311 IA",
+          call311: "Parler à ISA",
+          voiceTooltip: "ISA – Assistant vocal IA",
+          voiceAria: "Appeler l’assistant vocal ISA",
           startRequest: "Démarrer →",
         },
       })[lang],
@@ -210,7 +223,8 @@ export default function LandingPage() {
       },
       {
         category: "Parking complaint",
-        title: lang === "FR" ? "Plainte de stationnement" : "Parking Complaint",
+        title:
+          lang === "FR" ? "Plainte de stationnement" : "Parking Complaint",
         desc:
           lang === "FR"
             ? "Obstruction, infractions et demandes d’application."
@@ -220,7 +234,10 @@ export default function LandingPage() {
       },
       {
         category: "Sidewalk snow clearing",
-        title: lang === "FR" ? "Déneigement des trottoirs" : "Sidewalk Snow Clearing",
+        title:
+          lang === "FR"
+            ? "Déneigement des trottoirs"
+            : "Sidewalk Snow Clearing",
         desc:
           lang === "FR"
             ? "Neige/glace sur les trottoirs ou voies publiques."
@@ -246,10 +263,8 @@ export default function LandingPage() {
 
   return (
     <div className="lpPage">
-      {/* Top navigation */}
       <header className="lpTopbar">
         <div className="lpTopbarInner">
-          {/* Brand (left) */}
           <div
             className="lpBrand"
             onClick={() => nav("/")}
@@ -261,11 +276,12 @@ export default function LandingPage() {
             <img className="lpLogo" src={logo} alt="INSIGHT-311 logo" />
             <div className="lpBrandText">
               <div className="lpBrandTitle">INSIGHT-311</div>
-              <div className="lpBrandTag">AI-assisted municipal service portal</div>
+              <div className="lpBrandTag">
+                AI-assisted municipal service portal
+              </div>
             </div>
           </div>
 
-          {/* Primary nav (center) */}
           <nav className="lpNav" aria-label="Primary">
             <button
               className={`lpNavLink ${activeNav === "home" ? "active" : ""}`}
@@ -277,7 +293,9 @@ export default function LandingPage() {
               {copy.navHome}
             </button>
             <button
-              className={`lpNavLink ${activeNav === "services" ? "active" : ""}`}
+              className={`lpNavLink ${
+                activeNav === "services" ? "active" : ""
+              }`}
               onClick={() => {
                 setActiveNav("services");
                 scrollTo("services");
@@ -294,7 +312,6 @@ export default function LandingPage() {
             </button>
           </nav>
 
-          {/* Actions (right): Accessibility + EN/FR */}
           <div className="lpTopActions lpTopActionsRight" ref={actionsRef}>
             <div className="lpPopoverWrap">
               <button
@@ -310,9 +327,15 @@ export default function LandingPage() {
               </button>
 
               {a11yOpen && (
-                <div className="lpPopover" role="dialog" aria-label="Accessibility settings">
+                <div
+                  className="lpPopover"
+                  role="dialog"
+                  aria-label="Accessibility settings"
+                >
                   <div className="lpPopoverTitle">Accessibility</div>
-                  <div className="lpMuted">Demo controls for a municipal portal.</div>
+                  <div className="lpMuted">
+                    Demo controls for a municipal portal.
+                  </div>
 
                   <div className="lpPopoverBody">
                     <label className="lpSwitchRow">
@@ -344,7 +367,10 @@ export default function LandingPage() {
                     >
                       Reset
                     </button>
-                    <button className="btn primary" onClick={() => setA11yOpen(false)}>
+                    <button
+                      className="btn primary"
+                      onClick={() => setA11yOpen(false)}
+                    >
                       Done
                     </button>
                   </div>
@@ -366,12 +392,20 @@ export default function LandingPage() {
               </button>
 
               {langOpen && (
-                <div className="lpPopover" role="dialog" aria-label="Language selector">
+                <div
+                  className="lpPopover"
+                  role="dialog"
+                  aria-label="Language selector"
+                >
                   <div className="lpPopoverTitle">Language</div>
-                  <div className="lpMuted">Demo dropdown (translation not fully implemented).</div>
+                  <div className="lpMuted">
+                    Demo dropdown (translation not fully implemented).
+                  </div>
                   <div className="lpLangList">
                     <button
-                      className={`lpLangItem ${lang === "EN" ? "active" : ""}`}
+                      className={`lpLangItem ${
+                        lang === "EN" ? "active" : ""
+                      }`}
                       onClick={() => {
                         setLang("EN");
                         setLangOpen(false);
@@ -380,7 +414,9 @@ export default function LandingPage() {
                       English (EN)
                     </button>
                     <button
-                      className={`lpLangItem ${lang === "FR" ? "active" : ""}`}
+                      className={`lpLangItem ${
+                        lang === "FR" ? "active" : ""
+                      }`}
                       onClick={() => {
                         setLang("FR");
                         setLangOpen(false);
@@ -396,7 +432,6 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Announcement strip */}
       <div className="lpAnnouncement" role="status">
         <div className="lpAnnouncementInner">
           <span className="lpBadge">{copy.noticeLabel}</span>
@@ -404,11 +439,12 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Hero image (keep image visible) + system status card floating on top */}
-      <section className="lpHero lpHeroImageOnly" style={{ backgroundImage: `url(${heroCity})` }}>
+      <section
+        className="lpHero lpHeroImageOnly"
+        style={{ backgroundImage: `url(${heroCity})` }}
+      >
         <div className="lpHeroFade" aria-hidden="true" />
 
-        {/* Float the status card on the hero image (moved slightly left for readability) */}
         <div className="lpHeroStatusFloat" aria-label="System status">
           <div className="lpHeroCard">
             <div className="lpMiniStat">
@@ -429,10 +465,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Main content */}
       <main className="lpMain">
         <div className="container">
-          {/* Hero headline moved BELOW the image so photo stays clean */}
           <section className="lpHeroBelow" aria-label="Hero headline">
             <div className="lpHeroBelowInner oneCol">
               <div className="lpHeroBelowCopy">
@@ -440,10 +474,13 @@ export default function LandingPage() {
                 <h1 className="lpLeadTitle">{copy.heroTitle}</h1>
                 <p className="lpLeadSub">{copy.heroSub}</p>
 
-                {/* Keep only ONE entry point (search) since both actions go to same place */}
-                <div className="lpQuickSearch lpQuickSearchLight" aria-label="Quick search">
+                <div
+                  className="lpQuickSearch lpQuickSearchLight"
+                  aria-label="Quick search"
+                >
                   <input
                     placeholder={copy.searchPlaceholder}
+                    aria-label={copy.searchAria}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") nav("/request");
                     }}
@@ -460,7 +497,6 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* Popular Services ABOVE How it works */}
           <section className="lpSection" id="services">
             <div className="lpSectionHead">
               <h2 className="lpH2">{copy.popularTitle}</h2>
@@ -471,7 +507,11 @@ export default function LandingPage() {
               {services.map((s) => (
                 <button key={s.title} className="lpServiceCard" onClick={s.action}>
                   <div className="lpServiceImgWrap" aria-hidden="true">
-                    <img className="lpServiceImg" src={s.img} alt={`${s.title} service`} />
+                    <img
+                      className="lpServiceImg"
+                      src={s.img}
+                      alt={`${s.title} service`}
+                    />
                   </div>
                   <div className="lpServiceBody">
                     <div className="lpServiceTitle">{s.title}</div>
@@ -483,7 +523,6 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* How it works */}
           <section className="lpSection">
             <div className="lpSectionHead">
               <h2 className="lpH2">{copy.howTitle}</h2>
@@ -516,7 +555,6 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* Track panel */}
           <section className="lpSection" id="track">
             <div className="lpTrack">
               <div className="lpTrackLeft">
@@ -529,19 +567,18 @@ export default function LandingPage() {
               <div className="lpTrackRight">
                 <div className="lpCaptcha">
                   <div className="lpCaptchaLeft">
-                    <div className="lpCaptchaTitle">Security Check</div>
+                    <div className="lpCaptchaTitle">{copy.securityTitle}</div>
                     <div className="lpMuted">
-                      What is {captcha.a} + {captcha.b}?
+                      {copy.securityQuestion} {captcha.a} + {captcha.b}?
                     </div>
                   </div>
                   <div className="lpCaptchaRight">
                     <input
                       value={captchaInput}
                       onChange={(e) => setCaptchaInput(e.target.value)}
-                      placeholder="Answer"
+                      placeholder={copy.answerPlaceholder}
                       aria-label="Captcha answer"
                     />
-                    {/* ✅ Refresh now matches primary CTA style */}
                     <button
                       className="btn refreshBtn"
                       type="button"
@@ -570,22 +607,20 @@ export default function LandingPage() {
         </div>
       </main>
 
-      {/* ✅ Floating Voice AI CTA (bottom-right) */}
-<a className="voiceFab" href="tel:311" aria-label="AI Voice Intake">
-  <img
-    className="voiceBotLarge"
-    src={voiceBot}
-    alt="Talk to 311"
-    aria-hidden="true"
-  />
-  <span className="voiceLabel">Talk to 311</span>
+      <a className="voiceFab" href="tel:311" aria-label={copy.voiceAria}>
+        <img
+          className="voiceBotLarge"
+          src={voiceBot}
+          alt="Talk to 311"
+          aria-hidden="true"
+        />
+        <span className="voiceLabel">{copy.call311}</span>
 
-  <span className="voiceTooltip" role="tooltip">
-    AI Voice Intake – Faster than forms
-  </span>
-</a>
+        <span className="voiceTooltip" role="tooltip">
+          {copy.voiceTooltip}
+        </span>
+      </a>
 
-      {/* Footer */}
       <footer className="lpFooter">
         <div className="lpFooterInner">
           <div className="lpFooterCols">

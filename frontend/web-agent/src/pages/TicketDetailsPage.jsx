@@ -5,10 +5,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ToneBadge from "../components/ToneBadge";
 import { useToast } from "../components/Toast";
 
-// ✅ Prototype store (localStorage) so SAVE / APPROVE works without an API server
 import {
   approveAndRouteTicket,
   getTickets,
+  rejectVoiceBotTicket,
   updateTicketByNumber,
 } from "../utils/ticketStore";
 
@@ -20,38 +20,85 @@ import {
 
 function Field({ label, children, hint }) {
   return (
-    <div style={{ display: "grid", gap: 6 }}>
-      <div style={{ fontWeight: 900, fontSize: 12, color: "#334155" }}>{label}</div>
+    <div className="row" style={{ gap: 6 }}>
+      <div className="ticketFieldLabel">{label}</div>
       {children}
-      {hint ? (
-        <div style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>{hint}</div>
-      ) : null}
+      {hint ? <div className="ticketFieldHint">{hint}</div> : null}
     </div>
   );
 }
 
-function normalizeTicketForDraft(t) {
-  if (!t) return t;
+function normalizeTicketForDraft(ticket) {
+  if (!ticket) return ticket;
 
-  // ✅ IMPORTANT: use || so empty-string doesn’t block fallback
-  const dept =
-    t.assignedDepartment ||
-    t.department ||
-    inferDepartmentFromCategory(t?.category) ||
+  const department =
+    ticket.assignedDepartment ||
+    ticket.department ||
+    inferDepartmentFromCategory(ticket?.category) ||
     "";
 
-  const notes = t.notes ?? t.comments ?? "";
-  const transcript = t.transcript || t.description || "";
+  const notes = ticket.notes ?? ticket.comments ?? "";
+  const transcript = ticket.transcript || ticket.description || "";
 
-  return { ...t, department: dept, notes, transcript };
+  return {
+    ...ticket,
+    department,
+    notes,
+    transcript,
+  };
 }
 
-function hasEvidenceFields(t) {
-  if (!t) return false;
+function hasEvidenceFields(ticket) {
+  if (!ticket) return false;
   return (
-    !!t.recordingUrl ||
-    !!t.transcript ||
-    (Array.isArray(t.sessionHistory) && t.sessionHistory.length > 0)
+    !!ticket.recordingUrl ||
+    !!ticket.transcript ||
+    (Array.isArray(ticket.sessionHistory) && ticket.sessionHistory.length > 0)
+  );
+}
+
+function upper(value) {
+  return String(value || "").toUpperCase();
+}
+
+function isResolvedTicket(ticket) {
+  return upper(ticket?.status) === "RESOLVED";
+}
+
+function isDeletedTicket(ticket) {
+  return upper(ticket?.status) === "DELETE";
+}
+
+function isRejectedTicket(ticket) {
+  const routing = upper(ticket?.routingStatus);
+  const stage = upper(ticket?.workflowStage);
+  return routing === "REJECTED" || stage.includes("REJECTED");
+}
+
+function isApprovedTicket(ticket) {
+  return upper(ticket?.routingStatus) === "APPROVED";
+}
+
+function isPureVoiceBotTicket(ticket) {
+  const createdByType = upper(ticket?.createdByType || "OPERATOR");
+  const handledByRole = upper(ticket?.handledByRole || "VOICE_BOT");
+  const handledByType = upper(ticket?.handledByType || "VOICE_BOT");
+
+  return (
+    createdByType === "VOICE_BOT" &&
+    handledByRole === "VOICE_BOT" &&
+    handledByType === "VOICE_BOT"
+  );
+}
+
+function isPendingSupervisorDecision(ticket) {
+  const routingStatus = upper(ticket?.routingStatus || "PENDING_APPROVAL");
+  const workflowStage = upper(ticket?.workflowStage);
+
+  return (
+    workflowStage === "PENDING_SUPERVISOR_APPROVAL" ||
+    workflowStage === "PENDING_APPROVAL" ||
+    routingStatus === "PENDING_APPROVAL"
   );
 }
 
@@ -65,22 +112,26 @@ export default function TicketDetailsPage() {
   const [loading, setLoading] = useState(!loc.state?.ticket);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [draft, setDraft] = useState(() => normalizeTicketForDraft(loc.state?.ticket || null));
+  const [draft, setDraft] = useState(() =>
+    normalizeTicketForDraft(loc.state?.ticket || null)
+  );
 
   const [saving, setSaving] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [rejecting, setRejecting] = useState(false);
+  const [rejectComment, setRejectComment] = useState("");
   const [deleteComment, setDeleteComment] = useState("");
   const [deptManuallySet, setDeptManuallySet] = useState(false);
-
-  // ✅ Evidence accordion (reduces crowding)
   const [evidenceOpen, setEvidenceOpen] = useState(false);
 
-  const sessionRole = (localStorage.getItem("userRole") || "OPERATOR").toUpperCase();
+  const sessionRole = upper(localStorage.getItem("userRole") || "OPERATOR");
   const sessionName = (localStorage.getItem("userName") || "").trim();
   const canStaffAct = sessionRole === "OPERATOR" || sessionRole === "SUPERVISOR";
 
   const backTo = loc.state?.backTo || loc.state?.from || "/dashboard/my-work";
-  const listLabel = String(backTo).includes("/dashboard/overview") ? "Overview" : "My work";
+  const listLabel = String(backTo).includes("/dashboard/overview")
+    ? "Overview"
+    : "My work";
 
   const onBack = () => {
     if (loc.state?.backTo) return nav(loc.state.backTo);
@@ -88,15 +139,11 @@ export default function TicketDetailsPage() {
     return nav("/dashboard/my-work");
   };
 
-  // ✅ FIX: hydrate the “full ticket” even if a thin ticket was passed in state
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       const stateTicket = loc.state?.ticket || null;
-
-      // If we got a ticket via navigation AND it already has evidence/full fields, don’t refetch.
-      // But if it’s “thin” (missing evidence fields), we DO refetch.
       const shouldHydrate = !stateTicket || !hasEvidenceFields(stateTicket);
 
       if (!shouldHydrate) {
@@ -108,7 +155,6 @@ export default function TicketDetailsPage() {
 
       setLoading(true);
 
-      // ✅ Always hydrate from local prototype store
       const list = getTickets();
       if (cancelled) return;
 
@@ -118,6 +164,7 @@ export default function TicketDetailsPage() {
         null;
 
       const merged = found ? { ...(stateTicket || {}), ...found } : stateTicket;
+
       setTicket(merged || null);
       setDraft(normalizeTicketForDraft(merged || null));
 
@@ -125,6 +172,7 @@ export default function TicketDetailsPage() {
     }
 
     load();
+
     return () => {
       cancelled = true;
     };
@@ -134,71 +182,73 @@ export default function TicketDetailsPage() {
   useEffect(() => {
     if (!ticket) return;
     setDraft(normalizeTicketForDraft(ticket));
-
-    // ✅ if evidence exists, open by default (so it never “looks missing”)
     setEvidenceOpen(hasEvidenceFields(ticket));
   }, [ticket]);
 
-  // ✅ If category changes, infer department (unless user manually picked)
   useEffect(() => {
-    if (!draft) return;
-    if (deptManuallySet) return;
+    if (!draft || deptManuallySet) return;
 
-    const c = String(draft.category || "").trim();
-    if (!c) return;
+    const category = String(draft.category || "").trim();
+    if (!category) return;
 
-    const inferred = inferDepartmentFromCategory(c);
+    const inferred = inferDepartmentFromCategory(category);
     if (!inferred) return;
 
-    setDraft((d) => ({ ...d, department: inferred }));
+    setDraft((current) => ({ ...current, department: inferred }));
   }, [draft?.category, deptManuallySet]);
 
   const routingStatus = useMemo(
-    () => String(ticket?.routingStatus || "PENDING_APPROVAL").toUpperCase(),
-    [ticket]
-  );
-  const workflowStage = useMemo(
-    () => String(ticket?.workflowStage || "").toUpperCase(),
+    () => upper(ticket?.routingStatus || "PENDING_APPROVAL"),
     [ticket]
   );
 
-  const approved = routingStatus === "APPROVED";
-  const rejected = routingStatus === "REJECTED";
-  const isResolved = String(ticket?.status || "").toUpperCase() === "RESOLVED";
-  const isDeleted = String(ticket?.status || "").toUpperCase() === "DELETE";
+  const approved = useMemo(() => isApprovedTicket(ticket), [ticket]);
+  const rejected = useMemo(() => isRejectedTicket(ticket), [ticket]);
+  const isResolved = useMemo(() => isResolvedTicket(ticket), [ticket]);
+  const isDeleted = useMemo(() => isDeletedTicket(ticket), [ticket]);
+  const isPureVoiceBot = useMemo(() => isPureVoiceBotTicket(ticket), [ticket]);
+
+  const routingStatusLabel = isDeleted ? "DELETED" : routingStatus;
 
   const createdByType = ticket?.createdByType || "OPERATOR";
   const createdByName = ticket?.createdByName || "-";
-  const isVoiceBotTicket = String(createdByType).toUpperCase() === "VOICE_BOT";
+  const isVoiceBotTicket = upper(createdByType) === "VOICE_BOT";
 
-  const handledByRole = ticket?.handledByRole || (isVoiceBotTicket ? "VOICE_BOT" : "OPERATOR");
+  const handledByRole =
+    ticket?.handledByRole || (isVoiceBotTicket ? "VOICE_BOT" : "OPERATOR");
   const handledByName = ticket?.handledByName || createdByName || "-";
-  const handledByType = ticket?.handledByType || (isVoiceBotTicket ? "VOICE_BOT" : "OPERATOR");
-
-  const isPureVoiceBot =
-    String(createdByType).toUpperCase() === "VOICE_BOT" &&
-    String(handledByRole || "VOICE_BOT").toUpperCase() === "VOICE_BOT" &&
-    String(handledByType || "VOICE_BOT").toUpperCase() === "VOICE_BOT";
+  const handledByType =
+    ticket?.handledByType || (isVoiceBotTicket ? "VOICE_BOT" : "OPERATOR");
 
   const canApprove =
     sessionRole === "SUPERVISOR" &&
     isPureVoiceBot &&
-    (workflowStage === "PENDING_SUPERVISOR_APPROVAL" || routingStatus === "PENDING_APPROVAL") &&
+    isPendingSupervisorDecision(ticket) &&
     !approved &&
     !rejected &&
-    !isResolved;
+    !isResolved &&
+    !isDeleted;
+
+  const canReject =
+    sessionRole === "SUPERVISOR" &&
+    isPureVoiceBot &&
+    isPendingSupervisorDecision(ticket) &&
+    !approved &&
+    !rejected &&
+    !isResolved &&
+    !isDeleted;
 
   const canEditDepartment =
-    canStaffAct && !isResolved && (!isPureVoiceBot || sessionRole === "SUPERVISOR");
-
-  const canDelete =
-    sessionRole === "SUPERVISOR" &&
+    canStaffAct &&
     !isResolved &&
     !isDeleted &&
-    String(handledByName || "").trim().toLowerCase() === sessionName.toLowerCase();
+    (!isPureVoiceBot || sessionRole === "SUPERVISOR");
+
+  const canDelete = sessionRole === "SUPERVISOR" && !isResolved && !isDeleted;
 
   async function doSave() {
     if (!draft) return;
+
     setSaving(true);
 
     try {
@@ -211,13 +261,22 @@ export default function TicketDetailsPage() {
 
       const res = updateTicketByNumber(draft.ticketNumber, payload);
       if (!res.ok) throw new Error(res.error || "Save failed");
+
       setTicket(res.ticket);
       setIsEditing(false);
 
-      toast({ type: "success", title: "Saved", msg: "Ticket updated successfully." });
-    } catch (e) {
-      console.error(e);
-      toast({ type: "error", title: "Save failed", msg: "Could not update ticket." });
+      toast({
+        type: "success",
+        title: "Saved",
+        msg: "Ticket updated successfully.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        type: "error",
+        title: "Save failed",
+        msg: "Could not update ticket.",
+      });
     } finally {
       setSaving(false);
     }
@@ -225,24 +284,76 @@ export default function TicketDetailsPage() {
 
   async function doApprove() {
     if (!ticket) return;
+
     setApproving(true);
 
     try {
-      const dept = draft?.department || ticket.assignedDepartment;
-      if (!dept) {
-        toast({ type: "warning", title: "Department required", msg: "Select a department first." });
+      const department = draft?.department || ticket.assignedDepartment;
+
+      if (!department) {
+        toast({
+          type: "warning",
+          title: "Department required",
+          msg: "Select a department first.",
+        });
         return;
       }
 
-      const res = approveAndRouteTicket(ticket.ticketNumber, dept, sessionName || "-", sessionRole);
+      const res = approveAndRouteTicket(
+        ticket.ticketNumber,
+        department,
+        sessionName || "-",
+        sessionRole
+      );
       if (!res.ok) throw new Error(res.error || "Approve failed");
+
       setTicket(res.ticket);
-      toast({ type: "success", title: "Approved & Routed", msg: `✅ Routed to ${dept}.` });
-    } catch (e) {
-      console.error(e);
-      toast({ type: "error", title: "Approve failed", msg: "Could not approve ticket." });
+      toast({
+        type: "success",
+        title: "Approved & Routed",
+        msg: `✅ Routed to ${department}.`,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        type: "error",
+        title: "Approve failed",
+        msg: "Could not approve ticket.",
+      });
     } finally {
       setApproving(false);
+    }
+  }
+
+  async function doReject() {
+    if (!ticket) return;
+
+    setRejecting(true);
+
+    try {
+      const res = rejectVoiceBotTicket(
+        ticket.ticketNumber,
+        sessionName || "-",
+        sessionRole,
+        rejectComment.trim()
+      );
+      if (!res.ok) throw new Error(res.error || "Reject failed");
+
+      setTicket(res.ticket);
+      toast({
+        type: "success",
+        title: "Rejected",
+        msg: "Ticket rejected. No routing action will be taken.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        type: "error",
+        title: "Reject failed",
+        msg: "Could not reject ticket.",
+      });
+    } finally {
+      setRejecting(false);
     }
   }
 
@@ -250,7 +361,11 @@ export default function TicketDetailsPage() {
     if (!ticket) return;
 
     if (!deleteComment.trim()) {
-      toast({ type: "warning", title: "Comment required", msg: "Add a delete reason." });
+      toast({
+        type: "warning",
+        title: "Comment required",
+        msg: "Add a delete reason.",
+      });
       return;
     }
 
@@ -268,13 +383,22 @@ export default function TicketDetailsPage() {
 
       const res = updateTicketByNumber(ticket.ticketNumber, patch);
       if (!res.ok) throw new Error(res.error || "Delete failed");
+
       setTicket(res.ticket);
       setIsEditing(false);
 
-      toast({ type: "success", title: "Deleted", msg: "Ticket marked as DELETE." });
-    } catch (e) {
-      console.error(e);
-      toast({ type: "error", title: "Delete failed", msg: "Could not delete ticket." });
+      toast({
+        type: "success",
+        title: "Deleted",
+        msg: "Ticket marked as DELETE.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        type: "error",
+        title: "Delete failed",
+        msg: "Could not delete ticket.",
+      });
     } finally {
       setSaving(false);
     }
@@ -293,9 +417,11 @@ export default function TicketDetailsPage() {
       <div className="container">
         <div className="card">
           <div style={{ fontWeight: 1000, marginBottom: 8 }}>Ticket not found</div>
-          <div className="lpMuted">We couldn’t load this ticket. It may have been removed.</div>
+          <div className="lpMuted">
+            We couldn’t load this ticket. It may have been removed.
+          </div>
           <div style={{ marginTop: 12 }}>
-            <button className="btn" onClick={onBack} type="button">
+            <button className="btn ghost" onClick={onBack} type="button">
               Back
             </button>
           </div>
@@ -305,14 +431,20 @@ export default function TicketDetailsPage() {
   }
 
   const callHandledByLabel = (() => {
-    const r = String(handledByRole || "").toUpperCase();
-    const t = String(handledByType || "").toUpperCase();
+    const role = upper(handledByRole);
+    const type = upper(handledByType);
 
-    if (r === "VOICE_BOT" && t === "VOICE_BOT") return `Voice Bot (${handledByName})`;
-    if (t === "VOICE_BOT_TO_HUMAN" && r === "OPERATOR") return `Voice Bot → Operator (${handledByName})`;
-    if (t === "VOICE_BOT_TO_HUMAN" && r === "SUPERVISOR") return `Voice Bot → Supervisor (${handledByName})`;
-    if (r === "SUPERVISOR") return `Supervisor (${handledByName})`;
-    if (r === "OPERATOR") return `Operator (${handledByName})`;
+    if (role === "VOICE_BOT" && type === "VOICE_BOT") {
+      return `Voice Bot (${handledByName})`;
+    }
+    if (type === "VOICE_BOT_TO_HUMAN" && role === "OPERATOR") {
+      return `Voice Bot → Operator (${handledByName})`;
+    }
+    if (type === "VOICE_BOT_TO_HUMAN" && role === "SUPERVISOR") {
+      return `Voice Bot → Supervisor (${handledByName})`;
+    }
+    if (role === "SUPERVISOR") return `Supervisor (${handledByName})`;
+    if (role === "OPERATOR") return `Operator (${handledByName})`;
 
     return handledByName !== "-" ? handledByName : "—";
   })();
@@ -329,11 +461,17 @@ export default function TicketDetailsPage() {
                 My work
               </button>
               <span className="ticketCrumbSep">›</span>
-              <span className="ticketCrumbCurrent">Ticket #{ticket.ticketNumber || ticket.id}</span>
+              <span className="ticketCrumbCurrent">
+                Ticket #{ticket.ticketNumber || ticket.id}
+              </span>
             </>
           ) : (
             <>
-              <button className="ticketCrumbLink" type="button" onClick={() => nav("/dashboard/my-work")}>
+              <button
+                className="ticketCrumbLink"
+                type="button"
+                onClick={() => nav("/dashboard/my-work")}
+              >
                 Dashboard
               </button>
               <span className="ticketCrumbSep">›</span>
@@ -341,7 +479,9 @@ export default function TicketDetailsPage() {
                 {listLabel}
               </button>
               <span className="ticketCrumbSep">›</span>
-              <span className="ticketCrumbCurrent">Ticket #{ticket.ticketNumber || ticket.id}</span>
+              <span className="ticketCrumbCurrent">
+                Ticket #{ticket.ticketNumber || ticket.id}
+              </span>
             </>
           )}
         </div>
@@ -353,21 +493,37 @@ export default function TicketDetailsPage() {
           </div>
 
           <div className="ticketHeaderActions">
-            <button className="btn" type="button" onClick={onBack}>
+            <button className="btn ghost" type="button" onClick={onBack}>
               Back
             </button>
 
             {canApprove ? (
-              <button className="btn primary" type="button" disabled={approving} onClick={doApprove}>
+              <button
+                className="btn primary"
+                type="button"
+                disabled={approving || rejecting}
+                onClick={doApprove}
+              >
                 {approving ? "Approving…" : "Approve & Route"}
               </button>
             ) : null}
 
+            {canReject ? (
+              <button
+                className="btn secondary"
+                type="button"
+                disabled={approving || rejecting}
+                onClick={doReject}
+              >
+                {rejecting ? "Rejecting…" : "Reject"}
+              </button>
+            ) : null}
+
             <button
-              className="btn"
+              className="btn ghost"
               type="button"
               onClick={() => {
-                setIsEditing((v) => !v);
+                setIsEditing((value) => !value);
                 setDraft(normalizeTicketForDraft(ticket));
                 setDeptManuallySet(false);
               }}
@@ -388,28 +544,69 @@ export default function TicketDetailsPage() {
       <div className="ticketBody">
         <div className="container">
           <div className="card ticketCard">
-            <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-              <span className={`metaPill ${approved ? "" : "metaPillMuted"}`}>Routing: {routingStatus}</span>
+            <div
+              style={{
+                marginTop: 12,
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
+              <span className={`metaPill ${approved ? "" : "metaPillMuted"}`}>
+                Routing: {routingStatusLabel}
+              </span>
               <span className="metaPill metaPillMuted">Handled by: {callHandledByLabel}</span>
 
               {ticket.tone ? (
                 <span className="metaPill metaPillMuted">
-                  Tone: <ToneBadge tone={ticket.tone} />
+                  Tone: <ToneBadge tone={ticket.tone} confidence={ticket.toneConfidence} />
                 </span>
               ) : null}
 
-              {ticket.channel ? <span className="metaPill metaPillMuted">Channel: {ticket.channel}</span> : null}
+              {ticket.channel ? (
+                <span className="metaPill metaPillMuted">Channel: {ticket.channel}</span>
+              ) : null}
             </div>
 
+            {(canReject || rejected) && (
+              <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
+                <div style={{ background: "#f8fafc", padding: 12, borderRadius: 12 }}>
+                  <div style={{ fontWeight: 1000, marginBottom: 8 }}>Supervisor review</div>
+
+                  {rejected ? (
+                    <div className="lpMuted" style={{ fontWeight: 800 }}>
+                      Rejected — no routing action will be taken.
+                      {ticket.rejectedReason ? (
+                        <div style={{ marginTop: 6 }}>
+                          <b>Reason:</b> {ticket.rejectedReason}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : canReject ? (
+                    <>
+                      <div className="lpMuted" style={{ marginBottom: 8 }}>
+                        Provide an optional reason before rejecting this bot-only ticket.
+                      </div>
+                      <textarea
+                        value={rejectComment}
+                        onChange={(e) => setRejectComment(e.target.value)}
+                        placeholder="Reason for rejection (optional)…"
+                        disabled={rejecting || approving}
+                      />
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            )}
+
             <div style={{ marginTop: 14, display: "grid", gap: 14 }}>
-              {/* Top summary */}
               <div className="ticketSummaryCard">
                 <div className="ticketSummaryHeader">
                   <div className="ticketSummaryTitle">Ticket summary</div>
                   <div className="ticketSummaryHint">Citizen + workflow metadata</div>
                 </div>
 
-                {/* Row 1: workflow/meta */}
                 <div className="ticketSummaryGrid">
                   <Field label="Created">
                     <div className="lpMuted" style={{ fontWeight: 900 }}>
@@ -440,7 +637,6 @@ export default function TicketDetailsPage() {
 
                 <div className="ticketSummaryDivider" />
 
-                {/* Row 2: citizen/contact */}
                 <div className="ticketSummaryGrid">
                   <Field label="Name">
                     <div className="lpMuted" style={{ fontWeight: 900 }}>
@@ -460,12 +656,11 @@ export default function TicketDetailsPage() {
                 </div>
               </div>
 
-              {/* ✅ Evidence (accordion + auto-open if present) */}
               {showEvidence ? (
                 <div style={{ background: "#f3f4f6", padding: 12, borderRadius: 12 }}>
                   <button
                     type="button"
-                    className="btn"
+                    className="btn ghost"
                     style={{
                       width: "100%",
                       display: "flex",
@@ -473,10 +668,12 @@ export default function TicketDetailsPage() {
                       alignItems: "center",
                       fontWeight: 900,
                     }}
-                    onClick={() => setEvidenceOpen((v) => !v)}
+                    onClick={() => setEvidenceOpen((value) => !value)}
                   >
                     <span>Voice Bot Evidence</span>
-                    <span className="evidenceTogglePill">{evidenceOpen ? "Hide" : "Show"}</span>
+                    <span className="evidenceTogglePill">
+                      {evidenceOpen ? "Hide" : "Show"}
+                    </span>
                   </button>
 
                   {evidenceOpen ? (
@@ -497,7 +694,8 @@ export default function TicketDetailsPage() {
                         {ticket.transcript || ticket.description || "-"}
                       </div>
 
-                      {Array.isArray(ticket.sessionHistory) && ticket.sessionHistory.length > 0 ? (
+                      {Array.isArray(ticket.sessionHistory) &&
+                      ticket.sessionHistory.length > 0 ? (
                         <div className="card" style={{ marginTop: 2, background: "#fbfbff" }}>
                           <div
                             style={{
@@ -507,16 +705,22 @@ export default function TicketDetailsPage() {
                               gap: 10,
                             }}
                           >
-                            <div style={{ fontWeight: 900, fontSize: 13, color: "#111827" }}>
+                            <div
+                              style={{
+                                fontWeight: 900,
+                                fontSize: 13,
+                                color: "#111827",
+                              }}
+                            >
                               Conversation history
                             </div>
                             <span className="pill">Voice session</span>
                           </div>
 
                           <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-                            {ticket.sessionHistory.map((m, i) => (
+                            {ticket.sessionHistory.map((message, index) => (
                               <div
-                                key={i}
+                                key={index}
                                 style={{
                                   border: "1px solid #e5e7eb",
                                   borderRadius: 12,
@@ -524,17 +728,42 @@ export default function TicketDetailsPage() {
                                   background: "#ffffff",
                                 }}
                               >
-                                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                                  <div style={{ fontWeight: 900, fontSize: 12, color: "#0f172a" }}>
-                                    {m?.speaker || "Speaker"}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    gap: 10,
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: 900,
+                                      fontSize: 12,
+                                      color: "#0f172a",
+                                    }}
+                                  >
+                                    {message?.speaker || "Speaker"}
                                   </div>
-                                  <div style={{ fontSize: 11, color: "#94a3b8", fontWeight: 800 }}>
-                                    {m?.at || ""}
+                                  <div
+                                    style={{
+                                      fontSize: 11,
+                                      color: "#94a3b8",
+                                      fontWeight: 800,
+                                    }}
+                                  >
+                                    {message?.at || ""}
                                   </div>
                                 </div>
 
-                                <div style={{ marginTop: 6, fontSize: 13, color: "#334155", lineHeight: 1.35 }}>
-                                  {m?.text || ""}
+                                <div
+                                  style={{
+                                    marginTop: 6,
+                                    fontSize: 13,
+                                    color: "#334155",
+                                    lineHeight: 1.35,
+                                  }}
+                                >
+                                  {message?.text || ""}
                                 </div>
                               </div>
                             ))}
@@ -546,17 +775,21 @@ export default function TicketDetailsPage() {
                 </div>
               ) : null}
 
-              {/* Editable fields */}
               <Field label="Category">
                 <select
                   value={draft?.category || ""}
                   disabled={!isEditing}
-                  onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((current) => ({
+                      ...current,
+                      category: e.target.value,
+                    }))
+                  }
                 >
                   <option value="">Select category…</option>
-                  {CANONICAL_CATEGORIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
+                  {CANONICAL_CATEGORIES.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
                     </option>
                   ))}
                 </select>
@@ -564,20 +797,27 @@ export default function TicketDetailsPage() {
 
               <Field
                 label="Department"
-                hint={!canEditDepartment ? "Department changes are restricted for this ticket." : ""}
+                hint={
+                  !canEditDepartment
+                    ? "Department changes are restricted for this ticket."
+                    : ""
+                }
               >
                 <select
                   value={draft?.department || ""}
                   disabled={!isEditing || !canEditDepartment}
                   onChange={(e) => {
                     setDeptManuallySet(true);
-                    setDraft((d) => ({ ...d, department: e.target.value }));
+                    setDraft((current) => ({
+                      ...current,
+                      department: e.target.value,
+                    }));
                   }}
                 >
                   <option value="">Select department…</option>
-                  {CANONICAL_DEPARTMENTS.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
+                  {CANONICAL_DEPARTMENTS.map((department) => (
+                    <option key={department} value={department}>
+                      {department}
                     </option>
                   ))}
                 </select>
@@ -587,7 +827,12 @@ export default function TicketDetailsPage() {
                 <input
                   value={draft?.location || ""}
                   disabled={!isEditing}
-                  onChange={(e) => setDraft((d) => ({ ...d, location: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((current) => ({
+                      ...current,
+                      location: e.target.value,
+                    }))
+                  }
                   placeholder="Address or nearest intersection"
                 />
               </Field>
@@ -596,7 +841,12 @@ export default function TicketDetailsPage() {
                 <textarea
                   value={draft?.description || ""}
                   disabled={!isEditing}
-                  onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((current) => ({
+                      ...current,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="What happened?"
                 />
               </Field>
@@ -605,7 +855,12 @@ export default function TicketDetailsPage() {
                 <textarea
                   value={draft?.notes || ""}
                   disabled={!isEditing}
-                  onChange={(e) => setDraft((d) => ({ ...d, notes: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((current) => ({
+                      ...current,
+                      notes: e.target.value,
+                    }))
+                  }
                   placeholder="Operator notes…"
                 />
               </Field>
@@ -622,15 +877,25 @@ export default function TicketDetailsPage() {
                     placeholder="Reason for delete…"
                     disabled={!isEditing}
                   />
-                  <div style={{ marginTop: 10, display: "flex", justifyContent: "flex-end" }}>
-                    <button className="btn" type="button" disabled={saving || !isEditing} onClick={doDelete}>
+                  <div
+                    style={{
+                      marginTop: 10,
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <button
+                      className="btn secondary"
+                      type="button"
+                      disabled={saving || !isEditing}
+                      onClick={doDelete}
+                    >
                       {saving ? "Deleting…" : "Mark as DELETE"}
                     </button>
                   </div>
                 </div>
               ) : null}
 
-              {/* small hint (replaces ticket footer text) */}
               <div className="lpMuted" style={{ fontWeight: 700, fontSize: 12, marginTop: 6 }}>
                 Changes are saved to the demo store. Use Back to return to your filtered list.
               </div>
@@ -638,8 +903,6 @@ export default function TicketDetailsPage() {
           </div>
         </div>
       </div>
-
-      {/* ✅ REMOVED ticketFooter to avoid double-footer with DashboardLayout */}
     </div>
   );
 }

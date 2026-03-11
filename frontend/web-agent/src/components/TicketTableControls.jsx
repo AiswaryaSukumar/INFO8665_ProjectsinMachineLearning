@@ -80,6 +80,7 @@ export default function TicketTableControls({
             count={laneStats.approval}
             hidden={!laneStats.showApproval}
           />
+          <LaneBtn id="REJECTED" label="Rejected" count={laneStats.rejected} />
           <LaneBtn id="DELETE" label="Delete" count={laneStats.delete} />
 
           <LaneBtn id="MINE" label="Mine" count={laneStats.mine} />

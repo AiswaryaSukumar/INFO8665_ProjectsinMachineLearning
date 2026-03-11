@@ -1,24 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import logo from "../assets/insight311-logo.png";
-
-// Ticket overview (History-style) shown on login page
 import { mockTickets } from "../mock/mockTickets.js";
-import DonutChart from "../components/DonutChart";
-
-// Department inference (so Top departments is meaningful even if mock ticket lacks `department`)
 import { inferDepartmentFromCategory } from "../utils/categoryRouting";
-
-// ✅ Prototype-only login with per-user passwords
-// Jerry (Operator)      → Jerry@311
-// Tom (Operator)        → Tom@311
-// Nagavalli (Supervisor)→ Naga@311
 
 export default function LoginPage() {
   const nav = useNavigate();
 
-  // Topbar controls (shared pattern with Landing/Public pages)
   const actionsRef = useRef(null);
   const [a11yOpen, setA11yOpen] = useState(false);
   const [a11yLargeText, setA11yLargeText] = useState(false);
@@ -28,6 +17,12 @@ export default function LoginPage() {
   const [lang, setLang] = useState(
     () => localStorage.getItem("insight311_lang") || "EN"
   );
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [err, setErr] = useState("");
 
   useEffect(() => {
     localStorage.setItem("insight311_lang", lang);
@@ -55,111 +50,199 @@ export default function LoginPage() {
 
   const copy = useMemo(
     () =>
-      (
-        {
-          EN: {
-            navHome: "HOME",
-            navTrack: "Track request",
-            back: "BACK",
-            title: "Operator Portal",
-            sub: "Sign in to view queues, assign tickets, and review AI handoffs.",
-            selectUser: "Select User",
-            password: "Password",
-            signIn: "Sign In",
-            login: "Login",
-            rememberMe: "Remember me",
-            forgot: "Forgot password?",
-            forgotInfo:
-              "Password reset will be enabled once the database + email/SMS service is connected.",
-            leftTitle: "Today’s operator checklist",
-            leftBul1: "Validate voice-bot transcripts and confirm the issue category",
-            leftBul2: "Confirm routing to the right department and priority (SLA)",
-            leftBul3: "Escalate sensitive cases and request supervisor approval when needed",
-
-            workflowsTitle: "Operator quick guide",
-            workflowsBul1: "Review transcript + confirm category",
-            workflowsBul2: "Validate location details and urgency",
-            workflowsBul3: "Route to department or flag for supervisor review",
-            overviewTitle: "System-wide ticket overview",
-            overviewSub:
-              "Snapshot of all tickets in the prototype dataset (matches the History view).",
-          },
-          FR: {
-            navHome: "ACCUEIL",
-            navTrack: "Suivre une demande",
-            back: "RETOUR",
-            title: "Portail opérateur",
-            sub:
-              "Connectez-vous pour voir les files, assigner des billets et réviser les transferts IA.",
-            selectUser: "Sélectionner l’utilisateur",
-            password: "Mot de passe",
-            signIn: "Se connecter",
-            login: "Connexion",
-            rememberMe: "Se souvenir de moi",
-            forgot: "Mot de passe oublié ?",
-            forgotInfo:
-              "La réinitialisation sera activée lorsque la base de données et le service e‑mail/SMS seront connectés.",
-            leftTitle: "Liste de vérification opérateur (aujourd’hui)",
-            leftBul1: "Validez les transcriptions du bot vocal et confirmez la catégorie",
-            leftBul2: "Confirmez le routage vers le bon service et la priorité (SLA)",
-            leftBul3: "Escaladez les cas sensibles et demandez l’approbation du superviseur",
-
-            workflowsTitle: "Guide rapide (opérateur)",
-            workflowsBul1: "Vérifier la transcription + confirmer la catégorie",
-            workflowsBul2: "Valider l’emplacement et l’urgence",
-            workflowsBul3: "Router vers le service ou signaler au superviseur",
-            overviewTitle: "Aperçu global des billets",
-            overviewSub:
-              "Instantané de tous les billets du jeu de données (correspond à l’onglet Historique).",
-          },
-        }[lang]
-      ),
+      ({
+        EN: {
+          navHome: "HOME",
+          navTrack: "Track request",
+          back: "BACK",
+          title: "Operator Portal",
+          sub: "Sign in to view queues, assign tickets, and review AI handoffs.",
+          selectUser: "Select User",
+          password: "Password",
+          login: "Login",
+          remember: "Keep me signed in on this device",
+          forgot: "Forgot password?",
+          show: "Show",
+          hide: "Hide",
+          rolePreview: "Selected role preview",
+          roleName: "User",
+          roleType: "Role",
+          roleScope: "Access scope",
+          roleHelp:
+            "This prototype uses role-based login to simulate operator and supervisor workflows.",
+          operatorScope: "Can review, edit, and route tickets in working queues.",
+          supervisorScope:
+            "Can review escalations, approve routing decisions, and monitor queue health.",
+          leftTitle: "Today’s operator checklist",
+          leftBul1:
+            "Validate voice-bot transcripts and confirm the issue category",
+          leftBul2:
+            "Confirm routing to the right department and priority (SLA)",
+          leftBul3:
+            "Escalate sensitive cases and request supervisor approval when needed",
+          workflowsTitle: "Operator quick guide",
+          workflowsBul1: "Review transcript + confirm category",
+          workflowsBul2: "Validate location details and urgency",
+          workflowsBul3: "Route to department or flag for supervisor review",
+          overviewTitle: "System-wide ticket overview",
+          overviewSub:
+            "Snapshot of all tickets in the prototype dataset (matches the History view).",
+          invalidPassword: "Invalid password.",
+          loginHelp:
+            "Use the assigned demo password for the selected role account.",
+          notesTitle: "Notes",
+          note1:
+            "In Sprint 1, this will be powered by the database and the voice-bot intake flow.",
+          note2:
+            "Actions (supervisor approval, routing, duplicates) will be tracked in ticket history.",
+          total: "Total",
+          openTickets: "Open tickets",
+          escalated: "Escalated",
+          avgHandling: "Avg handling time",
+          planned: "Planned",
+          avgHandlingSub: "Calculated after backend logging",
+          topCategories: "Top categories",
+          topDepartments: "Top departments",
+          operatorLogin: "Operator Login",
+          accessibility: "Accessibility",
+          accessibilityHelp: "Demo controls for this prototype.",
+          largeText: "Large text",
+          highContrast: "High contrast",
+          reset: "Reset",
+          done: "Done",
+          language: "Language",
+          english: "English (EN)",
+          french: "Français (FR)",
+          modeBanner:
+            "Prototype mode • Local dataset • Some actions are simulated",
+          footerAbout:
+            "AI-assisted municipal operations dashboard prototype (INFO8665).",
+          footerHelp: "Help",
+          footerHelpLine1: "Call 311 for non-emergency support.",
+          footerHelpLine2: "For emergencies, call 911.",
+          footerLegal: "Legal",
+          recentActivity: "Recent activity",
+          workflowSnapshot: "Workflow snapshot",
+        },
+        FR: {
+          navHome: "ACCUEIL",
+          navTrack: "Suivre une demande",
+          back: "RETOUR",
+          title: "Portail opérateur",
+          sub:
+            "Connectez-vous pour voir les files, assigner des billets et réviser les transferts IA.",
+          selectUser: "Sélectionner l’utilisateur",
+          password: "Mot de passe",
+          login: "Connexion",
+          remember: "Rester connecté sur cet appareil",
+          forgot: "Mot de passe oublié ?",
+          show: "Afficher",
+          hide: "Masquer",
+          rolePreview: "Aperçu du rôle sélectionné",
+          roleName: "Utilisateur",
+          roleType: "Rôle",
+          roleScope: "Portée d’accès",
+          roleHelp:
+            "Ce prototype utilise une connexion par rôle pour simuler les flux opérateur et superviseur.",
+          operatorScope:
+            "Peut examiner, modifier et router les billets dans les files de travail.",
+          supervisorScope:
+            "Peut examiner les escalades, approuver le routage et surveiller la santé des files.",
+          leftTitle: "Liste de vérification opérateur (aujourd’hui)",
+          leftBul1:
+            "Validez les transcriptions du bot vocal et confirmez la catégorie",
+          leftBul2:
+            "Confirmez le routage vers le bon service et la priorité (SLA)",
+          leftBul3:
+            "Escaladez les cas sensibles et demandez l’approbation du superviseur",
+          workflowsTitle: "Guide rapide (opérateur)",
+          workflowsBul1: "Vérifier la transcription + confirmer la catégorie",
+          workflowsBul2: "Valider l’emplacement et l’urgence",
+          workflowsBul3: "Router vers le service ou signaler au superviseur",
+          overviewTitle: "Aperçu global des billets",
+          overviewSub:
+            "Instantané de tous les billets du jeu de données (correspond à l’onglet Historique).",
+          invalidPassword: "Mot de passe invalide.",
+          loginHelp:
+            "Utilisez le mot de passe de démonstration assigné au compte sélectionné.",
+          notesTitle: "Notes",
+          note1:
+            "Dans Sprint 1, ce tableau de bord sera alimenté par la base de données et le flux du bot vocal.",
+          note2:
+            "Les actions (approbation superviseur, routage, doublons) seront tracées dans l’historique des billets.",
+          total: "Total",
+          openTickets: "Billets ouverts",
+          escalated: "Escaladés",
+          avgHandling: "Temps moyen",
+          planned: "Prévu",
+          avgHandlingSub: "Calculé après intégration (journaux)",
+          topCategories: "Top catégories",
+          topDepartments: "Top services",
+          operatorLogin: "Connexion opérateur",
+          accessibility: "Accessibilité",
+          accessibilityHelp: "Commandes de démonstration pour ce prototype.",
+          largeText: "Texte agrandi",
+          highContrast: "Contraste élevé",
+          reset: "Réinitialiser",
+          done: "OK",
+          language: "Langue",
+          english: "English (EN)",
+          french: "Français (FR)",
+          modeBanner:
+            "Mode prototype • Jeu de données local • Certaines actions sont simulées",
+          footerAbout:
+            "Prototype de tableau de bord municipal assisté par IA (INFO8665).",
+          footerHelp: "Aide",
+          footerHelpLine1: "Appelez le 311 pour le soutien non urgent.",
+          footerHelpLine2: "Pour les urgences, appelez le 911.",
+          footerLegal: "Mentions légales",
+          recentActivity: "Activité récente",
+          workflowSnapshot: "Aperçu du flux",
+        },
+      }[lang]),
     [lang]
   );
 
-  // 🔐 User definitions (prototype-only)
   const users = [
     { name: "Jerry", role: "OPERATOR", password: "Jerry@311" },
     { name: "Tom", role: "OPERATOR", password: "Tom@311" },
     { name: "Nagavalli", role: "SUPERVISOR", password: "Naga@311" },
   ];
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
+  const selectedUser = users[selectedIndex];
 
-  // Auth UX (DB connection later)
-  const [rememberMe, setRememberMe] = useState(true);
-  const [showPass, setShowPass] = useState(false);
-  const [info, setInfo] = useState("");
+  const roleScopeText =
+    selectedUser.role === "SUPERVISOR"
+      ? copy.supervisorScope
+      : copy.operatorScope;
 
   function doLogin() {
     setErr("");
-    setInfo("");
 
-    const selectedUser = users[selectedIndex];
+    const enteredPassword = password.trim();
 
-    // ✅ Prototype behavior (until DB is wired): require a non-empty password.
-    if (!password || password.trim().length < 3) {
-      setErr(lang === "FR" ? "Mot de passe invalide." : "Invalid password.");
+    if (!enteredPassword) {
+      setErr(copy.invalidPassword);
       return;
     }
 
-    // ✅ Store session (persist if Remember Me is on)
-    const store = rememberMe ? localStorage : sessionStorage;
-    store.setItem("insight311_authed", "true");
-    store.setItem("userName", selectedUser.name);
-    store.setItem("userRole", selectedUser.role);
+    if (enteredPassword !== selectedUser.password) {
+      setErr(copy.invalidPassword);
+      return;
+    }
 
-    // keep localStorage in sync for pages that only read localStorage
-    localStorage.setItem("insight311_authed", "true");
-    localStorage.setItem("userName", selectedUser.name);
-    localStorage.setItem("userRole", selectedUser.role);
+    const sessionTarget = rememberMe ? localStorage : sessionStorage;
+    const otherTarget = rememberMe ? sessionStorage : localStorage;
 
-    // Notify other components
+    sessionTarget.setItem("insight311_authed", "true");
+    sessionTarget.setItem("userName", selectedUser.name);
+    sessionTarget.setItem("userRole", selectedUser.role);
+
+    otherTarget.removeItem("insight311_authed");
+    otherTarget.removeItem("userName");
+    otherTarget.removeItem("userRole");
+
     window.dispatchEvent(new Event("session-changed"));
-
-    // ✅ New dashboard routes
     nav("/dashboard/my-work");
   }
 
@@ -168,14 +251,6 @@ export default function LoginPage() {
     doLogin();
   }
 
-  function startForgot() {
-    setErr("");
-    setInfo(copy.forgotInfo);
-  }
-
-  // ------------------------
-  // Login-page ticket overview (History style)
-  // ------------------------
   const overview = useMemo(() => {
     const all = Array.isArray(mockTickets) ? mockTickets : [];
     const total = all.length;
@@ -185,34 +260,14 @@ export default function LoginPage() {
         .sort((a, b) => b[1] - a[1])
         .slice(0, n);
 
-    const bySource = all.reduce(
-      (acc, t) => {
-        const src = t?.createdByType === "VOICE_BOT" ? "Voice Bot" : "Human";
-        acc[src] = (acc[src] || 0) + 1;
-        return acc;
-      },
-      { "Voice Bot": 0, Human: 0 }
-    );
-
-    // Login page only: include DUPLICATE placeholder (even if 0)
-    // (Does NOT impact operator basket donuts because it's only used here.)
-    const STATUS_ORDER = [
-      "NEW",
-      "IN_PROGRESS",
-      "NEEDS_REVIEW",
-      "ESCALATED",
-      "DUPLICATE",
-      "RESOLVED",
-      "DELETE",
-    ];
+    const normalizeStatus = (t) => String(t?.status || "NEW").toUpperCase();
 
     const byStatus = all.reduce((acc, t) => {
-      const s = (t?.status || "NEW").toUpperCase();
+      const s = normalizeStatus(t);
       acc[s] = (acc[s] || 0) + 1;
       return acc;
     }, {});
 
-    // Small context breakdowns (derived from mock tickets)
     const byCategory = all.reduce((acc, t) => {
       const k = t?.category || "Other";
       acc[k] = (acc[k] || 0) + 1;
@@ -220,114 +275,47 @@ export default function LoginPage() {
     }, {});
 
     const byDept = all.reduce((acc, t) => {
-      const k = t?.department || inferDepartmentFromCategory(t?.category);
+      const k = t?.department || inferDepartmentFromCategory(t?.category) || "General";
       acc[k] = (acc[k] || 0) + 1;
       return acc;
     }, {});
 
-    const topCategories = topN(byCategory, 3);
-    const topDepts = topN(byDept, 3);
+    const parseDate = (value) => {
+      const s = String(value || "");
+      const iso = s.includes("T") ? s : s.replace(" ", "T");
+      const d = new Date(iso);
+      return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+    };
 
-    const outerSegments = [
-      { label: "Voice Bot", value: bySource["Voice Bot"] || 0 },
-      { label: "Human", value: bySource.Human || 0 },
-    ].filter((x) => x.value > 0);
-
-    const innerSegments = STATUS_ORDER
-      .filter((k) => (byStatus[k] || 0) > 0 || k === "DUPLICATE")
-      .map((k) => ({
-        label: k,
-        value: byStatus[k] || 0,
+    const recentTickets = [...all]
+      .sort((a, b) => parseDate(b?.createdAt) - parseDate(a?.createdAt))
+      .slice(0, 5)
+      .map((t) => ({
+        ticketNumber: t?.ticketNumber || t?.id || "—",
+        category: t?.category || "Other",
+        department:
+          t?.department || inferDepartmentFromCategory(t?.category) || "General",
+        status: normalizeStatus(t),
       }));
 
     return {
       total,
-      outerSegments,
-      innerSegments,
-      openCount: Math.max(0, total - (byStatus.RESOLVED || 0) - (byStatus.DELETE || 0)),
+      openCount: Math.max(
+        0,
+        total - (byStatus.RESOLVED || 0) - (byStatus.DELETE || 0)
+      ),
       escalatedCount: byStatus.ESCALATED || 0,
-      duplicateCount: byStatus.DUPLICATE || 0,
-      avgHandling: null,
-      topCategories,
-      topDepts,
-    };
-  }, [lang]);
-
-  // ------------------------
-  // Role-aware preview card (minimal, non-overwhelming)
-  // ------------------------
-  const rolePreview = useMemo(() => {
-    const all = Array.isArray(mockTickets) ? mockTickets : [];
-    const u = users[selectedIndex] || users[0];
-
-    if (u.role === "SUPERVISOR") {
-      // Supervisor: approvals + escalations that need attention (mock logic)
-      const pendingApprovals = all.filter(
-        (t) =>
-          String(t?.routingStatus || "").toUpperCase() === "PENDING_APPROVAL" &&
-          (t?.approvedAt == null || t?.approvedAt === "") &&
-          // bot-created items are what typically need governance
-          String(t?.createdByType || "").toUpperCase() === "VOICE_BOT"
-      ).length;
-
-      const escalated = all.filter(
-        (t) => String(t?.status || "").toUpperCase() === "ESCALATED"
-      ).length;
-
-      return {
-        title: lang === "FR" ? "Aperçu du superviseur" : "Supervisor preview",
-        lines: [
-          {
-            k: lang === "FR" ? "Approbations en attente" : "Pending approvals",
-            v: String(pendingApprovals),
-          },
-          {
-            k: lang === "FR" ? "Cas escaladés" : "Escalated cases",
-            v: String(escalated),
-          },
-          {
-            k: lang === "FR" ? "Gouvernance" : "Governance",
-            v:
-              lang === "FR"
-                ? "Valider les résolutions du bot lorsque requis"
-                : "Review bot-only items when required",
-            isText: true,
-          },
-        ],
-      };
-    }
-
-    // Operator: assigned / needs review / escalated (mock logic)
-    const mine = all.filter((t) => String(t?.handledByName || "") === u.name);
-    const assignedOpen = mine.filter((t) => {
-      const s = String(t?.status || "NEW").toUpperCase();
-      return s !== "RESOLVED" && s !== "DELETE";
-    }).length;
-    const needsReview = mine.filter(
-      (t) => String(t?.status || "").toUpperCase() === "NEEDS_REVIEW"
-    ).length;
-    const escalatedMine = mine.filter(
-      (t) => String(t?.status || "").toUpperCase() === "ESCALATED"
-    ).length;
-
-    return {
-      title: lang === "FR" ? "Aperçu de l’opérateur" : "Operator preview",
-      lines: [
-        {
-          k: lang === "FR" ? "Assignés (ouverts)" : "Assigned (open)",
-          v: String(assignedOpen),
-        },
-        {
-          k: lang === "FR" ? "À réviser" : "Needs review",
-          v: String(needsReview),
-        },
-        {
-          k: lang === "FR" ? "Escaladés" : "Escalated",
-          v: String(escalatedMine),
-        },
+      workflow: [
+        { label: "NEW", value: byStatus.NEW || 0 },
+        { label: "NEEDS_REVIEW", value: byStatus.NEEDS_REVIEW || 0 },
+        { label: "IN_PROGRESS", value: byStatus.IN_PROGRESS || 0 },
+        { label: "RESOLVED", value: byStatus.RESOLVED || 0 },
       ],
+      topCategories: topN(byCategory, 3),
+      topDepts: topN(byDept, 3),
+      recentTickets,
     };
-  }, [lang, selectedIndex]);
+  }, []);
 
   return (
     <div className="lpShell">
@@ -351,8 +339,12 @@ export default function LoginPage() {
           </div>
 
           <nav className="lpNav" aria-label="Primary navigation">
-            <button className="lpNavLink" onClick={() => nav("/")}>{copy.navHome}</button>
-            <button className="lpNavLink" onClick={() => nav("/lookup")}>{copy.navTrack}</button>
+            <button className="lpNavLink" onClick={() => nav("/")}>
+              {copy.navHome}
+            </button>
+            <button className="lpNavLink" onClick={() => nav("/lookup")}>
+              {copy.navTrack}
+            </button>
           </nav>
 
           <div className="lpTopActions">
@@ -360,23 +352,23 @@ export default function LoginPage() {
               <button
                 className="lpPill"
                 type="button"
-                aria-label="Accessibility settings"
+                aria-label={copy.accessibility}
                 onClick={() => {
                   setA11yOpen((v) => !v);
                   setLangOpen(false);
                 }}
               >
-                Accessibility
+                {copy.accessibility}
               </button>
 
               {a11yOpen && (
-                <div className="lpPopover" role="dialog" aria-label="Accessibility settings">
-                  <div className="lpPopoverTitle">Accessibility</div>
-                  <div className="lpMuted">Demo controls for this prototype.</div>
+                <div className="lpPopover" role="dialog" aria-label={copy.accessibility}>
+                  <div className="lpPopoverTitle">{copy.accessibility}</div>
+                  <div className="lpMuted">{copy.accessibilityHelp}</div>
 
                   <div className="lpPopoverBody">
                     <label className="lpSwitchRow">
-                      <span>Large text</span>
+                      <span>{copy.largeText}</span>
                       <input
                         type="checkbox"
                         checked={a11yLargeText}
@@ -385,7 +377,7 @@ export default function LoginPage() {
                     </label>
 
                     <label className="lpSwitchRow">
-                      <span>High contrast</span>
+                      <span>{copy.highContrast}</span>
                       <input
                         type="checkbox"
                         checked={a11yHighContrast}
@@ -396,17 +388,21 @@ export default function LoginPage() {
 
                   <div className="lpPopoverFooter">
                     <button
-                      className="btn"
+                      className="btn ghost"
                       type="button"
                       onClick={() => {
                         setA11yLargeText(false);
                         setA11yHighContrast(false);
                       }}
                     >
-                      Reset
+                      {copy.reset}
                     </button>
-                    <button className="btn primary" type="button" onClick={() => setA11yOpen(false)}>
-                      Done
+                    <button
+                      className="btn primary"
+                      type="button"
+                      onClick={() => setA11yOpen(false)}
+                    >
+                      {copy.done}
                     </button>
                   </div>
                 </div>
@@ -417,7 +413,7 @@ export default function LoginPage() {
               <button
                 className="lpPill"
                 type="button"
-                aria-label="Language options"
+                aria-label={copy.language}
                 onClick={() => {
                   setLangOpen((v) => !v);
                   setA11yOpen(false);
@@ -427,28 +423,28 @@ export default function LoginPage() {
               </button>
 
               {langOpen && (
-                <div className="lpPopover" role="dialog" aria-label="Language options">
-                  <div className="lpPopoverTitle">Language</div>
+                <div className="lpPopover" role="dialog" aria-label={copy.language}>
+                  <div className="lpPopoverTitle">{copy.language}</div>
                   <div className="lpPopoverBody">
                     <button
-                      className={`lpLangOption ${lang === "EN" ? "active" : ""}`}
+                      className={`lpLangItem ${lang === "EN" ? "active" : ""}`}
                       type="button"
                       onClick={() => {
                         setLang("EN");
                         setLangOpen(false);
                       }}
                     >
-                      English (EN)
+                      {copy.english}
                     </button>
                     <button
-                      className={`lpLangOption ${lang === "FR" ? "active" : ""}`}
+                      className={`lpLangItem ${lang === "FR" ? "active" : ""}`}
                       type="button"
                       onClick={() => {
                         setLang("FR");
                         setLangOpen(false);
                       }}
                     >
-                      Français (FR)
+                      {copy.french}
                     </button>
                   </div>
                 </div>
@@ -458,14 +454,9 @@ export default function LoginPage() {
         </div>
       </header>
 
-      {/* Thin system mode banner (enterprise pattern, low cognitive load) */}
       <div className="lpModeBanner" role="status" aria-label="System mode">
         <span className="lpModeDot" aria-hidden="true" />
-        <span>
-          {lang === "FR"
-            ? "Mode prototype • Jeu de données local • Certaines actions sont simulées"
-            : "Prototype mode • Local dataset • Some actions are simulated"}
-        </span>
+        <span>{copy.modeBanner}</span>
       </div>
 
       <main className="lpMain" style={{ paddingTop: 28 }}>
@@ -509,85 +500,108 @@ export default function LoginPage() {
 
             <div className="card lpAuthCard">
               <div className="lpAuthHeader">
-                <div className="lpAuthTitle">
-                  {lang === "FR" ? "Connexion au tableau de bord" : "Dashboard Login"}
-                </div>
+                <div className="lpLoginTitle">{copy.operatorLogin}</div>
                 <div className="lpAuthBadges">
                   <span className="badge">MFA: Demo</span>
                   <span className="badge">SSO: Planned</span>
                 </div>
               </div>
 
-              <form onSubmit={handleLoginSubmit} className="row">
-                  <div>
-                    <label>{copy.selectUser}</label>
-                    <select value={selectedIndex} onChange={(e) => setSelectedIndex(Number(e.target.value))}>
-                      {users.map((u, i) => (
-                        <option key={u.name} value={i}>
-                          {u.name}
-                        </option>
-                      ))}
-                    </select>
+              <div className="lpRolePreview" style={{ marginBottom: 14 }}>
+                <div className="lpRolePreviewHead">
+                  <div className="lpRolePreviewTitle">{copy.rolePreview}</div>
+                  <span className="lpRolePill">{selectedUser.role}</span>
+                </div>
+
+                <div className="lpRolePreviewBody">
+                  <div className="lpRoleRow">
+                    <span className="lpRoleKey">{copy.roleName}</span>
+                    <span className="lpRoleVal">{selectedUser.name}</span>
                   </div>
-
-                  {/* Role-aware preview (minimal) */}
-                  <div className="lpRolePreview" aria-label="Role preview">
-                    <div className="lpRolePreviewHead">
-                      <span className="lpRolePreviewTitle">{rolePreview.title}</span>
-                      <span className="lpRolePill">
-                        {users[selectedIndex]?.role === "SUPERVISOR"
-                          ? (lang === "FR" ? "Superviseur" : "Supervisor")
-                          : (lang === "FR" ? "Opérateur" : "Operator")}
-                      </span>
-                    </div>
-                    <div className="lpRolePreviewBody">
-                      {rolePreview.lines.map((x) => (
-                        <div className="lpRoleRow" key={x.k}>
-                          <div className="lpRoleKey">{x.k}</div>
-                          <div className={x.isText ? "lpRoleText" : "lpRoleVal"}>{x.v}</div>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="lpRoleRow">
+                    <span className="lpRoleKey">{copy.roleType}</span>
+                    <span className="lpRoleVal">{selectedUser.role}</span>
                   </div>
-
-                  <div>
-                    <label>{copy.password}</label>
-                    <div className="lpPwWrap">
-                      <input
-                        type={showPass ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder={lang === "FR" ? "Entrer le mot de passe" : "Enter password"}
-                        autoComplete="current-password"
-                      />
-                      <button
-                        className="lpPwToggle"
-                        type="button"
-                        onClick={() => setShowPass((v) => !v)}
-                        aria-label={showPass ? "Hide password" : "Show password"}
-                      >
-                        {showPass ? "Hide" : "Show"}
-                      </button>
-                    </div>
+                  <div className="lpRoleRow">
+                    <span className="lpRoleKey">{copy.roleScope}</span>
                   </div>
+                  <div className="lpRoleText">{roleScopeText}</div>
+                  <div className="lpRoleText">{copy.roleHelp}</div>
+                </div>
+              </div>
 
-                  <label className="lpRemember">
-                    <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
-                    <span>{copy.rememberMe}</span>
-                  </label>
+              <form onSubmit={handleLoginSubmit}>
+                <div className="lpFormGroup">
+                  <label>{copy.selectUser}</label>
+                  <select
+                    value={selectedIndex}
+                    onChange={(e) => {
+                      setSelectedIndex(Number(e.target.value));
+                      setErr("");
+                    }}
+                  >
+                    {users.map((u, i) => (
+                      <option key={u.name} value={i}>
+                        {u.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                  {info && <div className="lpInfo">{info}</div>}
-                  {err && <div className="lpError">{err}</div>}
-
-                  <div className="lpAuthActionsBar">
-                    <button className="btn primary" type="submit">{copy.login}</button>
-                    <button className="btn primary soft" type="button" onClick={startForgot}>{copy.forgot}</button>
+                <div className="lpFormGroup">
+                  <label>{copy.password}</label>
+                  <div className="lpPwWrap">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (err) setErr("");
+                      }}
+                      placeholder={
+                        lang === "FR" ? "Entrer le mot de passe" : "Enter password"
+                      }
+                      autoComplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      className="lpPwToggle"
+                      onClick={() => setShowPassword((v) => !v)}
+                    >
+                      {showPassword ? copy.hide : copy.show}
+                    </button>
                   </div>
-                </form>
+                </div>
+
+                <div className="lpRemember">
+                  <input
+                    id="remember-login"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  <label htmlFor="remember-login">{copy.remember}</label>
+                </div>
+
+                <div className="lpMuted" style={{ marginTop: 10 }}>
+                  {copy.loginHelp}
+                </div>
+
+                {err && <div className="lpError" style={{ marginTop: 12 }}>{err}</div>}
+
+                <div className="lpAuthActionsBar">
+                  <button className="lpButton" type="submit">
+                    {copy.login}
+                  </button>
+
+                  <button type="button" className="btn ghost">
+                    {copy.forgot}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
 
-          {/* Ticket history overview moved to Login page (bottom section) */}
           <section className="lpLoginOverview">
             <div className="card lpOverviewCard">
               <div className="lpOverviewHead">
@@ -596,63 +610,111 @@ export default function LoginPage() {
                   <div className="lpMuted">{copy.overviewSub}</div>
                 </div>
                 <div className="lpOverviewTotal">
-                  <div className="lpMuted" style={{ fontWeight: 800 }}>Total</div>
+                  <div className="lpMuted" style={{ fontWeight: 800 }}>
+                    {copy.total}
+                  </div>
                   <div className="lpOverviewNum">{overview.total}</div>
                 </div>
               </div>
 
               <div className="lpKpiRow">
                 <div className="lpKpi">
-                  <div className="lpKpiLabel">{lang === "FR" ? "Billets ouverts" : "Open tickets"}</div>
+                  <div className="lpKpiLabel">{copy.openTickets}</div>
                   <div className="lpKpiValue">{overview.openCount}</div>
                 </div>
                 <div className="lpKpi">
-                  <div className="lpKpiLabel">{lang === "FR" ? "Escaladés" : "Escalated"}</div>
+                  <div className="lpKpiLabel">{copy.escalated}</div>
                   <div className="lpKpiValue">{overview.escalatedCount}</div>
                 </div>
                 <div className="lpKpi">
-                  <div className="lpKpiLabel">{lang === "FR" ? "Temps moyen" : "Avg handling time"}</div>
-                  <div className="lpKpiValue">{lang === "FR" ? "Prévu" : "Planned"}</div>
-                  <div className="lpKpiSub">
-                    {lang === "FR"
-                      ? "Calculé après intégration (journaux)"
-                      : "Calculated after backend logging"}
-                  </div>
+                  <div className="lpKpiLabel">{copy.avgHandling}</div>
+                  <div className="lpKpiValue">{copy.planned}</div>
+                  <div className="lpKpiSub">{copy.avgHandlingSub}</div>
                 </div>
               </div>
 
               <div className="lpOverviewGrid">
                 <div className="lpOverviewChart">
-                  <DonutChart
-                    outerSegments={overview.outerSegments}
-                    innerSegments={overview.innerSegments}
-                    total={overview.total}
-                    size={280}
-                  />
+                  <div className="lpNoteCard" style={{ height: "100%" }}>
+                    <div className="lpNoteLabel" style={{ marginBottom: 12 }}>
+                      {copy.workflowSnapshot}
+                    </div>
+
+                    <div style={{ display: "grid", gap: 10 }}>
+                      {overview.workflow.map((item) => (
+                        <div key={item.label}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: 12,
+                              fontSize: 13,
+                              fontWeight: 800,
+                              marginBottom: 6,
+                            }}
+                          >
+                            <span>{item.label.replaceAll("_", " ")}</span>
+                            <span>{item.value}</span>
+                          </div>
+
+                          <div
+                            style={{
+                              height: 10,
+                              borderRadius: 999,
+                              background: "rgba(148,163,184,0.18)",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <div
+                              style={{
+                                height: "100%",
+                                width: `${overview.total ? (item.value / overview.total) * 100 : 0}%`,
+                                borderRadius: 999,
+                                background: "linear-gradient(90deg, #7c3aed, #60a5fa)",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="lpMuted" style={{ lineHeight: 1.6, marginTop: 16 }}>
+                      {copy.note1}
+                    </div>
+                    <div className="lpMuted" style={{ lineHeight: 1.6, marginTop: 10 }}>
+                      {copy.note2}
+                    </div>
+                  </div>
                 </div>
+
                 <div className="lpOverviewNotes">
                   <div className="lpNotesStack">
-                    <div className="lpNotesBlock">
-                      <div className="lpMuted" style={{ fontWeight: 800, marginBottom: 8 }}>
-                        {lang === "FR" ? "Notes" : "Notes"}
-                      </div>
-                      <div className="lpMuted" style={{ lineHeight: 1.6 }}>
-                        {lang === "FR"
-                          ? "Dans Sprint 1, ce tableau de bord sera alimenté par la base de données et le flux du bot vocal."
-                          : "In Sprint 1, this will be powered by the database and the voice-bot intake flow."}
-                      </div>
-                      <div className="lpMuted" style={{ lineHeight: 1.6, marginTop: 10 }}>
-                        {lang === "FR"
-                          ? "Les actions (approbation superviseur, routage, doublons) seront tracées dans l’historique des billets."
-                          : "Actions (supervisor approval, routing, duplicates) will be tracked in ticket history."}
-                      </div>
+                    <div className="lpNoteCard">
+                      <div className="lpNoteLabel">{copy.recentActivity}</div>
+                      {overview.recentTickets.map((t) => (
+                        <div
+                          key={t.ticketNumber}
+                          className="lpMiniRow"
+                          style={{ alignItems: "flex-start", padding: "6px 0" }}
+                        >
+                          <div style={{ display: "grid", gap: 2 }}>
+                            <span className="lpMiniKey" style={{ fontWeight: 800 }}>
+                              {t.ticketNumber}
+                            </span>
+                            <span className="lpMuted" style={{ fontSize: 12 }}>
+                              {t.category} • {t.department}
+                            </span>
+                          </div>
+                          <span className="lpMiniVal">
+                            {t.status.replaceAll("_", " ")}
+                          </span>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="lpOverviewSideCardsRow" aria-label="Top breakdowns">
                       <div className="lpNoteCard">
-                        <div className="lpNoteLabel">
-                          {lang === "FR" ? "Top catégories" : "Top categories"}
-                        </div>
+                        <div className="lpNoteLabel">{copy.topCategories}</div>
                         {overview.topCategories.map(([k, v]) => (
                           <div key={k} className="lpMiniRow">
                             <span className="lpMiniKey">{k}</span>
@@ -662,9 +724,7 @@ export default function LoginPage() {
                       </div>
 
                       <div className="lpNoteCard">
-                        <div className="lpNoteLabel">
-                          {lang === "FR" ? "Top services" : "Top departments"}
-                        </div>
+                        <div className="lpNoteLabel">{copy.topDepartments}</div>
                         {overview.topDepts.map(([k, v]) => (
                           <div key={k} className="lpMiniRow">
                             <span className="lpMiniKey">{k}</span>
@@ -686,15 +746,15 @@ export default function LoginPage() {
           <div className="lpFooterCols">
             <div>
               <div className="lpFooterTitle">INSIGHT-311</div>
-              <div className="lpMuted">AI-assisted municipal operations dashboard prototype (INFO8665).</div>
+              <div className="lpMuted">{copy.footerAbout}</div>
             </div>
             <div>
-              <div className="lpFooterTitle">Help</div>
-              <div className="lpMuted">Call 311 for non-emergency support.</div>
-              <div className="lpMuted">For emergencies, call 911.</div>
+              <div className="lpFooterTitle">{copy.footerHelp}</div>
+              <div className="lpMuted">{copy.footerHelpLine1}</div>
+              <div className="lpMuted">{copy.footerHelpLine2}</div>
             </div>
             <div>
-              <div className="lpFooterTitle">Legal</div>
+              <div className="lpFooterTitle">{copy.footerLegal}</div>
               <div className="lpFooterBottomLinks">
                 <span>Privacy</span>
                 <span>Terms</span>

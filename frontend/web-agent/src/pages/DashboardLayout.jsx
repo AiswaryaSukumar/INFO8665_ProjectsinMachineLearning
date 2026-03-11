@@ -74,7 +74,7 @@ export default function DashboardLayout() {
     nav("/login");
   };
 
-  // ✅ tab order must match the spec: My Work → Overview → Manual → Voice
+  // ✅ tab order now: My Work → Overview → Manual → Track request
   const navItems = useMemo(
     () => [
       {
@@ -90,12 +90,6 @@ export default function DashboardLayout() {
         to: "/dashboard/manual",
       },
       {
-        label: isFR ? "Saisie vocale" : "Voice Intake",
-        to: "/dashboard/voice",
-      },
-
-      // ✅ Public tracking page (works from dashboard)
-      {
         label: isFR ? "Suivi de demande" : "Track request",
         to: "/lookup",
       },
@@ -105,7 +99,7 @@ export default function DashboardLayout() {
 
   return (
     <div className="dashboardShell">
-      {/* HEADER (match “proper way” layout + keep your logo) */}
+      {/* HEADER */}
       <header className="lpHeader">
         <div className="lpHeaderLeft">
           <img className="logo" src={logo} alt="INSIGHT-311 logo" />
@@ -117,7 +111,6 @@ export default function DashboardLayout() {
         </div>
 
         <div className="lpHeaderRight">
-          {/* Right header stack: actions row + session line */}
           <div className="dashHeaderStack" ref={actionsRef}>
             <div className="dashTopActions">
               {/* Accessibility */}
@@ -243,7 +236,6 @@ export default function DashboardLayout() {
               </button>
             </div>
 
-            {/* Session line under the buttons */}
             <div className="dashSessionLine">
               <span className="loggedUser">
                 {isFR ? "Connecté en tant que :" : "Logged in as:"} <b>{userName}</b>
@@ -268,11 +260,10 @@ export default function DashboardLayout() {
 
       {/* MAIN */}
       <main className="dashboardContent">
-        {/* ✅ Pass session + lang to child routes (prevents role drift bugs) */}
         <Outlet context={{ lang, userName, userRole }} />
       </main>
 
-      {/* FOOTER (match landing/login style + pinned by dashboardShell) */}
+      {/* FOOTER */}
       <footer className="lpFooter">
         <div className="lpFooterRow">
           <div className="lpFooterLeft">© 2026 INSIGHT–311</div>

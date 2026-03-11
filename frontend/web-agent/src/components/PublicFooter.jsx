@@ -6,27 +6,52 @@ export default function PublicFooter({ showNav = true, active = "" }) {
   const nav = useNavigate();
 
   return (
-    <footer className="lpFooter">
+    <footer className="lpFooter" role="contentinfo">
       <div className="lpFooterInner">
         <div className="lpFooterCols">
+
+          {/* Brand */}
           <div>
             <div className="lpFooterTitle">INSIGHT-311</div>
-            <div className="lpFooterMuted">AI-assisted municipal service portal prototype.</div>
+            <div className="lpFooterMuted">
+              Municipal service request portal prototype.
+            </div>
           </div>
 
+          {/* Navigation */}
           {showNav ? (
             <div>
               <div className="lpFooterTitle">Links</div>
-              <div className="lpFooterLinks">
-                <button className="lpFooterLink" onClick={() => nav("/")}>Home</button>
-                <span className="lpFooterDot">•</span>
-                <button className="lpFooterLink" onClick={() => nav("/request")}>Submit request</button>
+              <div className="lpFooterLinks" role="navigation" aria-label="Footer navigation">
 
-                {/* Hide "Track request" link when user is already on Track page */}
+                <button
+                  className="lpFooterLink"
+                  onClick={() => nav("/")}
+                  aria-label="Go to home page"
+                >
+                  Home
+                </button>
+
+                <span className="lpFooterDot">•</span>
+
+                <button
+                  className="lpFooterLink"
+                  onClick={() => nav("/request")}
+                  aria-label="Submit a service request"
+                >
+                  Submit request
+                </button>
+
                 {active !== "lookup" && (
                   <>
                     <span className="lpFooterDot">•</span>
-                    <button className="lpFooterLink" onClick={() => nav("/lookup")}>Track request</button>
+                    <button
+                      className="lpFooterLink"
+                      onClick={() => nav("/lookup")}
+                      aria-label="Track an existing request"
+                    >
+                      Track request
+                    </button>
                   </>
                 )}
               </div>
@@ -35,20 +60,36 @@ export default function PublicFooter({ showNav = true, active = "" }) {
             <div />
           )}
 
+          {/* Accessibility note */}
           <div>
             <div className="lpFooterTitle">Accessibility</div>
-            <div className="lpFooterMuted">Keyboard friendly • High contrast focus states.</div>
+            <div className="lpFooterMuted">
+              Keyboard navigation supported • High-contrast focus states.
+            </div>
           </div>
+
         </div>
 
+        {/* Bottom strip */}
         <div className="lpFooterBottom">
           <div className="lpFooterCopy">© 2026 INSIGHT-311</div>
+
           <div className="lpFooterLinks">
-            <button className="lpFooterLink" type="button">Privacy</button>
+            <button className="lpFooterLink" type="button">
+              Privacy
+            </button>
+
             <span className="lpFooterDot">•</span>
-            <button className="lpFooterLink" type="button">Terms</button>
+
+            <button className="lpFooterLink" type="button">
+              Terms
+            </button>
+
             <span className="lpFooterDot">•</span>
-            <button className="lpFooterLink" type="button">Accessibility</button>
+
+            <button className="lpFooterLink" type="button">
+              Accessibility statement
+            </button>
           </div>
         </div>
       </div>

@@ -8,7 +8,6 @@ import {
   setTickets as setStoredTickets,
 } from "../utils/ticketStore";
 
-import VoiceIntakePanel from "../components/VoiceIntakePanel";
 import TicketForm from "../components/TicketForm";
 import TicketTable from "../components/TicketTable";
 import TicketDetailsDrawer from "../components/TicketDetailsDrawer";
@@ -135,24 +134,35 @@ function normalizeTicket(t, fallbackAssignee = "") {
     derivedHandledRole === "VOICE_BOT" &&
     derivedHandledType === "VOICE_BOT";
 
+  const incomingWorkflowStage = String(t?.workflowStage || "").toUpperCase();
+  const rejectedLike =
+    routingUpper === "REJECTED" ||
+    incomingWorkflowStage === "REJECTED" ||
+    incomingWorkflowStage === "REJECTED_BY_SUPERVISOR";
+
   // ✅ Workflow stage rules (UI-only)
   // - Bot-only tickets require Supervisor approval: PENDING_APPROVAL
   // - After approval: ROUTED_TO_DEPARTMENT
+  // - Rejected tickets: preserve rejection stage
   // - Everything else: STANDARD
   const workflowStage =
     t?.workflowStage ||
-    (routingUpper === "APPROVED"
+    (rejectedLike
+      ? "REJECTED_BY_SUPERVISOR"
+      : routingUpper === "APPROVED"
       ? "ROUTED_TO_DEPARTMENT"
       : derivedPureBot
       ? "PENDING_APPROVAL"
       : "STANDARD");
 
-  // ✅ FIX: Force bot-only tickets to NEEDS_REVIEW unless RESOLVED/DELETE
+  // ✅ FIX: Preserve rejected tickets as REJECTED
+  // ✅ FIX: Force bot-only tickets to NEEDS_REVIEW unless RESOLVED/DELETE/REJECTED
   const statusUpper = String(t?.status || "").toUpperCase();
-  const derivedStatus =
-    derivedPureBot && statusUpper !== "RESOLVED" && statusUpper !== "DELETE"
-      ? "NEEDS_REVIEW"
-      : t?.status || "NEW";
+  const derivedStatus = rejectedLike
+    ? "REJECTED"
+    : derivedPureBot && statusUpper !== "RESOLVED" && statusUpper !== "DELETE"
+    ? "NEEDS_REVIEW"
+    : t?.status || "NEW";
 
   // --- Session history normalization (supports old + new formats) ---
   const baseTime = t?.createdAt || t?.created_at || t?.created || new Date().toISOString();
@@ -216,6 +226,19 @@ function isPureVoiceBotTicket(t) {
   const handledByRole = String(t?.handledByRole || "VOICE_BOT").toUpperCase();
   const handledByType = String(t?.handledByType || "VOICE_BOT").toUpperCase();
   return createdByType === "VOICE_BOT" && handledByRole === "VOICE_BOT" && handledByType === "VOICE_BOT";
+}
+
+// ✅ shared helper: rejected ticket detector
+function isRejectedTicket(t) {
+  const routing = String(t?.routingStatus || "").toUpperCase();
+  const stage = String(t?.workflowStage || "").toUpperCase();
+  const status = String(t?.status || "").toUpperCase();
+  return (
+    status === "REJECTED" ||
+    routing === "REJECTED" ||
+    stage === "REJECTED" ||
+    stage === "REJECTED_BY_SUPERVISOR"
+  );
 }
 
 function extractSeq(ticketNumber) {
@@ -290,8 +313,6 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       ? "QUEUE_OVERVIEW"
       : view === "manual"
       ? "MANUAL_TICKET"
-      : view === "voice"
-      ? "VOICE_INTAKE"
       : "MY_WORK_QUEUE");
 
   const { toast } = useToast();
@@ -347,7 +368,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       setQueueFilter("ALL");
       setChips({ needsReview: false, escalated: false });
     } else {
-      // NEW / IN_PROGRESS / DELETE / MINE / etc.
+      // NEW / IN_PROGRESS / DELETE / MINE / REJECTED / etc.
       setTicketView("RECENT");
       setQueueFilter(preset);
       setChips({ needsReview: false, escalated: false });
@@ -469,7 +490,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
     channel: "phone (human operator)",
     assignedDepartment: "",
     tone: "UNKNOWN",
-    toneConfidence: "OPERATOR",
+    toneConfidence: "LOW",
     toneSource: "HUMAN",
   });
 
@@ -626,6 +647,9 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
         ticketNumber: ticketNumberToUse,
         createdAt: nowStamp(),
         ...incoming,
+        tone: incoming.tone || "UNKNOWN",
+        toneConfidence: incoming.toneConfidence || "LOW",
+        toneSource: incoming.toneSource || "HUMAN",
         createdByType: incoming.createdByType || "OPERATOR",
         createdByName: incoming.createdByName || userName,
         createdByRole: incoming.createdByRole || userRole,
@@ -658,7 +682,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       channel: "phone (human operator)",
       assignedDepartment: "",
       tone: "UNKNOWN",
-      toneConfidence: "OPERATOR",
+      toneConfidence: "LOW",
       toneSource: "HUMAN",
     }));
 
@@ -693,7 +717,9 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       }
 
       if (!isPendingApproval) {
-        toast.error(isFR ? "Ce ticket n’est pas en attente d’approbation." : "This ticket is not in PENDING_APPROVAL.");
+        toast.error(
+          isFR ? "Ce ticket n’est pas en attente d’approbation." : "This ticket is not in PENDING_APPROVAL."
+        );
         return prev;
       }
 
@@ -730,6 +756,91 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
 
       toast.success(
         isFR ? `Approbation réussie. Routé vers ${dept}.` : `Approve & routing was successful. Routed to Department Queue — ${dept}.`
+      );
+
+      setStoredTickets(next);
+
+      if (selectedTicket?.id === ticketId) {
+        const updatedTicket = next.find((x) => x.id === ticketId);
+        setSelectedTicket(updatedTicket || null);
+      }
+
+      return next;
+    });
+  };
+
+  const rejectTicket = (ticketId, reason = "") => {
+    const isSupervisor = sessionRoleUpper === "SUPERVISOR";
+    if (!isSupervisor) {
+      toast.error(isFR ? "Accès refusé." : "Not allowed. Supervisor only.");
+      return;
+    }
+
+    setTickets((prev) => {
+      const current = prev.find((t) => t.id === ticketId);
+      if (!current) return prev;
+
+      const stage = String(current.workflowStage || "").toUpperCase();
+      const routing = String(current.routingStatus || "").toUpperCase();
+
+      const isBotOnly = isPureVoiceBotTicket(current);
+      const isPendingApproval =
+        stage === "PENDING_APPROVAL" ||
+        stage === "PENDING_SUPERVISOR_APPROVAL" ||
+        routing === "PENDING_APPROVAL";
+
+      if (!isBotOnly) {
+        toast.error(
+          isFR
+            ? "Éligibilité: uniquement tickets créés ET traités par Voice Bot."
+            : "Not eligible. Reject is only for tickets created AND handled by the Voice Bot."
+        );
+        return prev;
+      }
+
+      if (!isPendingApproval) {
+        toast.error(
+          isFR
+            ? "Ce ticket n’est pas en attente d’approbation."
+            : "This ticket is not in PENDING_APPROVAL."
+        );
+        return prev;
+      }
+
+      if (routing === "REJECTED") return prev;
+
+      const now = new Date().toISOString();
+      const cleanReason = String(reason || "").trim();
+
+      const next = prev.map((t) => {
+        if (t.id !== ticketId) return t;
+
+        const nextSession = Array.isArray(t.sessionHistory) ? [...t.sessionHistory] : [];
+        nextSession.push({
+          at: now,
+          speaker: `Supervisor (${sessionUserName})`,
+          text: cleanReason
+            ? `Rejected by supervisor — ${cleanReason}.`
+            : "Rejected by supervisor. No routing action will be taken.",
+        });
+
+        return {
+          ...t,
+          status: "REJECTED",
+          routingStatus: "REJECTED",
+          workflowStage: "REJECTED_BY_SUPERVISOR",
+          rejectedAt: now,
+          rejectedByRole: "SUPERVISOR",
+          rejectedByName: sessionUserName,
+          rejectedReason: cleanReason || "Rejected by supervisor",
+          sessionHistory: nextSession,
+        };
+      });
+
+      toast.success(
+        isFR
+          ? "Rejet enregistré avec succès."
+          : "Reject was successful. Ticket will not be routed."
       );
 
       setStoredTickets(next);
@@ -819,10 +930,20 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
   const qoCounts = useMemo(() => {
     const upper = (x) => String(x || "").toUpperCase();
     const visible = roleVisibleTickets || [];
-    const needsReview = visible.filter((t) => upper(t?.status) === "NEEDS_REVIEW").length;
-    const escalated = visible.filter((t) => upper(t?.status) === "ESCALATED").length;
+
+    const needsReview = visible.filter(
+      (t) => upper(t?.status) === "NEEDS_REVIEW" && !isRejectedTicket(t)
+    ).length;
+    const escalated = visible.filter(
+      (t) => upper(t?.status) === "ESCALATED" && !isRejectedTicket(t)
+    ).length;
     const resolved = visible.filter((t) => upper(t?.status) === "RESOLVED").length;
-    const active = visible.filter((t) => upper(t?.status) !== "RESOLVED").length;
+    const active = visible.filter(
+      (t) =>
+        upper(t?.status) !== "RESOLVED" &&
+        upper(t?.status) !== "DELETE" &&
+        !isRejectedTicket(t)
+    ).length;
 
     return { visible: visible.length, needsReview, escalated, resolved, active };
   }, [roleVisibleTickets]);
@@ -863,7 +984,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
     const isResolved = (t) => (t?.status || "").toUpperCase() === "RESOLVED";
     const isBotOnlyPendingApproval = (t) => {
       const stage = String(t?.workflowStage || "").toUpperCase();
-      const legacyPending = isPureVoiceBotTicket(t) && !isApproved(t) && !isResolved(t);
+      const legacyPending = isPureVoiceBotTicket(t) && !isApproved(t) && !isResolved(t) && !isRejectedTicket(t);
       return stage === "PENDING_APPROVAL" || stage === "PENDING_SUPERVISOR_APPROVAL" || legacyPending;
     };
 
@@ -888,6 +1009,8 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
         return base.filter((t) => low(t?.handledByName) === sessionName || low(t?.createdByName) === sessionName);
       case "NEW":
         return base.filter((t) => String(t?.status || "").toUpperCase() === "NEW");
+      case "REJECTED":
+        return base.filter(isRejectedTicket);
       case "DELETE":
         return base.filter((t) => String(t?.status || "").toUpperCase() === "DELETE");
       case "IN_PROGRESS":
@@ -900,7 +1023,12 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
         return base;
       case "ALL":
       default:
-        return base.filter((t) => !isResolved(t) && String(t?.status || "").toUpperCase() !== "DELETE");
+        return base.filter(
+          (t) =>
+            !isResolved(t) &&
+            String(t?.status || "").toUpperCase() !== "DELETE" &&
+            !isRejectedTicket(t)
+        );
     }
   }, [roleVisibleTickets, queueFilter, sessionRoleUpper, sessionName]);
 
@@ -934,7 +1062,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       String(t?.handledByType || "VOICE_BOT").toUpperCase() === "VOICE_BOT";
     const isBotOnlyPendingApproval = (t) => {
       const stage = String(t?.workflowStage || "").toUpperCase();
-      const legacyPending = isPureVoiceBot(t) && !isApproved(t) && !isResolvedLocal(t);
+      const legacyPending = isPureVoiceBot(t) && !isApproved(t) && !isResolvedLocal(t) && !isRejectedTicket(t);
       return stage === "PENDING_APPROVAL" || stage === "PENDING_SUPERVISOR_APPROVAL" || legacyPending;
     };
 
@@ -942,17 +1070,18 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
 
     const mine = base
       .filter((t) => low(t?.handledByName) === sessionName || low(t?.createdByName) === sessionName)
-      .filter((t) => !isResolvedLocal(t) && !isDeleted(t)).length;
+      .filter((t) => !isResolvedLocal(t) && !isDeleted(t) && !isRejectedTicket(t)).length;
 
     return {
-      new: base.filter((t) => isNew(t) && !isDeleted(t)).length,
+      new: base.filter((t) => isNew(t) && !isDeleted(t) && !isRejectedTicket(t)).length,
       approval,
+      rejected: base.filter(isRejectedTicket).length,
       delete: base.filter(isDeleted).length,
       mine,
-      inProgress: base.filter((t) => isInProgress(t) && !isDeleted(t)).length,
-      escalated: base.filter((t) => isEscalated(t) && !isDeleted(t)).length,
+      inProgress: base.filter((t) => isInProgress(t) && !isDeleted(t) && !isRejectedTicket(t)).length,
+      escalated: base.filter((t) => isEscalated(t) && !isDeleted(t) && !isRejectedTicket(t)).length,
       resolved: base.filter(isResolvedLocal).length,
-      allActive: base.filter((t) => !isResolvedLocal(t) && !isDeleted(t)).length,
+      allActive: base.filter((t) => !isResolvedLocal(t) && !isDeleted(t) && !isRejectedTicket(t)).length,
       showApproval: sessionRoleUpper === "SUPERVISOR",
     };
   }, [roleVisibleTickets, sessionName, sessionRoleUpper, ticketView]);
@@ -982,11 +1111,14 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
         case "ESCALATED":
           base = base.filter((t) => String(t?.status || "").toUpperCase() === "ESCALATED");
           break;
+        case "REJECTED":
+          base = base.filter(isRejectedTicket);
+          break;
         case "RESOLVED":
           base = base.filter(isResolved);
           break;
         case "ALL":
-          base = base.filter((t) => !isResolved(t) && !isDeleted(t));
+          base = base.filter((t) => !isResolved(t) && !isDeleted(t) && !isRejectedTicket(t));
           break;
         case "ALL_TICKETS":
         default:
@@ -1003,17 +1135,24 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
         return true;
       });
     } else if (chartFilter?.type === "STATUS") {
-      chartFiltered = base.filter(
-        (t) => String(t?.status || "").toUpperCase() === String(chartFilter.value || "").toUpperCase()
-      );
+      const value = String(chartFilter.value || "").toUpperCase();
+
+      chartFiltered = base.filter((t) => {
+        if (value === "REJECTED") return isRejectedTicket(t);
+        return String(t?.status || "").toUpperCase() === value;
+      });
     }
 
     let chipFiltered = chartFiltered;
     if (chips.needsReview) {
-      chipFiltered = chipFiltered.filter((t) => String(t?.status || "").toUpperCase() === "NEEDS_REVIEW");
+      chipFiltered = chipFiltered.filter(
+        (t) => String(t?.status || "").toUpperCase() === "NEEDS_REVIEW" && !isRejectedTicket(t)
+      );
     }
     if (chips.escalated) {
-      chipFiltered = chipFiltered.filter((t) => String(t?.status || "").toUpperCase() === "ESCALATED");
+      chipFiltered = chipFiltered.filter(
+        (t) => String(t?.status || "").toUpperCase() === "ESCALATED" && !isRejectedTicket(t)
+      );
     }
 
     const q = low(searchQuery);
@@ -1050,7 +1189,9 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
     const involved = (t) => low(t?.createdByName) === sessionName || low(t?.handledByName) === sessionName;
     const supervisorSeesBotOnly = (t) => isSupervisor && isPureVoiceBotTicket(t);
 
-    const base = filteredTickets.filter((t) => (involved(t) || supervisorSeesBotOnly(t)) && !isDeleted(t));
+    const base = filteredTickets.filter(
+      (t) => (involved(t) || supervisorSeesBotOnly(t)) && !isDeleted(t) && !isRejectedTicket(t)
+    );
 
     const sorted = [...base].sort((a, b) => {
       const ta = parseDate(a?.createdAt) || 0;
@@ -1100,7 +1241,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
     ].filter((x) => x.value > 0);
 
     const statusCounts = base.reduce((acc, t) => {
-      const s = String(t?.status || "NEW").toUpperCase();
+      const s = isRejectedTicket(t) ? "REJECTED" : String(t?.status || "NEW").toUpperCase();
       acc[s] = (acc[s] || 0) + 1;
       return acc;
     }, {});
@@ -1110,6 +1251,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       { label: "IN_PROGRESS", value: statusCounts.IN_PROGRESS || 0 },
       { label: "NEEDS_REVIEW", value: statusCounts.NEEDS_REVIEW || 0 },
       { label: "ESCALATED", value: statusCounts.ESCALATED || 0 },
+      { label: "REJECTED", value: statusCounts.REJECTED || 0 },
       { label: "RESOLVED", value: statusCounts.RESOLVED || 0 },
       { label: "DELETE", value: statusCounts.DELETE || 0 },
       {
@@ -1121,6 +1263,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
             (statusCounts.IN_PROGRESS || 0) -
             (statusCounts.NEEDS_REVIEW || 0) -
             (statusCounts.ESCALATED || 0) -
+            (statusCounts.REJECTED || 0) -
             (statusCounts.RESOLVED || 0) -
             (statusCounts.DELETE || 0)
         ),
@@ -1137,7 +1280,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
     const isResolved = (t) => String(t?.status || "").toUpperCase() === "RESOLVED";
     const isBotOnlyPendingApproval = (t) => {
       const stage = String(t?.workflowStage || "").toUpperCase();
-      const legacyPending = isPureVoiceBotTicket(t) && !isApproved(t) && !isResolved(t);
+      const legacyPending = isPureVoiceBotTicket(t) && !isApproved(t) && !isResolved(t) && !isRejectedTicket(t);
       return stage === "PENDING_APPROVAL" || stage === "PENDING_SUPERVISOR_APPROVAL" || legacyPending;
     };
 
@@ -1159,7 +1302,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
     ].filter((x) => x.value > 0);
 
     const statusCounts = mineAll.reduce((acc, t) => {
-      const s = String(t?.status || "NEW").toUpperCase();
+      const s = isRejectedTicket(t) ? "REJECTED" : String(t?.status || "NEW").toUpperCase();
       acc[s] = (acc[s] || 0) + 1;
       return acc;
     }, {});
@@ -1169,6 +1312,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       { label: "IN_PROGRESS", value: statusCounts.IN_PROGRESS || 0 },
       { label: "NEEDS_REVIEW", value: statusCounts.NEEDS_REVIEW || 0 },
       { label: "ESCALATED", value: statusCounts.ESCALATED || 0 },
+      { label: "REJECTED", value: statusCounts.REJECTED || 0 },
       { label: "RESOLVED", value: statusCounts.RESOLVED || 0 },
       { label: "DELETE", value: statusCounts.DELETE || 0 },
       {
@@ -1180,6 +1324,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
             (statusCounts.IN_PROGRESS || 0) -
             (statusCounts.NEEDS_REVIEW || 0) -
             (statusCounts.ESCALATED || 0) -
+            (statusCounts.REJECTED || 0) -
             (statusCounts.RESOLVED || 0) -
             (statusCounts.DELETE || 0)
         ),
@@ -1243,26 +1388,6 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
               draftTicketNumber={draftTicketNumber}
               onConsumeDraftNumber={consumeManualDraftNumber}
             />
-          </div>
-        </div>
-      )}
-
-      {/* Voice Intake */}
-      {activeView === "VOICE_INTAKE" && (
-        <div className="card" style={{ marginTop: 12 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-            <div>
-              <h3 style={{ marginTop: 0, marginBottom: 6 }}>{isFR ? "Saisie vocale" : "Voice Intake"}</h3>
-              <div style={{ fontSize: 12, color: "#6b7280" }}>
-                {isFR
-                  ? "Simuler l’assistant vocal et extraire des champs structurés."
-                  : "Simulate the VoiceBot intake and extract structured fields into a draft ticket."}
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: 12 }}>
-            <VoiceIntakePanel transcript={transcript} setTranscript={setTranscript} onExtract={aiCreateTicketFromTranscript} />
           </div>
         </div>
       )}
@@ -1458,7 +1583,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
             </div>
           </div>
 
-          {/* ✅ Recent activity (FIXED: no duplicate maps, no stray closing tags) */}
+          {/* ✅ Recent activity */}
           <div className="card qoActivityCard" style={{ marginTop: 14 }}>
             <div className="qoActivityHeader">
               <div>
@@ -1666,6 +1791,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
         sessionName={sessionUserName}
         readOnly={isReadOnlyBucket}
         onApprove={isReadOnlyBucket ? undefined : approveTicket}
+        onReject={isReadOnlyBucket ? undefined : rejectTicket}
         onUpdate={isReadOnlyBucket ? undefined : updateTicket}
         onDelete={isReadOnlyBucket ? undefined : deleteTicket}
       />

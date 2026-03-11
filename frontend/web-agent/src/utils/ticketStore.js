@@ -27,7 +27,14 @@ function normalizeTicket(t) {
   const out = { ...t };
 
   // ✅ Some legacy sources use different keys
-  if (!out.category) out.category = out.serviceCategory || out.issueCategory || out.issueType || out.type || null;
+  if (!out.category) {
+    out.category =
+      out.serviceCategory ||
+      out.issueCategory ||
+      out.issueType ||
+      out.type ||
+      null;
+  }
 
   // Always present (drawer + details page expects this).
   if (!Array.isArray(out.sessionHistory)) out.sessionHistory = [];
@@ -54,14 +61,19 @@ function normalizeTicket(t) {
   }
 
   // Helpful for the Approval column label
-  if (out.routedToDepartment === undefined) out.routedToDepartment = out.routedToDepartment || null;
+  if (out.routedToDepartment === undefined) {
+    out.routedToDepartment = out.routedToDepartment || null;
+  }
 
   // ✅ Default routing status should not mark every ticket as pending approval.
   // Only bot-only tickets should be pending approval; everything else is treated as routed.
   const createdType = String(out.createdByType || "").toUpperCase();
   const handledRole = String(out.handledByRole || "").toUpperCase();
   const handledType = String(out.handledByType || "").toUpperCase();
-  const isPureBot = createdType === "VOICE_BOT" && handledRole === "VOICE_BOT" && handledType === "VOICE_BOT";
+  const isPureBot =
+    createdType === "VOICE_BOT" &&
+    handledRole === "VOICE_BOT" &&
+    handledType === "VOICE_BOT";
 
   if (!out.routingStatus) out.routingStatus = isPureBot ? "PENDING_APPROVAL" : "ROUTED";
   if (!out.workflowStage) out.workflowStage = isPureBot ? "PENDING_APPROVAL" : "STANDARD";
@@ -111,7 +123,6 @@ export function approveAndRouteTicket(ticketNumber, department, approverName, ap
 
   const now = nowIso();
 
-  // Build updated ticket
   const updated = {
     ...t,
     assignedDepartment: department || t.assignedDepartment || null,
@@ -134,6 +145,67 @@ export function approveAndRouteTicket(ticketNumber, department, approverName, ap
     text: `Approved & routed to Department Queue — ${
       department || updated.assignedDepartment || "Department"
     }.`,
+  });
+  updated.sessionHistory = hist;
+
+  return updateTicketByNumber(ticketNumber, updated);
+}
+
+export function rejectVoiceBotTicket(ticketNumber, reviewerName, reviewerRole, reason = "") {
+  const t = getTicketByNumber(ticketNumber);
+  if (!t) return { ok: false, error: "Ticket not found" };
+
+  const now = nowIso();
+  const cleanReason = String(reason || "").trim();
+
+  const updated = {
+    ...t,
+    routingStatus: "REJECTED",
+    workflowStage: "REJECTED_BY_SUPERVISOR",
+    rejectedAt: now,
+    rejectedByName: reviewerName || t.rejectedByName || null,
+    rejectedByRole: reviewerRole || t.rejectedByRole || null,
+    rejectedReason: cleanReason || "Rejected by supervisor",
+  };
+
+  const hist = Array.isArray(updated.sessionHistory) ? [...updated.sessionHistory] : [];
+  hist.push({
+    at: now,
+    speaker: `${reviewerRole || "SUPERVISOR"} (${reviewerName || "Supervisor"})`,
+    text: cleanReason
+      ? `Rejected by supervisor — ${cleanReason}.`
+      : "Rejected by supervisor. No routing action will be taken.",
+  });
+  updated.sessionHistory = hist;
+
+  return updateTicketByNumber(ticketNumber, updated);
+}
+
+// ✅ Option B: dedicated soft-delete helper for cleaner store logic
+export function markTicketDeleted(ticketNumber, deletedByName, deletedByRole, reason = "") {
+  const t = getTicketByNumber(ticketNumber);
+  if (!t) return { ok: false, error: "Ticket not found" };
+
+  const now = nowIso();
+  const cleanReason = String(reason || "").trim();
+
+  const updated = {
+    ...t,
+    status: "DELETE",
+    deletedAt: now,
+    deletedByName: deletedByName || t.deletedByName || null,
+    deletedByRole: deletedByRole || t.deletedByRole || null,
+    deletedReason: cleanReason || "Deleted by supervisor",
+    deleteComment: cleanReason || "Deleted by supervisor",
+  };
+
+  const hist = Array.isArray(updated.sessionHistory) ? [...updated.sessionHistory] : [];
+  hist.push({
+    at: now,
+    speaker: `${deletedByRole || "SUPERVISOR"} (${deletedByName || "Supervisor"})`,
+    text: cleanReason
+      ? `Marked as DELETE — ${cleanReason}.`
+      : "Marked as DELETE by supervisor.",
   });
   updated.sessionHistory = hist;
 
