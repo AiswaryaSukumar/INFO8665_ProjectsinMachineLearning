@@ -1,0 +1,212 @@
+// src/components/VoiceIntakePanel.jsx
+import { useState } from "react";
+import { USERS, OPERATORS, SUPERVISOR } from "../data/operators";
+import { decideHandoffTarget } from "../utils/routing";
+import AudioLevelMeter from "./AudioLevelMeter";
+
+export default function VoiceIntakePanel({ transcript, setTranscript, onExtract }) {
+  const [status, setStatus] = useState("Idle");
+
+  // NEW: call handling controls
+  const [handoffMode, setHandoffMode] = useState("VOICE_BOT"); // VOICE_BOT | HANDOFF
+  const [requestSupervisor, setRequestSupervisor] = useState(false);
+  const [selectedOperator, setSelectedOperator] = useState(
+    OPERATORS?.[0]?.name || "Jerry"
+  );
+
+  const [autoDecision, setAutoDecision] = useState(null);
+
+  // ✅ Task 425: mic meter state
+  const [micActive, setMicActive] = useState(false);
+
+  const startMic = () => {
+    setMicActive(true);
+    setStatus("Listening");
+  };
+
+  const stopMic = () => {
+    setMicActive(false);
+    setStatus("Idle");
+  };
+
+  const simulateVoice = () => {
+    setStatus("Listening");
+    setTimeout(() => {
+      setTranscript(
+        "Hi, I want to report a pothole near King Street and Weber Street. It feels dangerous while driving."
+      );
+      // Keep as Listening until Extract happens (so lifecycle becomes meaningful)
+    }, 700);
+  };
+
+  const resetAll = () => {
+    setTranscript("");
+    setStatus("Idle");
+    setAutoDecision(null);
+    setHandoffMode("VOICE_BOT");
+    setRequestSupervisor(false);
+    setSelectedOperator(OPERATORS?.[0]?.name || "Jerry");
+    setMicActive(false);
+  };
+
+  const handleExtract = () => {
+    let handoffPayload = { type: "VOICE_BOT" };
+
+    if (handoffMode === "HANDOFF") {
+      handoffPayload = {
+        type: "VOICE_BOT_TO_HUMAN",
+        requestSupervisor,
+        preferredOperatorName: selectedOperator,
+      };
+    }
+
+    onExtract(handoffPayload);
+    setStatus("Session Completed");
+    setMicActive(false); // stop mic once session completes
+  };
+
+  return (
+    <div className="card">
+      <h3 style={{ marginTop: 0 }}>Voice Intake (UC1)</h3>
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {/* ✅ Task 424 already: simulate */}
+        <button className="btn primary" onClick={simulateVoice}>
+          Start Voice Intake (Simulate)
+        </button>
+
+        {/* ✅ Task 425: real mic start/stop */}
+        {!micActive ? (
+          <button className="btn" onClick={startMic}>
+            Start Mic (Real)
+          </button>
+        ) : (
+          <button className="btn" onClick={stopMic}>
+            Stop Mic
+          </button>
+        )}
+
+        <button className="btn" onClick={resetAll}>
+          Reset
+        </button>
+
+        <button className="btn" onClick={handleExtract} disabled={!transcript}>
+          Extract → Auto-fill
+        </button>
+      </div>
+
+      <div style={{ marginTop: 10, fontSize: 13 }}>
+        <b>Status:</b>{" "}
+        <span
+          style={{
+            color:
+              status === "Listening"
+                ? "#2563eb"
+                : status === "Session Completed"
+                ? "#059669"
+                : "#374151",
+            fontWeight: 600,
+          }}
+        >
+          {status}
+        </span>
+      </div>
+
+      {/* ✅ Task 425 meter (shows while mic is active) */}
+      <AudioLevelMeter active={micActive} />
+
+      {/* ✅ NEW: Call handling controls */}
+      <div style={{ marginTop: 12 }}>
+        <label>Call Handling</label>
+        <select
+          value={handoffMode}
+          onChange={(e) => setHandoffMode(e.target.value)}
+        >
+          <option value="VOICE_BOT">Voice Bot only</option>
+          <option value="HANDOFF">Voice Bot + Human (transfer)</option>
+        </select>
+      </div>
+
+      {handoffMode === "HANDOFF" && (
+        <div style={{ marginTop: 10 }}>
+          <label style={{ display: "block" }}>
+            <input
+              type="checkbox"
+              checked={requestSupervisor}
+              onChange={(e) => setRequestSupervisor(e.target.checked)}
+            />{" "}
+            Citizen requested supervisor
+          </label>
+
+          <div style={{ marginTop: 8 }}>
+            <label>Preferred Operator (if not escalated)</label>
+            <select
+              value={selectedOperator}
+              onChange={(e) => setSelectedOperator(e.target.value)}
+            >
+              {OPERATORS.map((op) => (
+                <option key={op.id} value={op.name}>
+                  {op.name}
+                </option>
+              ))}
+            </select>
+
+            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+              Default routing is to an Operator (Tom/Jerry). If escalation rules
+              trigger, it will route to Supervisor ({SUPERVISOR?.name || "Nagavalli"}).
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: 10 }}>
+        <label>Transcript</label>
+        <textarea
+          value={transcript}
+          onChange={(e) => setTranscript(e.target.value)}
+          placeholder="Caller speech will appear here..."
+        />
+      </div>
+
+      {/* 🔊 Call playback (Review Only) — shown only when we have a transcript */}
+      {transcript?.trim() && (
+        <div style={{ marginTop: 10 }}>
+          <label>Call Recording (AI Intake)</label>
+
+          <audio controls style={{ width: "100%" }}>
+            <source src="/mock/call_sample.mp3" type="audio/mpeg" />
+            Your browser does not support audio playback.
+          </audio>
+
+          <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+            <a className="btn" href="/mock/call_sample.mp3" download>
+              ⬇ Download Recording
+            </a>
+          </div>
+
+          <p style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+            This call was processed by the AI voice bot. If transferred, a human handler will be
+            recorded on the ticket for accountability.
+          </p>
+        </div>
+      )}
+
+      {/* ✅ UPDATED: Bot asks (uses class so High Contrast can style it) */}
+      <div style={{ marginTop: 10 }}>
+        <label>Bot asks (only if missing fields)</label>
+
+        <div className="botAskBox">
+          {!transcript && "Please describe the issue you’d like to report."}
+
+          {transcript && status !== "Session Completed" && (
+            <>Confirm details. If missing, ask: “What is the nearest intersection?”</>
+          )}
+
+          {transcript && status === "Session Completed" && (
+            <>Session complete. Please review the auto-filled form and create the ticket.</>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
