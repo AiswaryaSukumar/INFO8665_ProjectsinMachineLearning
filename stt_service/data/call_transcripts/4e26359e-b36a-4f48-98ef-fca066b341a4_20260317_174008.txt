@@ -1,0 +1,24 @@
+INSIGHT-311 CALL TRANSCRIPT
+Session ID : 4e26359e-b36a-4f48-98ef-fca066b341a4
+Ticket  ID : TKT-20260317-15AC
+Timestamp  : 20260317_174008
+============================================================
+
+Turn   1  [CALLER]  hi, i'm calling to report a graffiti issue. it's located at 345 king street north. my name is michael jackson and you can call me at 226-234-1234.
+Turn   1  [SYSTEM]  For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-1234. This will be routed to Public Use Facilities. Is this all correct?
+Turn   2  [CALLER]  no, my name is billy eilish and the problem is located at 334 king street south.
+Turn   2  [SYSTEM]  I've updated the location to 334 King Street South, your name to Billy Eilish. Let's review again. For final confirmation, please check the following information. You reported a graffiti issue at 334 King Street South. Your contact information is Billy Eilish and 226-234-1234. This will be routed to Public Use Facilities. Is this all correct?
+Turn   3  [CALLER]  it's not correct.
+Turn   3  [SYSTEM]  I'm sorry. Which information is incorrect? Please say 'the location is...', 'my name is...', or 'my phone number is...' with the corrected detail.
+Turn   4  [CALLER]  i am calling with a pot hole issue.
+Turn   4  [SYSTEM]  For final confirmation, please check the following information. You reported a graffiti issue at 334 King Street South. Your contact information is Billy Eilish and 226-234-1234. This will be routed to Public Use Facilities. Is this all correct?
+Turn   5  [CALLER]  no, i'm calling to report a pothole issue.
+Turn   5  [SYSTEM]  I've updated the issue type to pothole. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is Billy Eilish and 226-234-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?
+Turn   6  [CALLER]  i don't think it's correct.
+Turn   6  [SYSTEM]  For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is Billy Eilish and 226-234-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?
+Turn   7  [CALLER]  no.
+Turn   7  [SYSTEM]  For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is Billy Eilish and 226-234-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?
+Turn   8  [CALLER]  yes.
+Turn   8  [SYSTEM]  Your ticket number is T K T 2 0 2 6 0 3 1 7 1 5 A C. Thank you for your report. Goodbye.
+
+============================================================

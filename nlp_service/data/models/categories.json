@@ -1,0 +1,157 @@
+{
+  "categories": [
+    {
+      "id": "graffiti",
+      "name": "Graffiti",
+      "keywords": [
+        "graffiti",
+        "spray paint",
+        "vandalism",
+        "painted",
+        "defaced",
+        "tagging",
+        "wall painting"
+      ],
+      "description": "Graffiti and vandalism on public property"
+    },
+    {
+      "id": "illegal_sign",
+      "name": "Illegal Sign",
+      "keywords": [
+        "illegal sign",
+        "unauthorized sign",
+        "banner",
+        "poster",
+        "advertisement",
+        "signage",
+        "unlawful sign"
+      ],
+      "description": "Unauthorized or illegal signage"
+    },
+    {
+      "id": "litter",
+      "name": "Litter in Playground, Park or Trail",
+      "keywords": [
+        "litter",
+        "trash",
+        "garbage",
+        "waste",
+        "playground litter",
+        "park litter",
+        "trail litter",
+        "dumping",
+        "rubbish"
+      ],
+      "description": "Litter and waste in playgrounds, parks, or trails"
+    },
+    {
+      "id": "needles",
+      "name": "Needles",
+      "keywords": [
+        "needles",
+        "syringes",
+        "drug paraphernalia",
+        "sharp objects",
+        "medical waste"
+      ],
+      "description": "Discarded needles or syringes"
+    },
+    {
+      "id": "parking_complaint",
+      "name": "Parking Complaint",
+      "keywords": [
+        "parking",
+        "parked",
+        "illegal parking",
+        "blocking",
+        "parking violation",
+        "no parking",
+        "towed"
+      ],
+      "description": "Parking violations and complaints"
+    },
+    {
+      "id": "property_standards",
+      "name": "Property Standards Complaint",
+      "keywords": [
+        "property standards",
+        "property condition",
+        "maintenance",
+        "overgrown",
+        "neglected property",
+        "building violation",
+        "code violation"
+      ],
+      "description": "Property maintenance and standards violations"
+    },
+    {
+      "id": "pothole",
+      "name": "Pothole",
+      "keywords": [
+        "pothole",
+        "road damage",
+        "hole in road",
+        "pavement damage",
+        "asphalt",
+        "crack",
+        "broken road",
+        "road repair"
+      ],
+      "description": "Potholes and road surface damage"
+    },
+    {
+      "id": "sidewalk_snow",
+      "name": "Sidewalk Snow Clearing",
+      "keywords": [
+        "snow",
+        "sidewalk snow",
+        "snow clearing",
+        "ice",
+        "snow removal",
+        "icy sidewalk",
+        "uncleared sidewalk",
+        "winter maintenance"
+      ],
+      "description": "Snow and ice clearing issues on sidewalks"
+    },
+    {
+      "id": "sidewalk_hazard",
+      "name": "Sidewalk Trip Hazard",
+      "keywords": [
+        "trip hazard",
+        "sidewalk damage",
+        "broken sidewalk",
+        "uneven sidewalk",
+        "sidewalk crack",
+        "raised sidewalk",
+        "hazard"
+      ],
+      "description": "Trip hazards and damage on sidewalks"
+    },
+    {
+      "id": "trail_maintenance",
+      "name": "Trail Surface Maintenance",
+      "keywords": [
+        "trail",
+        "trail maintenance",
+        "path",
+        "trail damage",
+        "trail surface",
+        "walkway",
+        "pathway"
+      ],
+      "description": "Trail surface maintenance and repairs"
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "keywords": [
+        "other",
+        "miscellaneous",
+        "different issue",
+        "not listed"
+      ],
+      "description": "Other complaints not fitting the above categories"
+    }
+  ]
+}

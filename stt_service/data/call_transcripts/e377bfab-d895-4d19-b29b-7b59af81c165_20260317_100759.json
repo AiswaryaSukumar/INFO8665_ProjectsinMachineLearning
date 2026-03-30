@@ -1,0 +1,17 @@
+{
+  "session_id": "e377bfab-d895-4d19-b29b-7b59af81c165",
+  "ticket_id": "TKT-20260317-7832",
+  "timestamp": "20260317_100759",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "yes."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "Your ticket number is T K T 2 0 2 6 0 3 1 7 7 8 3 2. Thank you for your report. Goodbye."
+    }
+  ]
+}

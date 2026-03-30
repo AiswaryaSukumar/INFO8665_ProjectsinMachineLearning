@@ -1,0 +1,13 @@
+# Grafana dashboard provisioning
+apiVersion: 1
+
+providers:
+  - name: "INSIGHT-311"
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: false

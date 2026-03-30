@@ -1,0 +1,87 @@
+{
+  "session_id": "5aba80a0-8209-4c2a-a17b-08425f2c7937",
+  "ticket_id": "TKT-20260317-D6A5",
+  "timestamp": "20260317_104127",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 1,
+      "text": "hi, i'm calling to report a graffiti issue in the city hall. so it's located in 345 king street north."
+    },
+    {
+      "role": "system",
+      "turn": 1,
+      "text": "May I have your name please?"
+    },
+    {
+      "role": "caller",
+      "turn": 2,
+      "text": "yeah, my name is michael jackson."
+    },
+    {
+      "role": "system",
+      "turn": 2,
+      "text": "What is the best phone number to reach you?"
+    },
+    {
+      "role": "caller",
+      "turn": 3,
+      "text": "you can call me 226-234-8731."
+    },
+    {
+      "role": "system",
+      "turn": 3,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-8731. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "no."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "I'm sorry. To correct your information, please specify the corrected detail. For example, say 'the location is 334 King Street North'."
+    },
+    {
+      "role": "caller",
+      "turn": 5,
+      "text": "the location is 334 king street south and my name is billy eilish."
+    },
+    {
+      "role": "system",
+      "turn": 5,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-8731. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 6,
+      "text": "no, the location is 334 king street south and my name is billy eilish."
+    },
+    {
+      "role": "system",
+      "turn": 6,
+      "text": "I'm sorry. To correct your information, please specify the corrected detail. For example, say 'the location is 334 King Street North'."
+    },
+    {
+      "role": "caller",
+      "turn": 7,
+      "text": "the location is 334 king street south."
+    },
+    {
+      "role": "system",
+      "turn": 7,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-8731. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 8,
+      "text": "yes."
+    },
+    {
+      "role": "system",
+      "turn": 8,
+      "text": "Your ticket number is T K T 2 0 2 6 0 3 1 7 D 6 A 5. Thank you for your report. Goodbye."
+    }
+  ]
+}

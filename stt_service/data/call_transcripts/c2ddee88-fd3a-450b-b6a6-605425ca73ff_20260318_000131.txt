@@ -1,0 +1,22 @@
+INSIGHT-311 CALL TRANSCRIPT
+Session ID : c2ddee88-fd3a-450b-b6a6-605425ca73ff
+Ticket  ID : TKT-20260318-82EF
+Timestamp  : 20260318_000131
+============================================================
+
+Turn   1  [CALLER]  hi, i'm calling to report a pothole issue. it's located at 345 king street north.
+Turn   1  [SYSTEM]  May I have your name please?
+Turn   2  [CALLER]  my name is michael jackson.
+Turn   2  [SYSTEM]  What is the best phone number to reach you?
+Turn   3  [CALLER]  you can reach me 226-226-1234.
+Turn   3  [SYSTEM]  For final confirmation, please check the following information. You reported a pothole issue at 345 King Street North. Your contact information is michael jackson and 226-226-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?
+Turn   4  [CALLER]  no, my name is billy eilish and the issue located at 334 king street south.
+Turn   4  [SYSTEM]  I've updated the location to 334 King Street South, your name to Billy Eilish. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is Billy Eilish and 226-226-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?
+Turn   5  [CALLER]  it's not correct.
+Turn   5  [SYSTEM]  I'm sorry. Which information is incorrect? Please say 'the location is...', 'my name is...', or 'my phone number is...' with the corrected detail.
+Turn   6  [CALLER]  my name is michael jackson.
+Turn   6  [SYSTEM]  I've updated your name to michael jackson. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is michael jackson and 226-226-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?
+Turn   7  [CALLER]  yeah, i think it's correct.
+Turn   7  [SYSTEM]  Your ticket number is T K T 2 0 2 6 0 3 1 8 8 2 E F. Thank you for your report. Goodbye.
+
+============================================================

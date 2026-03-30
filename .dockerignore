@@ -1,0 +1,34 @@
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+.env
+node_modules/
+
+# Virtual environments
+.venv*/
+venv/
+
+# UI code (not needed in backend container)
+ui/
+
+# ML model weights (mounted as volumes instead)
+nlp_service/ml_models/saved_models/
+
+# Audio data (mounted as volume)
+stt_service/data/audio_samples/
+stt_service/data/call_recordings/
+stt_service/data/call_transcripts/
+
+# Monitoring configs (used by docker-compose, not the app image)
+monitoring/
+
+# Test files
+tests/
+
+# Documentation
+*.md
+CODE_ANALYSIS_en.md
+DATA_SCHEMA_AUDIT_en.md
+README.md

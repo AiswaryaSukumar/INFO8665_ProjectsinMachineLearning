@@ -1,0 +1,97 @@
+{
+  "session_id": "8ff2ac8c-2d1d-4648-83db-127b81eb4b5d",
+  "ticket_id": "TKT-20260319-A55A",
+  "timestamp": "20260319_052713",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 1,
+      "text": "hi, i'm calling to report a pothole issue."
+    },
+    {
+      "role": "system",
+      "turn": 1,
+      "text": "Where exactly is the issue located?"
+    },
+    {
+      "role": "caller",
+      "turn": 2,
+      "text": "it's located at 345 king street north."
+    },
+    {
+      "role": "system",
+      "turn": 2,
+      "text": "May I have your name please?"
+    },
+    {
+      "role": "caller",
+      "turn": 3,
+      "text": "my name is michael jackson."
+    },
+    {
+      "role": "system",
+      "turn": 3,
+      "text": "What is the best phone number to reach you?"
+    },
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "you can call me 226-234-8731."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "For final confirmation, please check the following information. You reported a pothole issue at 345 King Street North. Your contact information is michael jackson and 226-234-8731. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 5,
+      "text": "no."
+    },
+    {
+      "role": "system",
+      "turn": 5,
+      "text": "For final confirmation, please check the following information. You reported a pothole issue at 345 King Street North. Your contact information is michael jackson and 226-234-8731. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 6,
+      "text": "now, the location is 334 king street south."
+    },
+    {
+      "role": "system",
+      "turn": 6,
+      "text": "I've updated the location to 334 King Street South. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is michael jackson and 226-234-8731. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 7,
+      "text": "no, my name is billy eilish."
+    },
+    {
+      "role": "system",
+      "turn": 7,
+      "text": "I've updated your name to billy eilish. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is billy eilish and 226-234-8731. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 8,
+      "text": "my name is michael jackson."
+    },
+    {
+      "role": "system",
+      "turn": 8,
+      "text": "I've updated your name to michael jackson. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is michael jackson and 226-234-8731. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 9,
+      "text": "yes, my name is billy eilish."
+    },
+    {
+      "role": "system",
+      "turn": 9,
+      "text": "Your ticket number is T K T 2 0 2 6 0 3 1 9 A 5 5 A. Thank you for your report. Goodbye."
+    }
+  ]
+}

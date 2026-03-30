@@ -1,0 +1,128 @@
+{
+  "version": "1.0",
+  "description": "Test data for NLU module - evaluation samples",
+  "total_samples": 11,
+  "transcripts": [
+    {
+      "id": "test_001",
+      "transcript": "Um, yeah hi, so I'm calling about... okay so there's like this bridge, you know the one on River Road? Yeah, someone went and spray painted all over it. I mean like everywhere - the sides, the pillars, even underneath I think. It's really bad, um, lots of different colors and stuff. Pretty sure I saw some offensive words too but I'm not gonna repeat them. Anyway, it needs to be cleaned up because, you know, kids walk by there going to school and everything. Oh, my name is Mark Thompson by the way. Yeah.",
+      "labels": {
+        "category": "graffiti",
+        "location": "River Road bridge",
+        "description": "Extensive spray paint graffiti covering bridge sides, pillars, and underneath with offensive content",
+        "caller_name": "Mark Thompson",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_002",
+      "transcript": "There's an illegal poster attached to the traffic light at University Avenue. Been there for a month.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "University Avenue traffic light",
+        "description": "Illegal poster on traffic light for a month",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_003",
+      "transcript": "The park on Wellington Street is covered in trash. Empty bottles, food wrappers, cigarette butts everywhere.",
+      "labels": {
+        "category": "litter",
+        "location": "Wellington Street park",
+        "description": "Trash covering park: bottles, wrappers, cigarette butts",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_004",
+      "transcript": "This is an emergency! Found used syringes at the children's playground on Victoria Street. Very dangerous. Call me at 555-9999.",
+      "labels": {
+        "category": "needles",
+        "location": "Victoria Street playground",
+        "description": "Used syringes at children's playground",
+        "caller_name": null,
+        "caller_phone": "555-9999"
+      }
+    },
+    {
+      "id": "test_005",
+      "transcript": "A truck has been parked blocking the fire hydrant on Queen Street for 3 days. This is illegal parking. My name is Carol White.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Queen Street fire hydrant",
+        "description": "Truck blocking fire hydrant for 3 days",
+        "caller_name": "Carol White",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_006",
+      "transcript": "The vacant house at 789 King Road is in violation. Boarded windows, tall grass, looks abandoned. Neighbors are concerned.",
+      "labels": {
+        "category": "property_standards",
+        "location": "789 King Road",
+        "description": "Vacant house with boarded windows, tall grass, appears abandoned",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_007",
+      "transcript": "Big pothole on Highway 7 near the exit. Cars are hitting it and swerving. Really dangerous. This is urgent.",
+      "labels": {
+        "category": "pothole",
+        "location": "Highway 7 near exit",
+        "description": "Large pothole causing cars to hit and swerve",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_008",
+      "transcript": "The sidewalk on Princess Street is still full of snow and ice from last week. No one's cleared it. Seniors can't walk safely. Call me at 555-7777, this is Helen.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Princess Street sidewalk",
+        "description": "Uncleared snow and ice from last week, unsafe for seniors",
+        "caller_name": "Helen",
+        "caller_phone": "555-7777"
+      }
+    },
+    {
+      "id": "test_009",
+      "transcript": "There's a big crack in the sidewalk on Ontario Street where the tree roots pushed up the concrete. My neighbor tripped last week.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Ontario Street sidewalk",
+        "description": "Cracked sidewalk from tree roots, neighbor tripped",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_010",
+      "transcript": "The hiking trail at Greenwood Park is washed out completely. Can't use it anymore. Needs urgent repair work.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Greenwood Park hiking trail",
+        "description": "Trail completely washed out, unusable",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_011",
+      "transcript": "This is about something unusual. There's a damaged street sign at the corner that's fallen and blocking part of the sidewalk. Not sure what category this is. My name is Peter Jones, 555-6666.",
+      "labels": {
+        "category": "other",
+        "location": "Corner (street sign location)",
+        "description": "Fallen street sign blocking sidewalk",
+        "caller_name": "Peter Jones",
+        "caller_phone": "555-6666"
+      }
+    }
+  ]
+}
