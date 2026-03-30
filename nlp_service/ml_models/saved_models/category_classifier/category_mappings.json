@@ -1,0 +1,28 @@
+{
+  "label_to_category": {
+    "0": "graffiti",
+    "1": "illegal_sign",
+    "2": "litter",
+    "3": "needles",
+    "4": "parking_complaint",
+    "5": "property_standards",
+    "6": "pothole",
+    "7": "sidewalk_snow",
+    "8": "sidewalk_hazard",
+    "9": "trail_maintenance",
+    "10": "other"
+  },
+  "category_to_label": {
+    "graffiti": 0,
+    "illegal_sign": 1,
+    "litter": 2,
+    "needles": 3,
+    "parking_complaint": 4,
+    "property_standards": 5,
+    "pothole": 6,
+    "sidewalk_snow": 7,
+    "sidewalk_hazard": 8,
+    "trail_maintenance": 9,
+    "other": 10
+  }
+}

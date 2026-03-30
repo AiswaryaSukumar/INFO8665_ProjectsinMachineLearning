@@ -1,0 +1,18 @@
+INSIGHT-311 CALL TRANSCRIPT
+Session ID : d9f9f370-10e3-4a0d-8817-2f0352e417ac
+Ticket  ID : TKT-20260317-9854
+Timestamp  : 20260317_101504
+============================================================
+
+Turn   1  [CALLER]  i am calling to report a graffiti issue and 345 king street north.
+Turn   1  [SYSTEM]  May I have your name please?
+Turn   2  [CALLER]  yeah, my name is michael jackson.
+Turn   2  [SYSTEM]  What is the best phone number to reach you?
+Turn   3  [CALLER]  you can call me 234-123-2226.
+Turn   3  [SYSTEM]  For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 234-123-2226. This will be routed to Public Use Facilities. Is this all correct?
+Turn   4  [CALLER]  no, actually the issue location is 334 king street north.
+Turn   4  [SYSTEM]  I understand. I have updated the location to 345 King Street North. Let's review again. For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 234-123-2226. This will be routed to Public Use Facilities. Is this all correct?
+Turn   5  [CALLER]  yes.
+Turn   5  [SYSTEM]  Your ticket number is T K T 2 0 2 6 0 3 1 7 9 8 5 4. Thank you for your report. Goodbye.
+
+============================================================

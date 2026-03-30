@@ -1,0 +1,57 @@
+{
+  "session_id": "c3e913bc-8e30-403b-a9d5-e3aff6227563",
+  "ticket_id": "TKT-20260317-AE6E",
+  "timestamp": "20260317_173005",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 1,
+      "text": "hi, i'm calling to report a graffiti issue. it's located at 345 king street north. and my name is michael jackson and you can call me 226-222-6789."
+    },
+    {
+      "role": "system",
+      "turn": 1,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-222-6789. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 2,
+      "text": "no, my name is billy eilish and the location is 334 king street south."
+    },
+    {
+      "role": "system",
+      "turn": 2,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-222-6789. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 3,
+      "text": "no, my name is billy eilish."
+    },
+    {
+      "role": "system",
+      "turn": 3,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-222-6789. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "no. no."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-222-6789. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 5,
+      "text": "yes."
+    },
+    {
+      "role": "system",
+      "turn": 5,
+      "text": "Your ticket number is T K T 2 0 2 6 0 3 1 7 A E 6 E. Thank you for your report. Goodbye."
+    }
+  ]
+}

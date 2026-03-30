@@ -1,0 +1,77 @@
+{
+  "session_id": "c2ddee88-fd3a-450b-b6a6-605425ca73ff",
+  "ticket_id": "TKT-20260318-82EF",
+  "timestamp": "20260318_000131",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 1,
+      "text": "hi, i'm calling to report a pothole issue. it's located at 345 king street north."
+    },
+    {
+      "role": "system",
+      "turn": 1,
+      "text": "May I have your name please?"
+    },
+    {
+      "role": "caller",
+      "turn": 2,
+      "text": "my name is michael jackson."
+    },
+    {
+      "role": "system",
+      "turn": 2,
+      "text": "What is the best phone number to reach you?"
+    },
+    {
+      "role": "caller",
+      "turn": 3,
+      "text": "you can reach me 226-226-1234."
+    },
+    {
+      "role": "system",
+      "turn": 3,
+      "text": "For final confirmation, please check the following information. You reported a pothole issue at 345 King Street North. Your contact information is michael jackson and 226-226-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "no, my name is billy eilish and the issue located at 334 king street south."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "I've updated the location to 334 King Street South, your name to Billy Eilish. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is Billy Eilish and 226-226-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 5,
+      "text": "it's not correct."
+    },
+    {
+      "role": "system",
+      "turn": 5,
+      "text": "I'm sorry. Which information is incorrect? Please say 'the location is...', 'my name is...', or 'my phone number is...' with the corrected detail."
+    },
+    {
+      "role": "caller",
+      "turn": 6,
+      "text": "my name is michael jackson."
+    },
+    {
+      "role": "system",
+      "turn": 6,
+      "text": "I've updated your name to michael jackson. Let's review again. For final confirmation, please check the following information. You reported a pothole issue at 334 King Street South. Your contact information is michael jackson and 226-226-1234. This will be routed to Transportation Services. The standard response time is 48 hours. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 7,
+      "text": "yeah, i think it's correct."
+    },
+    {
+      "role": "system",
+      "turn": 7,
+      "text": "Your ticket number is T K T 2 0 2 6 0 3 1 8 8 2 E F. Thank you for your report. Goodbye."
+    }
+  ]
+}

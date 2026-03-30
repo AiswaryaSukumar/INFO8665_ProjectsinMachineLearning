@@ -1,0 +1,13 @@
+# Prometheus configuration for INSIGHT-311
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "insight311"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["app:8311"]
+        labels:
+          service: "insight311"
+          environment: "development"

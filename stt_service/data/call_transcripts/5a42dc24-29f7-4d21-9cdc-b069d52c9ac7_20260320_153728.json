@@ -1,0 +1,57 @@
+{
+  "session_id": "5a42dc24-29f7-4d21-9cdc-b069d52c9ac7",
+  "ticket_id": "311-2026-000014",
+  "timestamp": "20260320_153728",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 1,
+      "text": "hi, i'm calling for a report to a graffiti issue in city hall. it's located in 345 king street north."
+    },
+    {
+      "role": "system",
+      "turn": 1,
+      "text": "May I have your name please?"
+    },
+    {
+      "role": "caller",
+      "turn": 2,
+      "text": "my name is liam."
+    },
+    {
+      "role": "system",
+      "turn": 2,
+      "text": "What is the best phone number to reach you?"
+    },
+    {
+      "role": "caller",
+      "turn": 3,
+      "text": "you can call me at 226-226-1234."
+    },
+    {
+      "role": "system",
+      "turn": 3,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is liam and 226-226-1234. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "no, the location is 123 king street south and my name is liam george."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "I've updated the location to 123 King Street South, your name to liam george. Let's review again. For final confirmation, please check the following information. You reported a graffiti issue at 123 King Street South. Your contact information is liam george and 226-226-1234. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 5,
+      "text": "yeah, that's all correct."
+    },
+    {
+      "role": "system",
+      "turn": 5,
+      "text": "Your ticket number is 3 1 1 2 0 2 6 0 0 0 0 1 4. Thank you for your report. Goodbye."
+    }
+  ]
+}

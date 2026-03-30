@@ -1,0 +1,22 @@
+INSIGHT-311 CALL TRANSCRIPT
+Session ID : a5d8ca1f-0251-40b9-ba42-c96c3c010456
+Ticket  ID : TKT-20260317-6E90
+Timestamp  : 20260317_172127
+============================================================
+
+Turn   1  [CALLER]  hi, i'm calling to report a graffiti issue. it's located at 345 king street north.
+Turn   1  [SYSTEM]  May I have your name please?
+Turn   2  [CALLER]  my name is michael jackson.
+Turn   2  [SYSTEM]  What is the best phone number to reach you?
+Turn   3  [CALLER]  you can call me 226-234-8777
+Turn   3  [SYSTEM]  For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-8777. This will be routed to Public Use Facilities. Is this all correct?
+Turn   4  [CALLER]  my name is billy eilish and the location is 334 king street south.
+Turn   4  [SYSTEM]  For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-8777. This will be routed to Public Use Facilities. Is this all correct?
+Turn   5  [CALLER]  no, the location is 334 king street south.
+Turn   5  [SYSTEM]  I'm sorry. Which information is incorrect? Please say 'the location is...', 'my name is...', or 'my phone number is...' with the corrected detail.
+Turn   6  [CALLER]  the location is 334 king street south.
+Turn   6  [SYSTEM]  For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-234-8777. This will be routed to Public Use Facilities. Is this all correct?
+Turn   7  [CALLER]  yes.
+Turn   7  [SYSTEM]  Your ticket number is T K T 2 0 2 6 0 3 1 7 6 E 9 0. Thank you for your report. Goodbye.
+
+============================================================

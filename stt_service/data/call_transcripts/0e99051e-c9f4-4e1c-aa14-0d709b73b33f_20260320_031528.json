@@ -1,0 +1,47 @@
+{
+  "session_id": "0e99051e-c9f4-4e1c-aa14-0d709b73b33f",
+  "ticket_id": "TKT-20260320-9EDA",
+  "timestamp": "20260320_031528",
+  "dialogue": [
+    {
+      "role": "caller",
+      "turn": 1,
+      "text": "hi, i'm calling to report a graffiti issue. it's located at 345 king street north."
+    },
+    {
+      "role": "system",
+      "turn": 1,
+      "text": "May I have your name please?"
+    },
+    {
+      "role": "caller",
+      "turn": 2,
+      "text": "my name is michael jackson."
+    },
+    {
+      "role": "system",
+      "turn": 2,
+      "text": "What is the best phone number to reach you?"
+    },
+    {
+      "role": "caller",
+      "turn": 3,
+      "text": "you can call me 226-235-7781."
+    },
+    {
+      "role": "system",
+      "turn": 3,
+      "text": "For final confirmation, please check the following information. You reported a graffiti issue at 345 King Street North. Your contact information is michael jackson and 226-235-7781. This will be routed to Public Use Facilities. Is this all correct?"
+    },
+    {
+      "role": "caller",
+      "turn": 4,
+      "text": "yes."
+    },
+    {
+      "role": "system",
+      "turn": 4,
+      "text": "Your ticket number is T K T 2 0 2 6 0 3 2 0 9 E D A. Thank you for your report. Goodbye."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+# Docker secrets (NEVER commit)
+secrets/
+*.secret
+*.key
+
+# Environment files with credentials
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.venv311/
+
+# ML model weights & checkpoints (too large for git)
+*.safetensors
+*.pt
+*.bin
+nlp_service/ml_models/saved_models/category_classifier/checkpoint-*/
+
+# Audio recordings & samples (binary, too large for git)
+stt_service/data/audio_samples/
+stt_service/data/call_recordings/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store

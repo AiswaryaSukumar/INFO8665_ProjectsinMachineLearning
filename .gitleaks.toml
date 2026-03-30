@@ -1,0 +1,56 @@
+title = "Custom Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+    '''.venv''',
+    '''.venv311''',
+    '''node_modules''',
+    '''__pycache__''',
+    '''\.env\.example''',
+    '''secrets/''',
+    '''config\.py''',
+    '''test_gitleaks\.py''',
+]
+
+# Stronger generic password detector
+[[rules]]
+id = "generic-password"
+description = "Detected a hardcoded password or passwd value"
+regex = '''(?i)[\w.-]{0,50}?(?:password|passwd|pwd)[ \t\w.-]{0,20}[\s'"]{0,3}(?:=|:|=>)[\x60'"\s=]{0,5}([^\s'"`;]{8,128})(?:[\x60'"\s;]|\\[nr]|$)'''
+secretGroup = 1
+entropy = 2.5
+keywords = ["password", "passwd", "pwd"]
+
+# Detect credential pairs like username + password in one line or block
+[[rules]]
+id = "username-password-pair"
+description = "Detected a possible hardcoded username/userid with password pair"
+regex = '''(?is)(?:user(?:name|id)?|login)[^=\n:]{0,20}(?:=|:)\s*['"]?([A-Za-z0-9._@-]{3,64})['"]?.{0,120}?(?:pass(?:word|wd)?|pwd)[^=\n:]{0,20}(?:=|:)\s*['"]?([^\s'"`;]{8,128})['"]?'''
+secretGroup = 2
+entropy = 2.5
+keywords = ["username", "userid", "login", "password", "passwd", "pwd"]
+
+# Optional: flag standalone usernames/userids as low-confidence findings
+# This can be noisy, so enable only if you really want it.
+[[rules]]
+id = "standalone-userid"
+description = "Detected a possible hardcoded username or userid"
+regex = '''(?i)[\w.-]{0,50}?(?:user(?:name|id)?|login)[ \t\w.-]{0,20}[\s'"]{0,3}(?:=|:|=>)[\x60'"\s=]{0,5}([A-Za-z0-9._@-]{3,64})(?:[\x60'"\s;]|\\[nr]|$)'''
+secretGroup = 1
+entropy = 0
+keywords = ["username", "userid", "login"]
+
+    [[rules.allowlists]]
+    description = "Ignore common non-secret placeholders"
+    regexes = [
+        '''(?i)^(admin|root|test|guest|user|username|your-user|example-user)$''',
+    ]
+
+# Optional allowlist for fake examples used in docs/tests
+[[rules]]
+id = "generic-test-placeholders-ignore-anchor"
+description = "Anchor rule only for local allowlisting examples"
+regex = '''a^'''

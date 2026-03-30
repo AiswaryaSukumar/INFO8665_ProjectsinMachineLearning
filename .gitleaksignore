@@ -1,0 +1,17 @@
+# Fingerprints of known false positives from gitleaks scan
+
+# localStorage key names (not secrets)
+c:/Conestoga Projects/Integration/insight311_jj/insight311/ui/web-agent/src/utils/ticketNumber.js:generic-api-key:3
+c:/Conestoga Projects/Integration/insight311_jj/insight311/ui/web-agent/src/utils/ticketStore.js:generic-api-key:12
+
+# huggingface_hub documentation example JWT
+c:/Conestoga Projects/Integration/insight311_jj/insight311/.venv311/Lib/site-packages/huggingface_hub/_eval_results.py:generic-api-key:62
+
+# sqlalchemy mypy plugin - variable name false positives
+c:/Conestoga Projects/Integration/insight311_jj/insight311/.venv311/Lib/site-packages/sqlalchemy/ext/mypy/plugin.py:generic-api-key:267
+c:/Conestoga Projects/Integration/insight311_jj/insight311/.venv311/Lib/site-packages/sqlalchemy/orm/mapped_collection.py:generic-api-key:321
+c:/Conestoga Projects/Integration/insight311_jj/insight311/.venv311/Lib/site-packages/sqlalchemy/orm/unitofwork.py:generic-api-key:246
+
+# torch - parameter name false positives
+c:/Conestoga Projects/Integration/insight311_jj/insight311/.venv311/Lib/site-packages/torch/testing/_internal/common_modules.py:generic-api-key:2650
+c:/Conestoga Projects/Integration/insight311_jj/insight311/.venv311/Lib/site-packages/torch/testing/_internal/common_modules.py:generic-api-key:2672
