@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insight311 Voice Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-header">
+            <div class="logo">
+                <ion-icon name="planet"></ion-icon>
+                <span>Insight311</span>
+            </div>
+
+            <div class="header-controls">
+                <button id="dev-toggle-btn" class="btn btn-dev" title="Toggle Developer View">
+                    <ion-icon name="code-working-outline"></ion-icon> Dev View
+                </button>
+                <div class="status-badge" id="conn-status">Ready</div>
+                <button id="call-btn" class="btn btn-call">
+                    <ion-icon name="call-outline"></ion-icon> Call
+                </button>
+                <button id="end-btn" class="btn btn-end hidden">
+                    <ion-icon name="stop-circle-outline"></ion-icon> End
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Left Side: Phone/Chat Interface -->
+            <section class="chat-container">
+                <div class="chat-header">
+                    <h3>Simulation Chat</h3>
+                    <p class="subtitle">Live transcription & responses</p>
+                </div>
+                <div class="chat-history" id="chat-history">
+                    <!-- Notifications will append here -->
+                    <div class="system-msg">Press 'Call' to begin the simulation.</div>
+                </div>
+
+                <!-- Status Visualizer -->
+                <div class="audio-visualizer-container" id="visualizer-container">
+                    <div class="pulse-ring"></div>
+                    <span id="action-text">Idle</span>
+                </div>
+            </section>
+
+            <!-- Right Side: Live System State -->
+            <aside class="state-container">
+                <div class="state-header">
+                    <ion-icon name="hardware-chip-outline"></ion-icon>
+                    <h3>Live Context</h3>
+                </div>
+
+                <div class="state-panel">
+                    <div class="state-item">
+                        <span class="state-label">Session ID</span>
+                        <span class="state-value" id="disp-session">-</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Last State</span>
+                        <span class="state-value highlight" id="disp-state">INITIALIZING</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Ticket ID</span>
+                        <span class="state-value highlight" id="disp-ticket" style="color: var(--accent-blue)">-</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Turn Count</span>
+                        <span class="state-value" id="disp-turn">0</span>
+                    </div>
+                </div>
+
+                <div class="state-header" style="margin-top: 2rem;">
+                    <ion-icon name="cube-outline"></ion-icon>
+                    <h3>Extracted Entities</h3>
+                </div>
+
+                <div class="state-panel">
+                    <div class="state-item">
+                        <span class="state-label">Category</span>
+                        <span class="state-value" id="disp-cat">None</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Location</span>
+                        <span class="state-value" id="disp-loc">None</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Name</span>
+                        <span class="state-value" id="disp-name">None</span>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Phone</span>
+                        <span class="state-value" id="disp-phone">None</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

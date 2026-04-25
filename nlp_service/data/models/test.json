@@ -1,0 +1,491 @@
+{
+  "version": "1.0",
+  "description": "Test data for NLU module - evaluation samples",
+  "total_samples": 44,
+  "transcripts": [
+    {
+      "id": "test_001",
+      "transcript": "Um, yeah hi, so I'm calling about... okay so there's like this bridge, you know the one on River Road? Yeah, someone went and spray painted all over it. I mean like everywhere - the sides, the pillars, even underneath I think. It's really bad, um, lots of different colors and stuff. Pretty sure I saw some offensive words too but I'm not gonna repeat them. Anyway, it needs to be cleaned up because, you know, kids walk by there going to school and everything. Oh, my name is Mark Thompson by the way. Yeah.",
+      "labels": {
+        "category": "graffiti",
+        "location": "River Road bridge",
+        "description": "Extensive spray paint graffiti covering bridge sides, pillars, and underneath with offensive content",
+        "caller_name": "Mark Thompson",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_002",
+      "transcript": "There's an illegal poster attached to the traffic light at University Avenue. Been there for a month.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "University Avenue traffic light",
+        "description": "Illegal poster on traffic light for a month",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_003",
+      "transcript": "The park on Wellington Street is covered in trash. Empty bottles, food wrappers, cigarette butts everywhere.",
+      "labels": {
+        "category": "litter",
+        "location": "Wellington Street park",
+        "description": "Trash covering park: bottles, wrappers, cigarette butts",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_004",
+      "transcript": "This is an emergency! Found used syringes at the children's playground on Victoria Street. Very dangerous. Call me at 555-9999.",
+      "labels": {
+        "category": "needles",
+        "location": "Victoria Street playground",
+        "description": "Used syringes at children's playground",
+        "caller_name": null,
+        "caller_phone": "555-9999"
+      }
+    },
+    {
+      "id": "test_005",
+      "transcript": "A truck has been parked blocking the fire hydrant on Queen Street for 3 days. This is illegal parking. My name is Carol White.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Queen Street fire hydrant",
+        "description": "Truck blocking fire hydrant for 3 days",
+        "caller_name": "Carol White",
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_006",
+      "transcript": "The vacant house at 789 King Road is in violation. Boarded windows, tall grass, looks abandoned. Neighbors are concerned.",
+      "labels": {
+        "category": "property_standards",
+        "location": "789 King Road",
+        "description": "Vacant house with boarded windows, tall grass, appears abandoned",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_007",
+      "transcript": "Big pothole on Highway 7 near the exit. Cars are hitting it and swerving. Really dangerous. This is urgent.",
+      "labels": {
+        "category": "pothole",
+        "location": "Highway 7 near exit",
+        "description": "Large pothole causing cars to hit and swerve",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_008",
+      "transcript": "The sidewalk on Princess Street is still full of snow and ice from last week. No one's cleared it. Seniors can't walk safely. Call me at 555-7777, this is Helen.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Princess Street sidewalk",
+        "description": "Uncleared snow and ice from last week, unsafe for seniors",
+        "caller_name": "Helen",
+        "caller_phone": "555-7777"
+      }
+    },
+    {
+      "id": "test_009",
+      "transcript": "There's a big crack in the sidewalk on Ontario Street where the tree roots pushed up the concrete. My neighbor tripped last week.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Ontario Street sidewalk",
+        "description": "Cracked sidewalk from tree roots, neighbor tripped",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_010",
+      "transcript": "The hiking trail at Greenwood Park is washed out completely. Can't use it anymore. Needs urgent repair work.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Greenwood Park hiking trail",
+        "description": "Trail completely washed out, unusable",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_011",
+      "transcript": "This is about something unusual. There's a damaged street sign at the corner that's fallen and blocking part of the sidewalk. Not sure what category this is. My name is Peter Jones, 555-6666.",
+      "labels": {
+        "category": "other",
+        "location": "Corner (street sign location)",
+        "description": "Fallen street sign blocking sidewalk",
+        "caller_name": "Peter Jones",
+        "caller_phone": "555-6666"
+      }
+    },
+    {
+      "id": "test_012",
+      "transcript": "I want to formally report vandalism on city property. The retaining wall along Lakeview Drive has been defaced with spray paint - large silver and black tags covering approximately 15 feet of the wall. This occurred sometime last night. I am a concerned resident and expect prompt action. My name is Dr. Catherine Mills, you can reach me at 555-1122.",
+      "labels": {
+        "category": "graffiti",
+        "location": "Lakeview Drive retaining wall",
+        "description": "Large silver and black graffiti tags covering 15 feet of retaining wall, appeared overnight",
+        "caller_name": "Dr. Catherine Mills",
+        "caller_phone": "555-1122"
+      }
+    },
+    {
+      "id": "test_013",
+      "transcript": "yo so someone totally tagged the whole side of the rec centre on Maple Avenue lmao it's actually wild how much they covered. like red and white paint everywhere. management doesn't seem to know yet. just walking past and spotted it",
+      "labels": {
+        "category": "graffiti",
+        "location": "Maple Avenue recreation centre side wall",
+        "description": "Red and white graffiti covering entire side of recreation centre",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_014",
+      "transcript": "Hello, I am calling about graffiti. My English is not so good but I want to report. The wall near the school on Cedar Street, someone painted bad words there. Children see this every day going to school. Please fix. Thank you.",
+      "labels": {
+        "category": "graffiti",
+        "location": "Cedar Street near school wall",
+        "description": "Offensive graffiti words on wall near school visible to children daily",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_015",
+      "transcript": "Hi um so there are like SO many flyers stapled to every single telephone pole on Richmond Street. Someone advertised some kind of event and just went crazy. There's like 20 on one pole alone. Pretty sure that's not allowed?",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Richmond Street telephone poles",
+        "description": "Approximately 20 event advertisement flyers stapled to each telephone pole along Richmond Street",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_016",
+      "transcript": "Good afternoon. I am calling to report an unauthorized commercial sign that has been erected on public land adjacent to the intersection of Brock and Main Streets. It appears to be a permanent metal frame sign advertising a local business. No permit is visible. I believe this constitutes a bylaw violation. My name is Ronald Patterson, 555-3344.",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Brock and Main Streets intersection public land",
+        "description": "Unauthorized permanent metal frame commercial sign on public land without visible permit",
+        "caller_name": "Ronald Patterson",
+        "caller_phone": "555-3344"
+      }
+    },
+    {
+      "id": "test_017",
+      "transcript": "just saw someone putting up real estate signs on the traffic islands on Division Street. Like those we buy houses ones. They literally just drove up and started sticking them everywhere. Thought that was illegal on public property",
+      "labels": {
+        "category": "illegal_sign",
+        "location": "Division Street traffic islands",
+        "description": "Real estate signs being placed on traffic islands on public property",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_018",
+      "transcript": "This is absolutely unacceptable. I walk past the bus terminal on Grant Avenue every single morning and every single morning there is more garbage. Coffee cups, fast food bags, everything just left on the ground. The bins are right THERE. Nobody empties them either so they overflow. Someone needs to address this TODAY. This is Linda Kowalski and I am very serious about this, 555-5566.",
+      "labels": {
+        "category": "litter",
+        "location": "Grant Avenue bus terminal",
+        "description": "Daily overflow of garbage at bus terminal including coffee cups and fast food bags, bins not emptied",
+        "caller_name": "Linda Kowalski",
+        "caller_phone": "555-5566"
+      }
+    },
+    {
+      "id": "test_019",
+      "transcript": "Hi, I found what appears to be illegally dumped construction waste in the green space beside the path on Elm Drive. There are broken drywall pieces, wood scraps, and several garbage bags. It has been there at least four days. This is an environmental concern given the proximity to the creek.",
+      "labels": {
+        "category": "litter",
+        "location": "Elm Drive green space beside path near creek",
+        "description": "Illegally dumped construction waste including drywall, wood scraps and garbage bags for four days near creek",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_020",
+      "transcript": "the dog park on Harris Street is honestly disgusting right now. there's garbage everywhere, like people's coffee cups and snack wrappers just all over the place. also some poop bags that weren't thrown away. it's a health thing for the dogs too not just looks",
+      "labels": {
+        "category": "litter",
+        "location": "Harris Street dog park",
+        "description": "Coffee cups, snack wrappers and discarded waste bags littering dog park",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_021",
+      "transcript": "Hello, yes, I need to report something very urgent please. I am a teacher at the school on Birch Street and during our outdoor break this morning one of my students found what appeared to be used needles near the fence at the edge of the schoolyard. I have kept the children away from that area. I need someone to come immediately before we go back outside. My name is Mrs. Diane Foster, 555-7788.",
+      "labels": {
+        "category": "needles",
+        "location": "Birch Street school fence at schoolyard edge",
+        "description": "Used needles found near schoolyard fence by student during outdoor break, teacher requesting urgent response",
+        "caller_name": "Mrs. Diane Foster",
+        "caller_phone": "555-7788"
+      }
+    },
+    {
+      "id": "test_022",
+      "transcript": "found syringes behind the benches at the park on Albert Street. like four of them. was just walking through with my dog. didn't touch anything obviously. someone should probably come deal with it soon",
+      "labels": {
+        "category": "needles",
+        "location": "Albert Street park behind benches",
+        "description": "Four syringes found behind park benches discovered by dog walker",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_023",
+      "transcript": "I am the building superintendent at 145 George Street. This morning my cleaning staff discovered used hypodermic needles in the stairwell on the second floor. This is a biohazard. We have secured the area. We require the city disposal service to attend. Please call back at 555-9900, ask for superintendent Raj Patel.",
+      "labels": {
+        "category": "needles",
+        "location": "145 George Street building stairwell second floor",
+        "description": "Used hypodermic needles found in building stairwell, area secured, biohazard disposal requested",
+        "caller_name": "Raj Patel",
+        "caller_phone": "555-9900"
+      }
+    },
+    {
+      "id": "test_024",
+      "transcript": "Hi yeah so my neighbour has been parking their giant RV right in front of my driveway on Sunset Boulevard for like two weeks straight. I literally cannot get my car out sometimes. I've asked them nicely and they just ignore me. Can someone please come ticket this thing or have it towed? I'm at my wits end here.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Sunset Boulevard driveway",
+        "description": "RV parked blocking driveway for two weeks, neighbour unresponsive to requests",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_025",
+      "transcript": "Good morning. I wish to report an ongoing parking violation at the disabled parking spaces outside the medical clinic at 230 Wellington Street West. On multiple occasions this week, vehicles without visible accessibility permits have occupied both disabled spots for extended periods. Patients who require these spaces are being denied access. My name is Margaret Sinclair, 555-2211.",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "230 Wellington Street West medical clinic disabled parking",
+        "description": "Vehicles without accessibility permits repeatedly occupying both disabled parking spots this week",
+        "caller_name": "Margaret Sinclair",
+        "caller_phone": "555-2211"
+      }
+    },
+    {
+      "id": "test_026",
+      "transcript": "there's a car literally parked on the sidewalk on Church Street near the coffee shop. not like slightly on it, the whole car is up on the curb. people walking past have to go into the road to get around it. been there since at least this morning",
+      "labels": {
+        "category": "parking_complaint",
+        "location": "Church Street near coffee shop sidewalk",
+        "description": "Car fully parked on sidewalk since morning forcing pedestrians into road",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_027",
+      "transcript": "I want to report a property violation at the house next door to me at 412 Elm Street. The situation has been deteriorating for months. Currently there is garbage piled waist high in the front yard, a broken fence lying on the sidewalk, and what looks like raw sewage pooling near the foundation. The smell is affecting our whole street. This is Gerald Morrison and my number is 555-4433.",
+      "labels": {
+        "category": "property_standards",
+        "location": "412 Elm Street",
+        "description": "Waist-high garbage in front yard, broken fence on sidewalk, possible sewage pooling at foundation, months of deterioration",
+        "caller_name": "Gerald Morrison",
+        "caller_phone": "555-4433"
+      }
+    },
+    {
+      "id": "test_028",
+      "transcript": "the abandoned building on the corner of York and Division has like a whole wall that looks like it's about to collapse. bricks are literally falling off onto the sidewalk. i had to jump out of the way of one this morning. somebody's gonna get seriously hurt",
+      "labels": {
+        "category": "property_standards",
+        "location": "York and Division corner building",
+        "description": "Deteriorating building wall with bricks actively falling onto sidewalk, imminent collapse concern",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_029",
+      "transcript": "Hello. I would like to make a formal complaint about the property at 56 Oak Avenue. The lawn has not been maintained all summer, the weeds are now taller than the fence, there are old appliances in the driveway, and several windows are broken and covered with plastic sheeting. This has been going on since spring. I am Julia Ferreira, 555-6655.",
+      "labels": {
+        "category": "property_standards",
+        "location": "56 Oak Avenue",
+        "description": "Unmaintained summer lawn with weeds above fence height, old appliances in driveway, broken windows with plastic sheeting since spring",
+        "caller_name": "Julia Ferreira",
+        "caller_phone": "555-6655"
+      }
+    },
+    {
+      "id": "test_030",
+      "transcript": "I damaged my vehicle on a pothole at the corner of King and Division Streets this morning. The pothole is in the left turn lane and is extremely deep - my front passenger wheel dropped into it and I believe I have bent a rim. The pothole is not marked and is very difficult to see. I intend to file a claim. My name is Steven Burke, 555-8877.",
+      "labels": {
+        "category": "pothole",
+        "location": "King and Division Streets left turn lane",
+        "description": "Deep unmarked pothole causing vehicle wheel and rim damage in left turn lane",
+        "caller_name": "Steven Burke",
+        "caller_phone": "555-8877"
+      }
+    },
+    {
+      "id": "test_031",
+      "transcript": "omg the road on Palace Drive between the school and the library is SO bad right now. like there are literally five potholes in a row and cars are just zigzagging all over the road trying to avoid them. saw a cyclist almost get hit because a car swerved into the bike lane. needs to be fixed asap",
+      "labels": {
+        "category": "pothole",
+        "location": "Palace Drive between school and library",
+        "description": "Five consecutive potholes causing vehicles to swerve into bike lane, near cyclist collision",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_032",
+      "transcript": "Good evening. There is a pothole on Riverside Road near the bridge approach that has been present for approximately six weeks. I have reported it previously. It has grown significantly and now measures roughly two feet in diameter. It fills with water when it rains making it invisible to drivers. I am requesting urgent repair. This is Thomas Andersen, 555-0011.",
+      "labels": {
+        "category": "pothole",
+        "location": "Riverside Road near bridge approach",
+        "description": "Two-foot pothole present six weeks filling with water when raining, previously reported, significantly grown",
+        "caller_name": "Thomas Andersen",
+        "caller_phone": "555-0011"
+      }
+    },
+    {
+      "id": "test_033",
+      "transcript": "Hi I am calling because the sidewalk on both sides of Market Street between First and Third Avenue has not been touched since the snowstorm four days ago. I am a physiotherapist and I have multiple elderly clients who live on that street and cannot get to their appointments safely. This is completely unacceptable. My name is Christine Babcock, please call me at 555-1199.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Market Street between First and Third Avenue both sides",
+        "description": "Both sidewalks uncleared four days after snowstorm, elderly residents unable to walk safely to appointments",
+        "caller_name": "Christine Babcock",
+        "caller_phone": "555-1199"
+      }
+    },
+    {
+      "id": "test_034",
+      "transcript": "the ramp thing at the crosswalk at Parliament and Front is completely buried in snow. like someone plowed the road and just pushed it all onto the ramp. a person in a wheelchair was trying to use it and just couldn't. they had to go all the way around the block. that's really not okay",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Parliament and Front crosswalk accessible ramp",
+        "description": "Accessible ramp buried by plowed snow, wheelchair user unable to access, had to detour around block",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_035",
+      "transcript": "I want to report the ice situation at the entrance to the public library on Brock Street. The entire front path and the steps are glazed with ice. There is no salt or grit anywhere. I am a library volunteer and I watched two people slip this morning before we opened. We have no means to address it ourselves. Please send someone today. This is volunteer coordinator Helen Park, 555-3377.",
+      "labels": {
+        "category": "sidewalk_snow",
+        "location": "Brock Street public library entrance path and steps",
+        "description": "Entire library entrance path and steps glazed with ice, no salt treatment, two slips witnessed before opening",
+        "caller_name": "Helen Park",
+        "caller_phone": "555-3377"
+      }
+    },
+    {
+      "id": "test_036",
+      "transcript": "Just want to flag that there's a manhole cover on Duke Street that's sitting really loose and uneven. Like it rocks and makes a loud clang every time someone walks over it or a car drives over it. Has been like this for at least two weeks. Not sure if it's dangerous but it seems like it could be.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Duke Street manhole cover",
+        "description": "Loose uneven manhole cover rocking and clanging from foot and vehicle traffic for two weeks",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_037",
+      "transcript": "I am calling to report a hazardous condition on the pedestrian path at Riverside Park. A large section of the paving stones has heaved and collapsed creating a hole approximately one foot wide and six inches deep. My daughter twisted her ankle stepping into it yesterday evening. I have placed a warning cone nearby but this needs proper repair. My name is Sophia Reyes, 555-5544.",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "Riverside Park pedestrian path",
+        "description": "Collapsed paving stones creating foot-wide six-inch deep hole, caller's daughter twisted ankle, temporary cone placed",
+        "caller_name": "Sophia Reyes",
+        "caller_phone": "555-5544"
+      }
+    },
+    {
+      "id": "test_038",
+      "transcript": "the sidewalk on the north side of College Street near the new condo building has rebar sticking straight up out of the concrete. like actual metal bars poking up. looks like it was damaged during construction and never fixed. someone could get seriously hurt especially at night. super dangerous",
+      "labels": {
+        "category": "sidewalk_hazard",
+        "location": "College Street north side near condo building",
+        "description": "Rebar protruding upward from concrete sidewalk, construction damage never repaired, nighttime danger",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_039",
+      "transcript": "Hi, I use the trail at Riverside Conservation Area regularly for my morning run. The wooden footbridge about halfway along the main trail has several boards that are completely rotted through. You can see straight through to the water below. Last week a runner I know put their foot through one of them. This needs to be closed or repaired immediately. My name is David Nguyen, 555-6622.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Riverside Conservation Area main trail wooden footbridge",
+        "description": "Rotted through bridge boards with foot-sized holes visible to water below, runner fell through board last week",
+        "caller_name": "David Nguyen",
+        "caller_phone": "555-6622"
+      }
+    },
+    {
+      "id": "test_040",
+      "transcript": "the trail at Centennial Park that goes along the creek is completely underwater in two sections. has been flooded since the heavy rain last weekend. there's nowhere to go around it either because of the steep banks. it's been like five days. maintenance really needs to look at the drainage",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Centennial Park creek trail",
+        "description": "Two trail sections flooded since weekend rain five days ago, no bypass possible due to steep banks",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_041",
+      "transcript": "Good morning. I am calling on behalf of our community walking group which uses the trail system at Westbrook Park three times per week. We have observed that the trail markers throughout the eastern loop have either faded completely or been vandalized. Several of our members have become lost or confused. We feel this is a safety issue particularly for older members. I am group coordinator Evelyn Marsh, 555-8811.",
+      "labels": {
+        "category": "trail_maintenance",
+        "location": "Westbrook Park eastern loop trail",
+        "description": "Trail markers throughout eastern loop faded or vandalized, walking group members getting lost, safety concern for elderly members",
+        "caller_name": "Evelyn Marsh",
+        "caller_phone": "555-8811"
+      }
+    },
+    {
+      "id": "test_042",
+      "transcript": "I don't know who to call about this but the traffic light at Victoria and King has been stuck on red in all directions for about 20 minutes now. Cars are just running it and honking. Almost saw an accident. Seems like it needs urgent attention. Hope I'm calling the right number.",
+      "labels": {
+        "category": "other",
+        "location": "Victoria and King Streets traffic light",
+        "description": "Traffic light stuck on red all directions for 20 minutes, vehicles running light, near accident",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    },
+    {
+      "id": "test_043",
+      "transcript": "Hi, this is Amelia Okafor calling, 555-4422. I am reporting a wasp or hornet nest that has formed inside the city-owned picnic shelter at Lakeview Park. It is very large - easily the size of a basketball. Families are using the shelter and people have already been stung. This is a public safety issue and needs to be dealt with urgently.",
+      "labels": {
+        "category": "other",
+        "location": "Lakeview Park city picnic shelter",
+        "description": "Large basketball-sized wasp or hornet nest inside city picnic shelter, multiple stings reported, families present",
+        "caller_name": "Amelia Okafor",
+        "caller_phone": "555-4422"
+      }
+    },
+    {
+      "id": "test_044",
+      "transcript": "yeah so there's a city garbage bin on Spring Street that's been knocked over and like nobody has put it back up. the garbage is all spilled out everywhere and the bin itself is blocking part of the sidewalk. been like this since at least yesterday afternoon. not sure whose job it is to fix it",
+      "labels": {
+        "category": "other",
+        "location": "Spring Street city garbage bin",
+        "description": "Knocked over city garbage bin with spilled contents blocking sidewalk since yesterday afternoon",
+        "caller_name": null,
+        "caller_phone": null
+      }
+    }
+  ]
+}
