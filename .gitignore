@@ -1,0 +1,67 @@
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# ─── Environment / Secrets ────────────────────────────────
+.env
+.env.*
+!.env.example
+ui/web-agent/.env
+ui/web-agent/.env.*
+!ui/web-agent/.env.example
+
+# ─── Database ─────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ─── Audio / Recordings / Transcripts (runtime data) ──────
+stt_service/data/audio_samples/
+stt_service/data/call_recordings/
+stt_service/data/call_transcripts/
+
+# ─── ML Model Weights (large binary files) ────────────────
+nlp_service/ml_models/saved_models/
+nlp_service/data/
+
+# ─── Node / Frontend ──────────────────────────────────────
+ui/web-agent/node_modules/
+ui/web-agent/dist/
+ui/web-agent/dist-ssr/
+ui/web-agent/*.local
+
+# ─── Logs ─────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ─── OS / Editor ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.sw?
+
+# ─── Misc ─────────────────────────────────────────────────
+*.bak
+*.tmp
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage

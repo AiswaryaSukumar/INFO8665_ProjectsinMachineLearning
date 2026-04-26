@@ -1,0 +1,43 @@
+# Web Framework
+fastapi==0.135.1
+uvicorn==0.41.0
+starlette==0.52.1
+python-multipart==0.0.22
+httpx==0.28.1
+anyio==4.12.1
+
+# Database
+SQLAlchemy==2.0.47
+psycopg2-binary==2.9.11
+python-dotenv==1.2.2
+
+# Data validation
+pydantic==2.12.5
+pydantic_core==2.41.5
+
+# ML / NLU
+torch==2.10.0
+transformers==5.2.0
+tokenizers==0.22.2
+accelerate==1.12.0
+scikit-learn==1.8.0
+numpy==2.4.2
+scipy==1.17.1
+
+# NLP
+spacy==3.8.13
+en_core_web_md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl#sha256=5e6329fe3fecedb1d1a02c3ea2172ee0fede6cea6e4aefb6a02d832dba78a310
+vaderSentiment==3.3.2
+rapidfuzz==3.14.3
+
+# Speech
+openai-whisper==20250625
+pydub==0.25.1
+librosa==0.11.0
+sounddevice==0.5.5
+soundfile==0.13.1
+pyttsx3==2.99
+
+# SMS Notifications (status_tracking_RAG)
+twilio==9.10.4
+huggingface_hub==1.4.1
