@@ -103,7 +103,7 @@ def _mark_ticket_as_merged_duplicate(
     ticket_repo.update_ticket_fields(
         duplicate.ticket_id,
         {
-            "ticket_status": "RESOLVED",
+            "ticket_status": primary.ticket_status,
             "routing_status": "MERGED",
             "workflow_stage": "MERGED_DUPLICATE",
             "notes": _append_unique_note(

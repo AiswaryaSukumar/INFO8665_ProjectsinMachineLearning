@@ -88,12 +88,38 @@ def _category_score(a: Ticket, b: Ticket) -> float:
     return float(fuzz.token_set_ratio(left, right))
 
 
+_DIRECTION_TOKENS = {"east", "west", "north", "south"}
+
+
+def _extract_street_number(location: str) -> Optional[int]:
+    m = re.match(r"(\d+)\s+", location.strip())
+    return int(m.group(1)) if m else None
+
+
 def _location_score(a: Ticket, b: Ticket) -> float:
     left = _normalize_text(a.location)
     right = _normalize_text(b.location)
     if not left or not right:
         return 0.0
-    return float(fuzz.token_set_ratio(left, right))
+
+    left_dirs = _DIRECTION_TOKENS & set(left.split())
+    right_dirs = _DIRECTION_TOKENS & set(right.split())
+    if left_dirs and right_dirs and left_dirs != right_dirs:
+        # Both addresses have a direction suffix but they differ → different street branches
+        return 10.0
+
+    base = float(fuzz.token_set_ratio(left, right))
+
+    num_a = _extract_street_number(left)
+    num_b = _extract_street_number(right)
+    if num_a and num_b and num_a != num_b:
+        diff = abs(num_a - num_b)
+        if diff > 50:
+            return min(base, 35.0)
+        if diff > 20:
+            return min(base, 60.0)
+
+    return base
 
 
 def _text_score(a: Ticket, b: Ticket) -> float:
@@ -121,7 +147,7 @@ def score_ticket_pair(ticket: Ticket, candidate: Ticket) -> Dict[str, object]:
     text = _text_score(ticket, candidate)
     time = _time_score(ticket, candidate)
 
-    match = (0.25 * category) + (0.35 * location) + (0.30 * text) + (0.10 * time)
+    match = (0.25 * category) + (0.45 * location) + (0.20 * text) + (0.10 * time)
     reasons: List[str] = []
     if category >= 95:
         reasons.append("same_category")

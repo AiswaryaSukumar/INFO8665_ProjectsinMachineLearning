@@ -1,67 +1,61 @@
-# **INSIGHT-311 Web Agent (Frontend)**
+# INSIGHT-311 Web Agent (Frontend)
 
-INSIGHT-311 is an AI-assisted municipal operations dashboard prototype developed as part of the INFO8665 – Projects in Machine Learning and CSCN8030 – AI for Business Decision & Transformation courses at Conestoga College.
+INSIGHT-311 is an AI-assisted municipal operations dashboard developed as part of the INFO8665 – Projects in Machine Learning and CSCN8030 – AI for Business Decision & Transformation courses at Conestoga College.
 
-This web-agent application represents the operational interface used by:
+This web-agent application is the operational interface used by:
 
 - Operators (e.g., Jerry, Tom)
 - Supervisor (Nagavalli)
 - AI Voice Bot intake system
 
-The frontend simulates an AI-enabled municipal 311 system with structured workflows, routing logic, and role-based governance.
+## System Overview
 
-## **System Overview**
+INSIGHT-311 is a fully integrated AI-enabled municipal 311 system with:
+- Live FastAPI backend (port 8311) with PostgreSQL (Neon Cloud)
+- Real-time voice bot intake via Whisper STT + NLU pipeline (DistilBERT)
+- Automated duplicate ticket detection with fuzzy scoring
+- Role-based ticket workflow with supervisor governance
+- SMS citizen notifications via Twilio + RAG-generated messages
 
-INSIGHT-311 demonstrates:
-* AI-assisted ticket intake (voice transcript simulation)
-* AI-driven category & tone detection
-* Confidence-based approval workflow
-* Role-based ticket visibility
-* Operational queue management
-* Supervisor-controlled governance layer
+## Tech Stack
 
-This version represents UI-complete (Mock Mode) with backend integration prepared.
+- React (Vite), JavaScript ES6+
+- Context API + Hooks
+- Component-driven architecture
+- Toast notification system
+- Skeleton loading states
+- Live REST API integration (`VITE_API_BASE_URL`)
 
-## **Tech Stack**
+## Folder Structure
 
-* React (Vite)
-* JavaScript (ES6+)
-* Context API + Hooks
-* Component-driven architecture
-* Toast notification system
-* Skeleton loading states
-* Mock data (temporary)
-* API client scaffold (backend-ready)
-
-## **Folder Structure**
-
-```text
-frontend/web-agent/
+```
+ui/web-agent/
 │
 ├── public/
 │   └── mock/                 # Sample call recordings
 │
 ├── src/
-│   ├── api/                  # API client scaffold (future backend)
+│   ├── api/                  # API client (live backend)
 │   ├── assets/               # Images and icons
-│   ├── components/           # UI components
-│   │   ├── TicketTable
-│   │   ├── TicketDetailsDrawer
-│   │   ├── VoiceIntakePanel
-│   │   ├── TicketForm
-│   │   ├── TicketStatusOverview
-│   │   ├── DonutChart
-│   │   ├── TicketTableControls
-│   │   └── ToastProvider
+│   ├── components/
+│   │   ├── TicketTable           # Sortable ticket list, role-based action buttons
+│   │   ├── TicketDetailsDrawer   # Slide-in detail + audio player + transcript
+│   │   ├── VoiceAssistantModal   # ISA voice chat (citizen + dev mode)
+│   │   ├── TicketForm            # Human operator ticket creation
+│   │   ├── TicketStatusOverview  # Status count summary
+│   │   ├── DonutChart            # Voice Bot vs Human breakdown
+│   │   ├── TicketTableControls   # Search + filter controls
+│   │   └── ToastProvider         # Global toast notifications
 │   │
 │   ├── data/                 # Static operators + supervisor config
-│   ├── mock/                 # Mock ticket data
-│   ├── pages/                # Application pages
+│   ├── pages/
+│   │   ├── IntakePage            # Main operator work queue
+│   │   ├── QueueOverviewPanel    # Analytics, KPIs, duplicate detection panel
+│   │   ├── DashboardLayout       # Top nav shell
+│   │   ├── LoginPage
+│   │   ├── LandingPage
+│   │   └── StatusLookupPage
 │   ├── utils/                # Routing + ticket utilities
-│   │   ├── routing logic
-│   │   ├── serial ticket number generator
-│   │   └── assignment utilities
-│   │
 │   ├── App.jsx
 │   └── main.jsx
 │
@@ -70,129 +64,107 @@ frontend/web-agent/
 └── README.md
 ```
 
-## **Core Features Implemented**
+## Core Features
 
-### *1. Voice Bot Ticket Creation*
-- Transcript simulation panel
-- Listening state indicator
-- Auto category detection
-- Auto tone detection (calm / frustrated / urgent)
-- Confidence scoring
-- Structured transcript display
-- Bot-only tickets routed to Supervisor for approval
+### 1. Voice Bot Ticket Creation
+- Live voice intake via browser mic (WebSpeech API)
+- Per-turn audio sent to Whisper STT → NLU pipeline
+- Auto-detected: category, location, caller name, phone number
+- Tone detection: CALM / AGITATED / ANGRY (from RoBERTa sentiment)
+- Confidence scoring per field with LOW_CONFIDENCE alert
+- Confirmation loop with correction support
+- Escalation to live agent after 3 failed attempts on a field
+- Bot-created tickets routed to Supervisor for approval
 
-### *2. Human Operator Ticket Creation*
-- Manual structured ticket entry
-- Auto-generated serial ticket numbers
-- Department-based routing logic
-- Operator assignment logic (round-robin)
+### 2. Human Operator Ticket Creation
+- Structured form with manual field entry
+- Department auto-assigned by category
+- Round-robin operator assignment
+- Triggers duplicate detection on save
 
-### *3. Role-Based Visibility*
-- Operators
-  * See assigned tickets
-  * Cannot see pure bot-only tickets
-  * No access to approval lane
+### 3. Role-Based Visibility
 
-- Supervisor
-  * Sees all tickets
-  * Approval lane visible
-  * Can approve / reject bot tickets
-  * Controls workflow transitions
+| Role | Access |
+|------|--------|
+| Operator | Own assigned tickets; no approval lane |
+| Supervisor | All tickets; approval lane; duplicate Merge/Dismiss controls |
 
-### *4. Workflow & Governance Logic*
-- Voice Bot Ticket →
-- Supervisor Approval →
-- Operator Assignment →
-- In Progress →
-- Resolved / Escalated
+### 4. Duplicate Ticket Detection
 
-Routing includes:
-  * Round-robin operator assignment
-  * Escalation status handling
-  * Needs Review lane
-  * Department-based routing logic
+Automatically runs on every ticket creation. Scoring:
 
-### *5. Dashboard & Analytics*
-- Donut chart (Voice Bot vs Human)
-- Status segmentation:
-  * NEW
-  * IN_PROGRESS
-  * NEEDS_REVIEW
-  * ESCALATED
-  * RESOLVED
-- Real-time lane filtering
-- Split-view layout (Ticket List + Detail Drawer)
-- Context-preserving master-detail design
+| Dimension | Weight |
+|-----------|--------|
+| Category | 25% |
+| Location | 45% |
+| Text similarity | 20% |
+| Time proximity | 10% |
 
-### *6. Advanced Filtering & Controls*
-- Search:
-  * Ticket number
-  * Name
-  * Location
-  * Keywords
+Location scoring applies two penalties before fuzzy string match:
+- **Direction mismatch** (e.g. "King St North" vs "King St West") → score capped at 10
+- **Civic number distance** (diff > 50 → cap 35; diff > 20 → cap 60)
 
-- Quick filters:
-  * Needs Review
-  * Escalated
-  
-- Queue lanes:
-  * All Tickets
-  * Mine
-  * In Progress
-  * Resolved
-  * Approval (Supervisor only)
+Pairs scoring ≥ 60 are surfaced in the Duplicate Detection panel. Pairs ≥ 80 show a Merge suggestion.
 
-### *7. UI Resilience & UX Enhancements*
+**Merge behavior:**
+- Merged duplicate inherits the parent ticket's current status at merge time
+- If the parent ticket's status later changes (approved, resolved, etc.), all its merged duplicates are automatically updated to match
 
-- Skeleton loading states
-- Empty lane states
-- Toast notifications (success/error)
-- Error handling scaffold
-- Clean status vocabulary
-- Responsive layout structure
-- Keyboard focus visibility (accessibility-ready)
+**Merge button UX:** Button is disabled with "Merging…" label while a merge request is in-flight, preventing double-submission.
 
-## **Current Mode: Mock-Only**
-The frontend currently operates in Mock Mode.
-
-All ticket data loads from:
+### 5. Workflow & Governance
 
 ```
-src/mock/mockTickets.js
+Voice Bot Ticket → Supervisor Approval → Operator Assignment → In Progress → Resolved / Escalated
+Human Ticket    → Direct Assignment   → In Progress          → Resolved / Escalated
 ```
 
-Backend integration is scaffolded but not yet active.
+Ticket statuses: `NEW` · `SUBMITTED` · `NEEDS_REVIEW` · `IN_PROGRESS` · `ESCALATED` · `RESOLVED` · `REJECTED` · `DELETED`
 
-The API client (src/api/client.js) is intentionally configured to throw an error unless VITE_API_BASE_URL is defined.
+### 6. Dashboard & Analytics (QueueOverviewPanel)
 
-This enforces controlled backend activation.
+- KPI cards: Total / Needs Review / Escalated / Active / Overdue / Resolved
+- Voice Bot vs Human ticket source breakdown
+- Tickets by category (bar chart, filterable by month)
+- Ticket volume trends (Today / Week / Month)
+- Duplicate detection panel with Merge / Dismiss actions
+- SLA tracking: Overdue / Due <24h / On Track
+- Complaint heatmap (geographic)
+- False report penalty scores per operator
 
-## **Backend Integration Status**
+### 7. Filtering & Controls
 
-- Prepared:
-  * API client abstraction
-  * Error handling strategy
-  * Loading states
-  * Toast rollback logic
-  * Separation of UI vs data layer
+- Search by ticket number, name, location, keyword
+- Quick filters: Needs Review, Escalated
+- Queue lanes: All / Mine / In Progress / Resolved / Approval (supervisor)
 
-- Pending:
-  * REST API endpoints
-  * WebSocket streaming for transcript partial/final segments
-  * Persistent database integration
-  * Authentication layer
+### 8. UI/UX Details
 
-## **How to Run Locally**
+- Skeleton loading states on all async fetches
+- Toast notifications (success/error with rollback)
+- Percentage-based column widths + `vw`-relative font sizes for zoom responsiveness
+- `ToneBadge` hides label at viewport < 900px; font scales via `min(10px, 0.65vw)`
+- `ConfidenceBadge` uses `white-space: nowrap` to prevent wrapping at small sizes
+- Parallel data loading (`Promise.all`) for ticket list + duplicate candidates after any mutation
 
-### *Install dependencies*
+## How to Run
+
+### Prerequisites
+- Backend running at `http://localhost:8311` (see root `insight311/` for backend setup)
+
+### Install & start
 
 ```bash
 npm install
-```
-### *Start development server*
-```bash
 npm run dev
 ```
-### *Default Vite URL:*
-http://localhost:5173
 
+Default URL: `http://localhost:5173`
+
+### Environment
+
+Set `VITE_API_BASE_URL` if the backend is not at the default address:
+
+```
+VITE_API_BASE_URL=http://localhost:8311/api
+```

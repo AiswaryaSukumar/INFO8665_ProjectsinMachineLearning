@@ -146,9 +146,8 @@ function buildConfidenceReasons(ticket = {}) {
 
   const seen = new Set();
   return reasons.filter((item) => {
-    const key = `${item.field}:${item.reason}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
+    if (seen.has(item.field)) return false;
+    seen.add(item.field);
     return true;
   });
 }

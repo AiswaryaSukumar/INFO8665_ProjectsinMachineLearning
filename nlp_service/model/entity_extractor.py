@@ -368,7 +368,9 @@ class EntityExtractor:
             # to prevent a preposition mid-sentence (e.g. "Victoria Park on King St. E")
             # from being absorbed into the address name via lazy/greedy over-matching.
             _name3 = r"[A-Za-z]+(?:\s+[A-Za-z]+){0,2}"
-            no_num_pattern = rf"(?:on|at|in|near|along)\s+({_name3}\s+{_road_suffix}\s+(?:North|South|East|West|NE|NW|SE|SW|N|S|E|W))\b"
+            # Optional number between road suffix and direction handles non-standard
+            # formats like "Queen Street 130 North" (number after street name).
+            no_num_pattern = rf"(?:on|at|in|near|along)\s+({_name3}\s+{_road_suffix}(?:\s+\d+)?\s+(?:North|South|East|West|NE|NW|SE|SW|N|S|E|W))\b"
             m2 = re.search(no_num_pattern, text, re.IGNORECASE)
             if m2:
                 location   = normalize_location(m2.group(1).strip())

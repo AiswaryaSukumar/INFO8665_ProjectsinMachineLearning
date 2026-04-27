@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from db_service.main import get_db, Ticket, TicketRepository, Recording, generate_ticket_id, FalseReportPenalty
+from db_service.main import get_db, Ticket, TicketRepository, Recording, generate_ticket_id, FalseReportPenalty, DuplicateCandidate
 from ticket_service.sla_config import compute_sla_deadline
 from ticket_service.duplicate_detection import find_and_store_duplicates
 
@@ -238,6 +238,7 @@ def update_ticket(ticket_id: str, request: TicketUpdateRequest,
         raise HTTPException(status_code=404, detail="Ticket not found")
     if request.ticket_status:
         repo.update_ticket_status(ticket_id, request.ticket_status)
+        _propagate_status_to_merged_duplicates(repo, ticket_id, request.ticket_status, db)
     if request.updates:
         repo.update_ticket_fields(ticket_id, request.updates)
         duplicate_fields = {"category", "location", "description", "notes", "transcript"}
@@ -247,6 +248,27 @@ def update_ticket(ticket_id: str, request: TicketUpdateRequest,
             except Exception:
                 pass
     return ticket_to_dict(repo.get_ticket_by_number(ticket_id))
+
+
+def _dismiss_pending_duplicate_candidates(ticket_id: str, db: Session) -> None:
+    from sqlalchemy import or_
+    db.query(DuplicateCandidate).filter(
+        or_(
+            DuplicateCandidate.ticket_id == ticket_id,
+            DuplicateCandidate.candidate_ticket_id == ticket_id,
+        ),
+        DuplicateCandidate.status == "PENDING",
+    ).update({"status": "DISMISSED"}, synchronize_session=False)
+    db.commit()
+
+
+def _propagate_status_to_merged_duplicates(ticket_repo: TicketRepository, parent_ticket_id: str, new_status: str, db: Session) -> None:
+    merged = db.query(DuplicateCandidate).filter(
+        DuplicateCandidate.candidate_ticket_id == parent_ticket_id,
+        DuplicateCandidate.status == "MERGED",
+    ).all()
+    for candidate in merged:
+        ticket_repo.update_ticket_fields(candidate.ticket_id, {"ticket_status": new_status})
 
 
 @router.post("/{ticket_id}/approve")
@@ -266,6 +288,7 @@ def approve_ticket(ticket_id: str, body: ApproveRequest = ApproveRequest(),
         "handled_by_name": body.handled_by_name,
         "handled_by_role": body.handled_by_role,
     })
+    _propagate_status_to_merged_duplicates(repo, ticket_id, "APPROVED", db)
     _notify_citizen_sms(ticket, old_status, "APPROVED")
     return ticket_to_dict(repo.get_ticket_by_number(ticket_id))
 
@@ -285,6 +308,7 @@ def reject_ticket(ticket_id: str, body: RejectRequest = RejectRequest(),
         "routing_status":  "REJECTED",
         "rejected_reason": body.rejected_reason,
     })
+    _propagate_status_to_merged_duplicates(repo, ticket_id, "REJECTED", db)
     _notify_citizen_sms(ticket, old_status, "REJECTED")
     return ticket_to_dict(repo.get_ticket_by_number(ticket_id))
 
@@ -301,6 +325,7 @@ def resolve_ticket(ticket_id: str, db: Session = Depends(get_db)):
         "workflow_stage": "COMPLETED",
         "department_status": "COMPLETED",
     })
+    _propagate_status_to_merged_duplicates(repo, ticket_id, "RESOLVED", db)
     return ticket_to_dict(repo.get_ticket_by_number(ticket_id))
 
 
@@ -319,6 +344,7 @@ def escalate_ticket(ticket_id: str, db: Session = Depends(get_db)):
         "escalation":      "ESCALATED",
         "department_status": "ON_HOLD",
     })
+    _propagate_status_to_merged_duplicates(repo, ticket_id, "ESCALATED", db)
     _notify_citizen_sms(ticket, old_status, "ESCALATED")
     return ticket_to_dict(repo.get_ticket_by_number(ticket_id))
 

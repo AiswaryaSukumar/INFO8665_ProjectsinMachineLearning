@@ -250,6 +250,10 @@ function normalizeTicket(t, fallbackAssignee = "") {
     derivedStatus = "RESOLVED";
   } else if (rejectedLike) {
     derivedStatus = "REJECTED";
+  } else if (statusUpper === "ESCALATED") {
+    derivedStatus = "ESCALATED";
+  } else if (statusUpper === "APPROVED") {
+    derivedStatus = "APPROVED";
   } else if (derivedPureBot) {
     derivedStatus = "NEEDS_REVIEW";
   } else {
@@ -538,9 +542,8 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
   }, []);
 
   useEffect(() => {
-    const handleTicketsChanged = async () => {
-      await loadTickets();
-      await loadDuplicateCandidates();
+    const handleTicketsChanged = () => {
+      Promise.all([loadTickets(), loadDuplicateCandidates()]);
     };
 
     window.addEventListener("tickets-changed", handleTicketsChanged);
@@ -1645,8 +1648,7 @@ export default function IntakePage({ activeView: routeActiveView, view = "myWork
       if (!duplicateId) return;
       try {
         await mergeDuplicate(duplicateId, sessionUserName || "Supervisor");
-        await loadTickets();
-        await loadDuplicateCandidates();
+        await Promise.all([loadTickets(), loadDuplicateCandidates()]);
         window.dispatchEvent(new Event("tickets-changed"));
         toast.success("Duplicate ticket merged.");
       } catch (e) {

@@ -335,7 +335,11 @@ def generate_ticket_id(db: DBSession) -> str:
     """
     year = datetime.utcnow().year
     prefix = f"311-{year}-"
-    count = db.query(func.count(Ticket.ticket_id)).filter(
+    max_id = db.query(func.max(Ticket.ticket_id)).filter(
         Ticket.ticket_id.like(f"{prefix}%")
-    ).scalar() or 0
-    return f"{prefix}{count + 1:06d}"
+    ).scalar()
+    if max_id:
+        last_num = int(max_id.split("-")[-1])
+    else:
+        last_num = 0
+    return f"{prefix}{last_num + 1:06d}"

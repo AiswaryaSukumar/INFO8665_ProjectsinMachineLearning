@@ -18,9 +18,11 @@ function formatAge(iso) {
   const parsed = parseApiDate(iso);
   if (!parsed) return "—";
   const diff = Math.max(0, Date.now() - parsed.getTime());
-  const h = Math.floor(diff / 3_600_000);
+  const d = Math.floor(diff / 86_400_000);
+  const h = Math.floor((diff % 86_400_000) / 3_600_000);
   const m = Math.floor((diff % 3_600_000) / 60_000);
-  if (h > 0) return `${h}h`;
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
   if (m > 0) return `${m}m`;
   return "< 1m";
 }
@@ -28,11 +30,13 @@ function formatAge(iso) {
 function getResidenceInfo(iso) {
   if (!iso) return { label: "—", color: "#9ca3af", urgent: false };
   const diff = Math.max(0, Date.now() - new Date(iso).getTime());
-  const h = Math.floor(diff / 3_600_000);
+  const totalH = Math.floor(diff / 3_600_000);
+  const d = Math.floor(diff / 86_400_000);
+  const h = Math.floor((diff % 86_400_000) / 3_600_000);
   const m = Math.floor((diff % 3_600_000) / 60_000);
-  const label = h > 0 ? `${h}h ${m}m` : `${m}m`;
-  const color  = h >= 24 ? "#ef4444" : h >= 8 ? "#f59e0b" : "#10b981";
-  return { label, color, urgent: h >= 24 };
+  const label = d > 0 ? `${d}d ${h}h ${m}m` : h > 0 ? `${h}h ${m}m` : `${m}m`;
+  const color  = totalH >= 24 ? "#ef4444" : totalH >= 8 ? "#f59e0b" : "#10b981";
+  return { label, color, urgent: totalH >= 24 };
 }
 
 function fmtCat(c) {
@@ -243,9 +247,13 @@ function CategoryChart({ tickets, isFR }) {
 
 // ── Needs Review ──────────────────────────────────────────────────────────────
 function NeedsReviewPanel({ tickets, isFR, onRowClick }) {
+  const ACTED_STATUSES = ["ESCALATED", "RESOLVED", "CLOSED", "REJECTED", "APPROVED"];
   const flagged = useMemo(() =>
     tickets
-      .filter(t => t.status === "NEEDS_REVIEW" || t.confidence === "LOW")
+      .filter(t =>
+        (t.status === "NEEDS_REVIEW" || t.confidence === "LOW") &&
+        !ACTED_STATUSES.includes(String(t.status || "").toUpperCase())
+      )
       .sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0)),
   [tickets]);
   return (
@@ -293,6 +301,7 @@ function DuplicateSection({ isFR, ticketCount = 0 }) {
   const [toastMsg, setToastMsg] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mergingId, setMergingId] = useState(null);
   const [filterPending, setFilterPending] = useState(false);
 
   const showToast = (msg, color) => { setToastMsg({ msg, color }); setTimeout(() => setToastMsg(null), 3000); };
@@ -317,6 +326,8 @@ function DuplicateSection({ isFR, ticketCount = 0 }) {
   }, []);
 
   const handleMerge = async (id) => {
+    if (mergingId) return;
+    setMergingId(id);
     try {
       const updated = await mergeDuplicate(id, localStorage.getItem("userName") || "Supervisor");
       setDupes(p => p.map(d => d.id === id ? updated : d));
@@ -324,6 +335,8 @@ function DuplicateSection({ isFR, ticketCount = 0 }) {
       showToast(isFR ? "Tickets fusionnés" : "Tickets merged", "#10b981");
     } catch (e) {
       showToast(e?.message || (isFR ? "Fusion impossible" : "Merge failed"), "#dc2626");
+    } finally {
+      setMergingId(null);
     }
   };
 
@@ -426,7 +439,7 @@ function DuplicateSection({ isFR, ticketCount = 0 }) {
                 </div>
                 {isPending && (
                   <div style={{ display: "flex", gap: 8, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
-                    <button className="btn primary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={() => handleMerge(dup.id)}>{isFR ? "Fusionner" : "Merge"}</button>
+                    <button className="btn primary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={() => handleMerge(dup.id)} disabled={!!mergingId}>{mergingId === dup.id ? (isFR ? "Fusion…" : "Merging…") : (isFR ? "Fusionner" : "Merge")}</button>
                     <button className="btn" style={{ fontSize: 12, padding: "6px 14px" }} onClick={() => handleDismiss(dup.id)}>{isFR ? "Ignorer" : "Dismiss"}</button>
                   </div>
                 )}
@@ -784,8 +797,10 @@ function SlaPanel({ tickets, isFR, onRowClick }) {
     const ms = new Date(iso).getTime() - now;
     if (ms <= 0) {
       const over = Math.abs(ms);
-      const h = Math.floor(over / 3_600_000);
-      return { label: h > 0 ? `${h}h overdue` : "Just overdue", color: "#dc2626" };
+      const od = Math.floor(over / 86_400_000);
+      const oh = Math.floor((over % 86_400_000) / 3_600_000);
+      const label = od > 0 ? `${od}d ${oh}h overdue` : oh > 0 ? `${oh}h overdue` : "Just overdue";
+      return { label, color: "#dc2626" };
     }
     const h = Math.ceil(ms / 3_600_000);
     if (h <= 24) return { label: `${h}h left`, color: "#c2410c" };
@@ -845,7 +860,7 @@ function SlaPanel({ tickets, isFR, onRowClick }) {
       )}
 
       {listTickets.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "18px 0", color: "#9ca3af" }}>
+        <div style={{ height: 300, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "#9ca3af" }}>
           <div style={{ fontSize: 24, marginBottom: 4 }}>✓</div>
           <div style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>
             {activeFilter === "onTrack"
@@ -854,7 +869,7 @@ function SlaPanel({ tickets, isFR, onRowClick }) {
           </div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 7, maxHeight: 300, overflowY: "auto" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 7, height: 300, overflowY: "auto" }}>
           {listTickets.map(t => {
             const tl = fmtTimeLeft(t.slaDeadline);
             const borderColor = t.isOverdue ? "#fca5a5" : (() => { const ms = new Date(t.slaDeadline || 0).getTime() - now; return ms <= 24 * 3_600_000 ? "#fed7aa" : "#d1fae5"; })();
